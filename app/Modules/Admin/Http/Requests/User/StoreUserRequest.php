@@ -17,7 +17,13 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).+$/',
+            ],
             'is_admin' => 'sometimes|boolean',
         ];
     }
@@ -31,6 +37,8 @@ class StoreUserRequest extends FormRequest
             'email.unique' => 'Email sudah digunakan.',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.regex' => 'Password harus mengandung huruf besar, angka, dan karakter khusus.',
         ];
     }
 }

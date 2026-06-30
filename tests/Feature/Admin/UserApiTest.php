@@ -53,7 +53,8 @@ test('admin can create user via API', function () {
         ->postJson('/api/v1/admin/users', [
             'name' => 'New User',
             'email' => 'new@test.com',
-            'password' => 'password123',
+            'password' => 'Admin123!',
+            'password_confirmation' => 'Admin123!',
         ]);
 
     $response->assertCreated()
@@ -103,6 +104,49 @@ test('non-admin cannot access users API', function () {
         ->getJson('/api/v1/admin/users');
 
     $response->assertForbidden();
+});
+
+test('password must meet complexity requirements', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+
+    $response = $this->actingAs($admin)
+        ->postJson('/api/v1/admin/users', [
+            'name' => 'Weak Password',
+            'email' => 'weak@test.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['password']);
+});
+
+test('password confirmation mismatch is rejected', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+
+    $response = $this->actingAs($admin)
+        ->postJson('/api/v1/admin/users', [
+            'name' => 'Mismatch User',
+            'email' => 'mismatch@test.com',
+            'password' => 'Admin123!',
+            'password_confirmation' => 'Admin456@',
+        ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['password']);
+});
+
+test('update password with confirmation works', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($admin)
+        ->putJson("/api/v1/admin/users/{$user->id}", [
+            'password' => 'NewPass123!',
+            'password_confirmation' => 'NewPass123!',
+        ]);
+
+    $response->assertOk();
 });
 
 test('guest cannot access users API', function () {

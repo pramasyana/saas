@@ -14,6 +14,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
+    Route::get('/admin/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.settings');
     Route::post('/admin/logout', [AuthController::class, 'destroy'])->name('admin.logout');
 });

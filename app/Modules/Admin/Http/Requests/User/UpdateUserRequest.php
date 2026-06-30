@@ -23,7 +23,14 @@ class UpdateUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('users', 'email')->ignore($this->route('id')),
             ],
-            'password' => 'sometimes|string|min:8|nullable',
+            'password' => [
+                'sometimes',
+                'string',
+                'min:8',
+                'confirmed',
+                'nullable',
+                'regex:/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).+$/',
+            ],
             'is_admin' => 'sometimes|boolean',
         ];
     }
@@ -35,6 +42,8 @@ class UpdateUserRequest extends FormRequest
             'name.max' => 'Nama maksimal 255 karakter.',
             'email.unique' => 'Email sudah digunakan.',
             'password.min' => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.regex' => 'Password harus mengandung huruf besar, angka, dan karakter khusus.',
         ];
     }
 }
