@@ -1,0 +1,147 @@
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import Button from '@/atoms/Button';
+import { cn } from '@/lib/utils';
+
+const links = [
+    { label: 'Features', href: '#features' },
+    { label: 'Pricing', href: '#pricing' },
+    { label: 'About', href: '#about' },
+    { label: 'FAQ', href: '#faq' },
+];
+
+export default function Navbar() {
+    const [scrolled, setScrolled] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const { scrollY } = useScroll();
+
+    useMotionValueEvent(scrollY, 'change', (latest) => {
+        setScrolled(latest > 40);
+    });
+
+    useEffect(() => {
+        if (mobileOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [mobileOpen]);
+
+    return (
+        <motion.header
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className={cn(
+                'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+                scrolled
+                    ? 'bg-white/70 backdrop-blur-xl shadow-sm border-b border-border/50'
+                    : 'bg-transparent',
+            )}
+        >
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
+                <a
+                    href="/"
+                    className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-light text-sm font-bold text-white shadow-sm">
+                        B
+                    </div>
+                    <span className="text-base font-bold tracking-tight text-neutral-900">
+                        BookCRM
+                    </span>
+                </a>
+
+                <nav className="hidden items-center md:flex">
+                    <ul className="flex items-center gap-1">
+                        {links.map((link) => (
+                            <li key={link.href}>
+                                <a
+                                    href={link.href}
+                                    className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+                                >
+                                    {link.label}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                    <div className="ml-6 flex items-center gap-3">
+                        <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900">
+                            Sign In
+                        </button>
+                        <Button size="sm">Start Free Trial</Button>
+                    </div>
+                </nav>
+
+                <button
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    className={cn(
+                        'flex h-9 w-9 items-center justify-center rounded-lg border transition-colors md:hidden',
+                        mobileOpen
+                            ? 'border-primary/30 bg-primary/5'
+                            : 'border-border bg-white',
+                    )}
+                    aria-label="Toggle menu"
+                >
+                    <svg
+                        className="h-4 w-4 text-neutral-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                    >
+                        {mobileOpen ? (
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        ) : (
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                            />
+                        )}
+                    </svg>
+                </button>
+            </div>
+
+            {mobileOpen && (
+                <motion.div
+                    initial={{ opacity: 0, y: -12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="border-t border-border/50 bg-white px-5 pb-8 pt-4 md:hidden"
+                >
+                    <nav>
+                        <ul className="flex flex-col gap-1">
+                            {links.map((link) => (
+                                <li key={link.href}>
+                                    <a
+                                        href={link.href}
+                                        onClick={() => setMobileOpen(false)}
+                                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+                                    >
+                                        {link.label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                    <hr className="my-4 border-border" />
+                    <button className="mb-3 block w-full rounded-lg px-3 py-2.5 text-center text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100">
+                        Sign In
+                    </button>
+                    <Button size="sm" className="w-full">
+                        Start Free Trial
+                    </Button>
+                </motion.div>
+            )}
+        </motion.header>
+    );
+}
