@@ -2,12 +2,6 @@ import { motion } from 'framer-motion';
 import Button from '@/atoms/Button';
 import DashboardMockup from '@/organisms/DashboardMockup';
 
-const stats = [
-    { value: '10K+', label: 'Active Businesses' },
-    { value: '50K+', label: 'Bookings Daily' },
-    { value: '98%', label: 'Satisfaction Rate' },
-];
-
 export default function HeroSection() {
     return (
         <section className="relative overflow-hidden bg-white">
@@ -15,12 +9,12 @@ export default function HeroSection() {
             <div className="absolute top-0 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/[0.02] blur-3xl" />
 
             <div className="relative mx-auto max-w-7xl px-5 pt-28 pb-16 md:px-8 md:pt-36 md:pb-24">
-                <div className="flex flex-col items-center gap-16 lg:flex-row lg:gap-20">
+                <div className="flex flex-col items-center gap-16 lg:flex-row lg:gap-24">
                     <div className="flex-1 text-center lg:text-left">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
+                            transition={{ duration: 0.5 }}
                         >
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3.5 py-1.5 text-xs font-medium text-primary">
                                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -31,44 +25,37 @@ export default function HeroSection() {
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
-                            className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight text-neutral-900 md:text-5xl lg:text-6xl xl:text-7xl"
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight text-neutral-900 md:text-5xl lg:text-6xl"
                         >
-                            Run Your Business.
-                            <br />
-                            Know Your Customers.
-                            <br />
                             <span className="bg-gradient-to-r from-primary via-primary to-primary-light bg-clip-text text-transparent">
-                                Grow Smarter.
+                                Book smarter.
                             </span>
+                            <br />
+                            Grow faster.
                         </motion.h1>
 
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-neutral-500 lg:mx-0 lg:text-lg"
+                            transition={{ duration: 0.5, delay: 0.15 }}
+                            className="mx-auto mt-5 max-w-md text-base leading-relaxed text-neutral-500 lg:mx-0 lg:text-lg"
                         >
-                            The intelligent platform that combines online
-                            booking, customer management, and business analytics
-                            into one seamless experience. Stop juggling tools —
-                            start growing.
+                            Online booking, customer management, and analytics
+                            — all in one platform. Stop juggling tools and start
+                            growing your business.
                         </motion.p>
 
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
                             className="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:justify-start"
                         >
-                            <Button
-                                size="lg"
-                                className="w-full sm:w-auto shadow-xl shadow-primary/25"
-                            >
+                            <Button className="w-full sm:w-auto shadow-xl shadow-primary/25">
                                 Start Free Trial
                             </Button>
                             <Button
-                                size="lg"
                                 variant="secondary"
                                 className="w-full sm:w-auto"
                             >
@@ -92,41 +79,64 @@ export default function HeroSection() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.4 }}
+                            transition={{ duration: 0.5, delay: 0.25 }}
                             className="mt-6 flex flex-wrap justify-center gap-6 lg:justify-start"
                         >
-                            {[
-                                'No credit card required',
-                                '14-day free trial',
-                                'Cancel anytime',
-                            ].map((text) => (
-                                <span
-                                    key={text}
-                                    className="inline-flex items-center gap-1.5 text-xs text-neutral-400"
+                            <span className="inline-flex items-center gap-1.5 text-xs text-neutral-400">
+                                <svg
+                                    className="h-3.5 w-3.5 text-success"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2.5}
                                 >
-                                    <svg
-                                        className="h-3.5 w-3.5 text-success"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        strokeWidth={2.5}
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12.75l6 6 9-13.5"
-                                        />
-                                    </svg>
-                                    {text}
-                                </span>
-                            ))}
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M4.5 12.75l6 6 9-13.5"
+                                    />
+                                </svg>
+                                No credit card required
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 text-xs text-neutral-400">
+                                <svg
+                                    className="h-3.5 w-3.5 text-success"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2.5}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M4.5 12.75l6 6 9-13.5"
+                                    />
+                                </svg>
+                                14-day free trial
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 text-xs text-neutral-400">
+                                <svg
+                                    className="h-3.5 w-3.5 text-success"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2.5}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M4.5 12.75l6 6 9-13.5"
+                                    />
+                                </svg>
+                                Cancel anytime
+                            </span>
                         </motion.div>
                     </div>
 
                     <motion.div
                         initial={{ opacity: 0, x: 40 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.3 }}
+                        transition={{ duration: 0.7, delay: 0.2 }}
                         className="flex-1"
                     >
                         <DashboardMockup />
@@ -136,19 +146,33 @@ export default function HeroSection() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                    className="mt-20 grid grid-cols-3 gap-6 border-t border-border pt-12 md:gap-12"
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    className="mt-24 grid grid-cols-3 gap-6 md:gap-16"
                 >
-                    {stats.map((stat) => (
-                        <div key={stat.label} className="text-center">
-                            <p className="text-2xl font-bold text-neutral-900 md:text-3xl">
-                                {stat.value}
-                            </p>
-                            <p className="mt-1 text-sm text-neutral-400">
-                                {stat.label}
-                            </p>
-                        </div>
-                    ))}
+                    <div className="text-center">
+                        <p className="text-2xl font-bold text-neutral-900 md:text-3xl">
+                            10K+
+                        </p>
+                        <p className="mt-1 text-sm text-neutral-400">
+                            Active Businesses
+                        </p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-2xl font-bold text-neutral-900 md:text-3xl">
+                            50K+
+                        </p>
+                        <p className="mt-1 text-sm text-neutral-400">
+                            Daily Bookings
+                        </p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-2xl font-bold text-neutral-900 md:text-3xl">
+                            98%
+                        </p>
+                        <p className="mt-1 text-sm text-neutral-400">
+                            Satisfaction Rate
+                        </p>
+                    </div>
                 </motion.div>
             </div>
         </section>
