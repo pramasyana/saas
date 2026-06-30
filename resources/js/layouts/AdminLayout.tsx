@@ -2,6 +2,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { useSidebarStore } from '@/stores/sidebar';
+import ToastContainer from '@/atoms/Toast';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -192,6 +193,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     onClick={() => setMobileOpen(false)}
                 />
             )}
+
+            <ToastContainer />
         </div>
     );
 }

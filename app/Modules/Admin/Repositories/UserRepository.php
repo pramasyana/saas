@@ -4,6 +4,7 @@ namespace App\Modules\Admin\Repositories;
 
 use App\Models\User;
 use App\Modules\Admin\Contracts\UserRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class UserRepository implements UserRepositoryInterface
@@ -43,5 +44,47 @@ class UserRepository implements UserRepositoryInterface
     public function findById(int $id): ?User
     {
         return User::find($id);
+    }
+
+    /** @param array<string, mixed> $filters */
+    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    {
+        $query = User::query();
+
+        if (! empty($filters['search'])) {
+            $query->where(function ($q) use ($filters): void {
+                $q->where('name', 'like', "%{$filters['search']}%")
+                    ->orWhere('email', 'like', "%{$filters['search']}%");
+            });
+        }
+
+        if (isset($filters['is_admin'])) {
+            $query->where('is_admin', $filters['is_admin']);
+        }
+
+        if (! empty($filters['sort'])) {
+            $query->orderBy($filters['sort'], $filters['direction'] ?? 'asc');
+        } else {
+            $query->latest();
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    public function create(array $data): User
+    {
+        return User::create($data);
+    }
+
+    public function update(User $user, array $data): User
+    {
+        $user->update($data);
+
+        return $user;
+    }
+
+    public function delete(User $user): bool
+    {
+        return $user->delete();
     }
 }

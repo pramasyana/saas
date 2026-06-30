@@ -3,6 +3,7 @@
 namespace App\Modules\Admin\Contracts;
 
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 interface UserRepositoryInterface
@@ -22,4 +23,13 @@ interface UserRepositoryInterface
     public function latest(int $limit): Collection;
 
     public function findById(int $id): ?User;
+
+    /** @param array<string, mixed> $filters */
+    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator;
+
+    public function create(array $data): User;
+
+    public function update(User $user, array $data): User;
+
+    public function delete(User $user): bool;
 }
