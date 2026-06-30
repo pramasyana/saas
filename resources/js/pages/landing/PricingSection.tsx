@@ -8,56 +8,56 @@ const plans = [
         name: 'Starter',
         monthly: 19,
         yearly: 190,
-        desc: 'Perfect for solo entrepreneurs',
+        desc: 'Cocok untuk pebisnis solo',
         features: [
-            '50 bookings/mo',
-            'Basic CRM',
-            'Email reminders',
-            'Calendar sync',
-            '1 staff member',
+            '50 booking/bln',
+            'CRM Dasar',
+            'Pengingat Email',
+            'Sinkronisasi Kalender',
+            '1 staf',
         ],
     },
     {
         name: 'Professional',
         monthly: 59,
         yearly: 590,
-        desc: 'For growing businesses',
+        desc: 'Untuk bisnis yang berkembang',
         popular: true,
         features: [
-            'Unlimited bookings',
-            'Full CRM + Timeline',
+            'Booking tak terbatas',
+            'CRM Lengkap + Timeline',
             'WhatsApp & Email',
-            'Analytics dashboard',
-            '5 staff members',
-            'Custom booking form',
+            'Dashboard Analitik',
+            '5 staf',
+            'Form booking kustom',
         ],
     },
     {
         name: 'Business',
         monthly: 119,
         yearly: 1190,
-        desc: 'For established teams',
+        desc: 'Untuk tim yang mapan',
         features: [
-            'Everything in Pro',
-            '15 staff members',
-            'Revenue reports',
-            'Marketing automation',
-            'Payment integration',
-            'Custom branding',
+            'Semua fitur Pro',
+            '15 staf',
+            'Laporan pendapatan',
+            'Otomatisasi marketing',
+            'Integrasi pembayaran',
+            'Branding kustom',
         ],
     },
     {
         name: 'Enterprise',
         monthly: 249,
         yearly: 2490,
-        desc: 'For large organizations',
+        desc: 'Untuk organisasi besar',
         features: [
-            'Everything in Business',
-            'Unlimited staff',
-            'API access',
-            'Dedicated support',
-            'Custom integrations',
-            'SLA guarantee',
+            'Semua fitur Business',
+            'Staf tak terbatas',
+            'Akses API',
+            'Dukungan khusus',
+            'Integrasi kustom',
+            'Garansi SLA',
         ],
     },
 ];
@@ -68,8 +68,8 @@ export default function PricingSection() {
     return (
         <Section
             id="pricing"
-            heading="Simple, transparent pricing."
-            subheading="Start free. Upgrade when you grow. No surprises."
+            heading="Harga sederhana dan transparan."
+            subheading="Mulai gratis. Upgrade saat berkembang. Tanpa kejutan."
             className="bg-neutral-50/50"
         >
             <div className="mx-auto max-w-6xl">
@@ -82,7 +82,7 @@ export default function PricingSection() {
                                 : 'text-neutral-400 hover:text-neutral-600'
                         }`}
                     >
-                        Monthly
+                        Bulanan
                     </button>
                     <button
                         onClick={() => setYearly(!yearly)}
@@ -105,9 +105,9 @@ export default function PricingSection() {
                                 : 'text-neutral-400 hover:text-neutral-600'
                         }`}
                     >
-                        Yearly
+                        Tahunan
                         <span className="ml-1.5 rounded-full bg-success/10 px-2 py-0.5 text-xs text-success">
-                            Save 20%
+                            Hemat 20%
                         </span>
                     </button>
                 </div>
@@ -130,7 +130,7 @@ export default function PricingSection() {
                             {plan.popular && (
                                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                                     <span className="inline-flex items-center rounded-full bg-gradient-to-r from-primary to-primary-light px-3 py-1 text-xs font-semibold text-white shadow-lg">
-                                        Most Popular
+                                        Paling Populer
                                     </span>
                                 </div>
                             )}
@@ -154,7 +154,7 @@ export default function PricingSection() {
                                     </motion.span>
                                 </AnimatePresence>
                                 <span className="text-sm text-neutral-400">
-                                    /mo
+                                    /bln
                                 </span>
                             </div>
                             <hr className="my-5 border-border" />
@@ -190,15 +190,14 @@ export default function PricingSection() {
                                     }
                                     className="w-full"
                                 >
-                                    Start Free Trial
+                                    Mulai Uji Coba
                                 </Button>
                             </div>
                         </motion.div>
                     ))}
                 </div>
                 <p className="mt-8 text-center text-sm text-neutral-400">
-                    All plans include a 14-day free trial. No credit card
-                    required.
+                    Semua paket termasuk uji coba 14 hari. Tanpa kartu kredit.
                 </p>
             </div>
         </Section>

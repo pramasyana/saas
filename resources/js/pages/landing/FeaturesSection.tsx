@@ -2,30 +2,30 @@ import { motion } from 'framer-motion';
 import Section from '@/molecules/Section';
 
 const features = [
-    { icon: '📅', title: 'Online Booking', desc: 'Accept bookings 24/7 with real-time availability' },
-    { icon: '📋', title: 'Appointment Management', desc: 'Create, reschedule, and cancel with ease' },
-    { icon: '👥', title: 'Customer CRM', desc: 'Full profiles with history and preferences' },
-    { icon: '📊', title: 'Customer Timeline', desc: 'Every interaction, from first visit to last' },
-    { icon: '💬', title: 'WhatsApp Reminders', desc: 'Auto-reminders that cut no-shows by 80%' },
-    { icon: '📧', title: 'Email Notifications', desc: 'Polished emails for every booking event' },
-    { icon: '📈', title: 'Analytics Dashboard', desc: 'Revenue, bookings, and trends at a glance' },
-    { icon: '💰', title: 'Revenue Reports', desc: 'Detailed financials with export' },
-    { icon: '👤', title: 'Staff Management', desc: 'Schedules, permissions, and performance' },
-    { icon: '🔐', title: 'Roles & Permissions', desc: 'Granular access for your team' },
-    { icon: '📝', title: 'Custom Booking Forms', desc: 'Collect exactly what you need' },
-    { icon: '🎨', title: 'White-Label Branding', desc: 'Your brand, your colors, your domain' },
-    { icon: '💳', title: 'Payment Integration', desc: 'Accept deposits and payments online' },
-    { icon: '🏷️', title: 'Coupons & Promos', desc: 'Create discounts and promotions' },
-    { icon: '✏️', title: 'Custom Fields', desc: 'Capture specific customer information' },
-    { icon: '🔗', title: 'API & Webhooks', desc: 'Integrate with your existing tools' },
+    { icon: '📅', title: 'Booking Online', desc: 'Terima booking 24/7 dengan ketersediaan real-time' },
+    { icon: '📋', title: 'Manajemen Janji Temu', desc: 'Buat, reschedule, dan batalkan dengan mudah' },
+    { icon: '👥', title: 'CRM Pelanggan', desc: 'Profil lengkap dengan riwayat dan preferensi' },
+    { icon: '📊', title: 'Timeline Pelanggan', desc: 'Setiap interaksi, dari kunjungan pertama hingga terakhir' },
+    { icon: '💬', title: 'Pengingat WhatsApp', desc: 'Pengingat otomatis yang mengurangi no-show 80%' },
+    { icon: '📧', title: 'Notifikasi Email', desc: 'Email profesional untuk setiap event booking' },
+    { icon: '📈', title: 'Dashboard Analitik', desc: 'Pendapatan, booking, dan tren dalam satu layar' },
+    { icon: '💰', title: 'Laporan Pendapatan', desc: 'Keuangan detail dengan format export' },
+    { icon: '👤', title: 'Manajemen Staf', desc: 'Jadwal, izin akses, dan performa staf' },
+    { icon: '🔐', title: 'Peran & Izin Akses', desc: 'Kontrol akses granular untuk tim Anda' },
+    { icon: '📝', title: 'Form Booking Kustom', desc: 'Kumpulkan data yang Anda butuhkan' },
+    { icon: '🎨', title: 'Branding White-Label', desc: 'Logo, warna, dan domain Anda sendiri' },
+    { icon: '💳', title: 'Integrasi Pembayaran', desc: 'Terima deposit dan pembayaran online' },
+    { icon: '🏷️', title: 'Kupon & Promo', desc: 'Buat diskon dan promosi' },
+    { icon: '✏️', title: 'Field Kustom', desc: 'Tangkap informasi spesifik pelanggan' },
+    { icon: '🔗', title: 'API & Webhooks', desc: 'Integrasi dengan tools yang Anda gunakan' },
 ];
 
 export default function FeaturesSection() {
     return (
         <Section
             id="features"
-            heading="Everything you need to run your business."
-            subheading="A complete toolkit designed for service businesses."
+            heading="Semua yang Anda butuhkan untuk menjalankan bisnis."
+            subheading="Toolkit lengkap yang dirancang untuk bisnis jasa."
         >
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {features.map((f, i) => (

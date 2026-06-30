@@ -1,19 +1,19 @@
 const footerLinks = [
     {
-        label: 'Product',
-        links: ['Features', 'Pricing', 'Integrations', 'Changelog'],
+        label: 'Produk',
+        links: ['Fitur', 'Harga', 'Integrasi', 'Pembaruan'],
     },
     {
-        label: 'Company',
-        links: ['About', 'Blog', 'Careers', 'Contact'],
+        label: 'Perusahaan',
+        links: ['Tentang', 'Blog', 'Karir', 'Kontak'],
     },
     {
-        label: 'Support',
-        links: ['Docs', 'API Reference', 'Status', 'FAQ'],
+        label: 'Bantuan',
+        links: ['Dokumentasi', 'Referensi API', 'Status', 'FAQ'],
     },
     {
-        label: 'Legal',
-        links: ['Privacy', 'Terms', 'Cookie Policy'],
+        label: 'Hukum',
+        links: ['Privasi', 'Syarat & Ketentuan', 'Kebijakan Cookie'],
     },
 ];
 
@@ -28,13 +28,12 @@ export default function Footer() {
                                 B
                             </div>
                             <span className="text-base font-semibold text-neutral-900">
-                                BookingCRM
+                                BookCRM
                             </span>
                         </a>
                         <p className="mt-4 text-sm leading-relaxed text-neutral-500">
-                            The all-in-one booking and CRM platform for service
-                            businesses. Manage appointments, customers, and
-                            growth in one place.
+                            Platform booking dan CRM all-in-one untuk bisnis jasa. Kelola
+                            janji temu, pelanggan, dan pertumbuhan bisnis dalam satu tempat.
                         </p>
                     </div>
                     <div className="flex flex-1 flex-wrap gap-12 sm:justify-end">
@@ -60,7 +59,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="mt-16 border-t border-border pt-8 text-center text-sm text-neutral-400">
-                    &copy; {new Date().getFullYear()} BookingCRM. All rights reserved.
+                    &copy; {new Date().getFullYear()} BookCRM. Hak cipta dilindungi.
                 </div>
             </div>
         </footer>

@@ -19,7 +19,7 @@ import WhyNowSection from '@/pages/landing/WhyNowSection';
 export default function Welcome() {
     return (
         <>
-            <Head title="BookingCRM — Run Your Business. Know Your Customers. Grow Smarter." />
+            <Head title="BookCRM — Booking Lebih Pintar. Bisnis Lebih Berkembang." />
 
             <div className="min-h-screen bg-white font-sans text-neutral-900 antialiased">
                 <Navbar />

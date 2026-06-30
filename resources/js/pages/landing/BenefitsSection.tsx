@@ -4,28 +4,28 @@ import Section from '@/molecules/Section';
 const benefits = [
     {
         icon: '⏱️',
-        title: 'Save 10+ Hours Weekly',
-        desc: 'Automate booking, reminders, and follow-ups. Stop wasting time on manual admin work.',
+        title: 'Hemat 10+ Jam per Minggu',
+        desc: 'Otomatiskan booking, pengingat, dan follow-up. Berhenti buang waktu pada administrasi manual.',
     },
     {
         icon: '📉',
-        title: 'Cut No-Shows by 80%',
-        desc: 'Smart multi-channel reminders via WhatsApp and email ensure customers show up.',
+        title: 'Kurangi No-Show 80%',
+        desc: 'Pengingat cerdas multi-channel via WhatsApp dan Email memastikan pelanggan datang.',
     },
     {
         icon: '👤',
-        title: 'Know Every Customer',
-        desc: 'Complete profiles with history, preferences, and behavior — personalize every interaction.',
+        title: 'Kenali Setiap Pelanggan',
+        desc: 'Profil lengkap dengan riwayat, preferensi, dan perilaku — personalisasi setiap interaksi.',
     },
     {
         icon: '💡',
-        title: 'Data-Driven Decisions',
-        desc: 'Know exactly which services drive revenue, when you\'re busiest, and what customers want.',
+        title: 'Keputusan Berbasis Data',
+        desc: 'Tahu persis layanan mana yang menghasilkan, kapan Anda tersibuk, dan apa yang diinginkan pelanggan.',
     },
     {
         icon: '📧',
-        title: 'Grow with Automation',
-        desc: 'Send targeted campaigns, birthday offers, and re-engagement sequences automatically.',
+        title: 'Kembangkan dengan Otomatisasi',
+        desc: 'Kirim kampanye tertarget, penawaran ulang tahun, dan urutan re-engagement secara otomatis.',
     },
 ];
 
@@ -33,8 +33,8 @@ export default function BenefitsSection() {
     return (
         <Section
             id="benefits"
-            heading="Built to save you time and grow your revenue."
-            subheading="Every feature solves a real problem that service businesses face daily."
+            heading="Dibuat untuk menghemat waktu dan meningkatkan pendapatan."
+            subheading="Setiap fitur memecahkan masalah nyata yang dihadapi bisnis jasa setiap hari."
         >
             <div className="mx-auto max-w-3xl">
                 <div className="space-y-4">
@@ -81,7 +81,7 @@ export default function BenefitsSection() {
                     className="mt-8 rounded-2xl bg-gradient-to-r from-success/5 to-success/10 p-6 text-center md:p-8"
                 >
                     <p className="text-lg font-semibold text-success md:text-xl">
-                        More bookings. Higher revenue. Happier customers.
+                        Lebih banyak booking. Pendapatan lebih tinggi. Pelanggan lebih puas.
                     </p>
                 </motion.div>
             </div>

@@ -13,11 +13,12 @@ export default function CtaFooter() {
                     className="mx-auto max-w-2xl"
                 >
                     <h2 className="text-3xl font-bold text-white md:text-4xl">
-                        Ready to simplify your bookings?
+                        Siap permudah booking Anda?
                     </h2>
                     <p className="mt-4 text-base leading-relaxed text-white/70">
-                        Join thousands of businesses that have streamlined their
-                        booking, CRM, and communication — all in one place.
+                        Bergabunglah dengan ribuan bisnis yang telah
+                        merapikan booking, CRM, dan komunikasi — semua
+                        dalam satu tempat.
                     </p>
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
                         <Button
@@ -25,18 +26,18 @@ export default function CtaFooter() {
                             size="lg"
                             className="bg-white text-primary hover:bg-white/90"
                         >
-                            Start Free Trial
+                            Mulai Uji Coba Gratis
                         </Button>
                         <Button
                             variant="outline"
                             size="lg"
                             className="border-white/30 text-white hover:bg-white/10"
                         >
-                            Schedule a Demo
+                            Jadwalkan Demo
                         </Button>
                     </div>
                     <p className="mt-4 text-xs text-white/40">
-                        No credit card required. 14-day free trial.
+                        Tanpa kartu kredit. Uji coba 14 hari.
                     </p>
                 </motion.div>
             </div>

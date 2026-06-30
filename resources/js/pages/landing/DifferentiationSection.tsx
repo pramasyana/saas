@@ -3,34 +3,34 @@ import Section from '@/molecules/Section';
 
 const diffs = [
     {
-        them: 'Pen & paper or spreadsheets',
-        us: 'Automated booking from any device',
-        upside: 'No double-bookings, no missed calls',
+        them: 'Buku & spreadsheet',
+        us: 'Booking otomatis dari perangkat apa pun',
+        upside: 'No double-booking, tidak ada telepon kelewatan',
     },
     {
-        them: 'No customer history',
-        us: 'Complete CRM with timeline',
-        upside: 'Personalized service every visit',
+        them: 'Tidak ada riwayat pelanggan',
+        us: 'CRM lengkap dengan timeline',
+        upside: 'Layanan personal setiap kunjungan',
     },
     {
-        them: 'Manual WhatsApp & SMS',
-        us: 'Auto reminders & follow-ups',
-        upside: '80% fewer no-shows',
+        them: 'WhatsApp & SMS manual',
+        us: 'Pengingat & follow-up otomatis',
+        upside: 'No-show turun 80%',
     },
     {
-        them: 'No insight into performance',
-        us: 'Real-time analytics & reports',
-        upside: 'Make data-driven decisions',
+        them: 'Tidak ada insight performa',
+        us: 'Analitik & laporan real-time',
+        upside: 'Keputusan berbasis data',
     },
     {
-        them: 'Generic calendar tools',
-        us: 'Built for service businesses',
-        upside: 'Everything in one place',
+        them: 'Alat kalender generik',
+        us: 'Dibuat khusus bisnis jasa',
+        upside: 'Semua dalam satu tempat',
     },
     {
-        them: 'No payment integration',
-        us: 'Take deposits & payments online',
-        upside: 'Get paid before they walk in',
+        them: 'Tidak ada pembayaran terintegrasi',
+        us: 'Terima deposit & pembayaran online',
+        upside: 'Dibayar sebelum mereka datang',
     },
 ];
 
@@ -38,8 +38,8 @@ export default function DifferentiationSection() {
     return (
         <Section
             id="differentiation"
-            heading="Built for service businesses. Not generic calendars."
-            subheading="Most tools are adapted from general scheduling. We built ours specifically for you."
+            heading="Dibuat untuk bisnis jasa. Bukan kalender generik."
+            subheading="Kebanyakan tools diadaptasi dari penjadwalan umum. Kami membuatnya khusus untuk Anda."
             className="bg-neutral-50/50"
         >
             <div className="mx-auto max-w-5xl">
@@ -55,7 +55,7 @@ export default function DifferentiationSection() {
                         >
                             <div className="bg-danger/5 p-4">
                                 <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-danger">
-                                    Them
+                                    Mereka
                                 </div>
                                 <p className="text-sm text-neutral-600">
                                     {d.them}
@@ -63,7 +63,7 @@ export default function DifferentiationSection() {
                             </div>
                             <div className="bg-success/5 p-4">
                                 <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-success">
-                                    Us
+                                    Kami
                                 </div>
                                 <p className="text-sm font-medium text-neutral-900">
                                     {d.us}
@@ -71,7 +71,7 @@ export default function DifferentiationSection() {
                             </div>
                             <div className="bg-primary/5 p-4">
                                 <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-primary">
-                                    Upside
+                                    Keuntungan
                                 </div>
                                 <p className="text-sm text-neutral-600">
                                     {d.upside}

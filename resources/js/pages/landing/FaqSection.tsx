@@ -4,28 +4,28 @@ import Section from '@/molecules/Section';
 
 const faqs = [
     {
-        q: 'Is there a free trial?',
-        a: 'Yes. Every plan includes a 14-day free trial with full access. No credit card required.',
+        q: 'Apakah ada uji coba gratis?',
+        a: 'Ya. Semua paket termasuk uji coba 14 hari dengan akses penuh. Tanpa kartu kredit.',
     },
     {
-        q: 'Can I migrate from my current booking system?',
-        a: 'Absolutely. We offer free migration support for Pro and above plans. Our team handles the data transfer for you.',
+        q: 'Bisa migrasi dari sistem booking yang sudah ada?',
+        a: 'Tentu. Kami menawarkan dukungan migrasi gratis untuk paket Pro ke atas. Tim kami yang menangani transfer data.',
     },
     {
-        q: 'Do you offer custom branding?',
-        a: 'Yes. Business and Enterprise plans include white-label branding. Use your own logo, colors, and domain.',
+        q: 'Apakah Anda menyediakan branding kustom?',
+        a: 'Ya. Paket Business dan Enterprise sudah termasuk white-label branding. Gunakan logo, warna, dan domain Anda sendiri.',
     },
     {
-        q: 'What kind of support do you provide?',
-        a: 'All plans include email support. Pro plans add live chat. Enterprise plans include a dedicated account manager and priority support.',
+        q: 'Dukungan seperti apa yang tersedia?',
+        a: 'Semua paket termasuk dukungan email. Paket Pro menambahkan live chat. Paket Enterprise termasuk account manager khusus dan dukungan prioritas.',
     },
     {
-        q: 'Is my data secure?',
-        a: 'We use enterprise-grade encryption (AES-256) for data at rest and TLS 1.3 for data in transit. We are SOC 2 compliant.',
+        q: 'Apakah data saya aman?',
+        a: 'Kami menggunakan enkripsi enterprise-grade (AES-256) untuk data saat istirahat dan TLS 1.3 untuk data dalam perjalanan. Kami patuh SOC 2.',
     },
     {
-        q: 'Can I accept payments through the platform?',
-        a: 'Yes. We integrate with Stripe and Midtrans. You can collect deposits, full payments, or both at booking time.',
+        q: 'Bisa menerima pembayaran lewat platform?',
+        a: 'Ya. Kami terintegrasi dengan Stripe dan Midtrans. Anda bisa mengumpulkan deposit, pembayaran penuh, atau keduanya saat booking.',
     },
 ];
 
@@ -35,8 +35,8 @@ export default function FaqSection() {
     return (
         <Section
             id="faq"
-            heading="Frequently asked questions."
-            subheading="Everything you need to know about our platform."
+            heading="Pertanyaan yang sering diajukan."
+            subheading="Semua yang perlu Anda ketahui tentang platform kami."
         >
             <div className="mx-auto max-w-2xl divide-y divide-border">
                 {faqs.map((faq, i) => (

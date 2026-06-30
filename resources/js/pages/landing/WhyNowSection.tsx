@@ -4,28 +4,28 @@ import Section from '@/molecules/Section';
 const reasons = [
     {
         icon: '📱',
-        title: 'Customers expect self-service booking',
-        desc: '88% of consumers prefer booking online. If your calendar is manual, they go to a competitor.',
+        title: 'Pelanggan ingin booking sendiri',
+        desc: '88% konsumen lebih suka booking online. Jika kalender Anda manual, mereka pergi ke kompetitor.',
     },
     {
         icon: '📉',
-        title: 'No-shows are silently killing your revenue',
-        desc: 'Manual reminders fail. Automated follow-ups via WhatsApp & email reduce no-shows by up to 80%.',
+        title: 'No-show menggerogoti pendapatan diam-diam',
+        desc: 'Pengingat manual gagal. Follow-up otomatis via WhatsApp & Email mengurangi no-show hingga 80%.',
     },
     {
         icon: '📊',
-        title: 'You&#39;re flying blind without data',
-        desc: 'Spreadsheets can&#39;t tell you peak hours, customer lifetime value, or revenue trends. Our analytics dashboard does.',
+        title: 'Anda buta tanpa data',
+        desc: 'Spreadsheet tidak bisa memberi tahu jam sibuk, nilai seumur hidup pelanggan, atau tren pendapatan. Dashboard analitik kami bisa.',
     },
     {
         icon: '⚡',
-        title: 'Your competitors already automated',
-        desc: 'While you juggle phone calls and double-booking, they&#39;re serving more customers with less effort.',
+        title: 'Kompetitor Anda sudah otomatis',
+        desc: 'Sementara Anda sibuk dengan telepon dan double booking, mereka melayani lebih banyak pelanggan dengan usaha lebih sedikit.',
     },
     {
         icon: '🏗️',
-        title: 'Scaling without software is impossible',
-        desc: 'You can&#39;t add more hours to your day. But you can add booking slots, staff, and locations — without adding chaos.',
+        title: 'Berkembang tanpa software itu mustahil',
+        desc: 'Anda tidak bisa menambah jam dalam sehari. Tapi Anda bisa menambah slot booking, staf, dan lokasi — tanpa kekacauan.',
     },
 ];
 
@@ -33,8 +33,8 @@ export default function WhyNowSection() {
     return (
         <Section
             id="why-now"
-            heading="Why now? Because the cost of waiting is lost revenue."
-            subheading="Every day without automation is money left on the table."
+            heading="Kenapa sekarang? Karena biaya menunggu adalah pendapatan yang hilang."
+            subheading="Setiap hari tanpa otomatisasi adalah uang yang tertinggal di atas meja."
         >
             <div className="mx-auto max-w-3xl space-y-4">
                 {reasons.map((r, i) => (

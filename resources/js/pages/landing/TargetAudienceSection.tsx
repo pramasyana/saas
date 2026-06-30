@@ -2,22 +2,22 @@ import { motion } from 'framer-motion';
 import Section from '@/molecules/Section';
 
 const businesses = [
-    { icon: '💇', title: 'Beauty Salon', desc: 'Hair, nails, makeup, and skincare appointments' },
-    { icon: '✂️', title: 'Barbershop', desc: 'Traditional and modern barber services' },
-    { icon: '🧖', title: 'Spa & Wellness', desc: 'Massages, facials, and holistic treatments' },
-    { icon: '🏥', title: 'Clinic', desc: 'Medical, dental, and specialist visits' },
-    { icon: '🏋️', title: 'Fitness Studio', desc: 'Classes, PT sessions, and gym memberships' },
-    { icon: '📚', title: 'Tutoring', desc: 'Academic coaching and skill development' },
-    { icon: '💼', title: 'Consulting', desc: 'Professional advisory and coaching services' },
-    { icon: '🐾', title: 'Pet Care', desc: 'Grooming, veterinary, and pet sitting' },
+    { icon: '💇', title: 'Salon Kecantikan', desc: 'Rambut, kuku, rias, dan perawatan kulit' },
+    { icon: '✂️', title: 'Barbershop', desc: 'Pangkas rambut tradisional dan modern' },
+    { icon: '🧖', title: 'Spa & Wellness', desc: 'Pijat, facial, dan perawatan holistik' },
+    { icon: '🏥', title: 'Klinik', desc: 'Kunjungan medis, gigi, dan spesialis' },
+    { icon: '🏋️', title: 'Studio Fitness', desc: 'Kelas, sesi PT, dan keanggotaan gym' },
+    { icon: '📚', title: 'Bimbingan Belajar', desc: 'Les akademik dan pengembangan skill' },
+    { icon: '💼', title: 'Konsultan', desc: 'Jasa konsultasi profesional dan coaching' },
+    { icon: '🐾', title: 'Perawatan Hewan', desc: 'Grooming, vet, dan pet sitting' },
 ];
 
 export default function TargetAudienceSection() {
     return (
         <Section
             id="audience"
-            heading="Built for every service business."
-            subheading="From solopreneurs to multi-location businesses."
+            heading="Dibuat untuk setiap bisnis jasa."
+            subheading="Dari pebisnis solo hingga bisnis multi-cabang."
             className="bg-neutral-50/50"
         >
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -2,18 +2,18 @@ import { motion } from 'framer-motion';
 import Section from '@/molecules/Section';
 
 const stats = [
-    { value: '$7.5B', label: 'Market size by 2026' },
-    { value: '80%', label: 'Reduction in no-shows' },
-    { value: '40%', label: 'Revenue uplift for businesses' },
-    { value: '10x', label: 'ROI on booking automation' },
+    { value: 'Rp100T+', label: 'Pasar booking online 2026' },
+    { value: '80%', label: 'Penurunan no-show' },
+    { value: '40%', label: 'Kenaikan pendapatan bisnis' },
+    { value: '10x', label: 'ROI otomatisasi booking' },
 ];
 
 export default function MarketSection() {
     return (
         <Section
             id="market"
-            heading="The booking industry is exploding."
-            subheading="Service businesses are moving online. Those who don&#39;t adapt get left behind."
+            heading="Industri booking sedang meledak."
+            subheading="Bisnis jasa beralih ke online. Yang tidak beradaptasi akan tertinggal."
             className="bg-neutral-50/50"
         >
             <div className="mx-auto max-w-5xl">
@@ -40,25 +40,25 @@ export default function MarketSection() {
                 <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 via-white to-primary-light/5 p-8 text-center">
                     <div className="mx-auto max-w-2xl">
                         <h3 className="text-lg font-semibold text-neutral-900">
-                            The shift is happening now
+                            Perubahan sedang terjadi sekarang
                         </h3>
                         <p className="mt-3 text-sm leading-relaxed text-neutral-500">
-                            By 2026, the global online booking market is
-                            projected to reach{' '}
+                            Pasar booking online global diproyeksikan mencapai{' '}
                             <span className="font-semibold text-primary">
-                                $7.5 billion
-                            </span>
-                            . Consumers expect instant, self-service booking.
-                            Businesses that provide it see{' '}
-                            <span className="font-semibold text-primary">
-                                40% more revenue
+                                Rp100 triliun
                             </span>{' '}
-                            and{' '}
+                            pada 2026. Konsumen menginginkan booking instan
+                            dan self-service. Bisnis yang menyediakannya
+                            mencatat{' '}
                             <span className="font-semibold text-primary">
-                                80% fewer no-shows
+                                kenaikan pendapatan 40%
+                            </span>{' '}
+                            dan{' '}
+                            <span className="font-semibold text-primary">
+                                no-show turun 80%
                             </span>
-                            . The question isn&#39;t whether to digitize —
-                            it&#39;s whether you&#39;ll lead or follow.
+                            . Pertanyaannya bukan apakah akan digitalisasi —
+                            tapi apakah Anda akan memimpin atau tertinggal.
                         </p>
                     </div>
                 </div>

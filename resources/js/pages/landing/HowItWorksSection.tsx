@@ -5,32 +5,32 @@ const steps = [
     {
         num: '01',
         icon: '🔍',
-        title: 'Choose a Service',
-        desc: 'Browse your services and pick what you need. See real-time availability instantly.',
+        title: 'Pilih Layanan',
+        desc: 'Cari layanan yang Anda butuhkan. Lihat ketersediaan real-time secara instan.',
     },
     {
         num: '02',
         icon: '📅',
-        title: 'Pick Date & Time',
-        desc: 'Select from available slots. Our smart calendar prevents double bookings automatically.',
+        title: 'Pilih Tanggal & Jam',
+        desc: 'Pilih slot yang tersedia. Kalender pintar kami mencegah double booking otomatis.',
     },
     {
         num: '03',
         icon: '✍️',
-        title: 'Enter Your Details',
-        desc: 'Quick form to capture your name, contact, and any special requests.',
+        title: 'Isi Data Diri',
+        desc: 'Formulir singkat untuk nama, kontak, dan permintaan khusus Anda.',
     },
     {
         num: '04',
         icon: '✅',
-        title: 'Confirm Booking',
-        desc: 'Review your appointment details and confirm with one click.',
+        title: 'Konfirmasi Booking',
+        desc: 'Periksa detail janji temu dan konfirmasi dengan satu klik.',
     },
     {
         num: '05',
         icon: '🎉',
-        title: 'Get Confirmed!',
-        desc: 'Receive instant confirmation via WhatsApp and email with reminders before your visit.',
+        title: 'Dapatkan Konfirmasi!',
+        desc: 'Terima konfirmasi instan via WhatsApp dan Email, plus pengingat sebelum kunjungan.',
     },
 ];
 
@@ -38,8 +38,8 @@ export default function HowItWorksSection() {
     return (
         <Section
             id="how-it-works"
-            heading="Book in seconds. Not hours."
-            subheading="A seamless booking experience for you and your customers."
+            heading="Booking dalam hitungan detik."
+            subheading="Pengalaman booking yang mulus bagi Anda dan pelanggan Anda."
         >
             <div className="mx-auto max-w-5xl">
                 <div className="grid gap-6 md:grid-cols-5">

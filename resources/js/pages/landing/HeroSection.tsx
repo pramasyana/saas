@@ -18,7 +18,7 @@ export default function HeroSection() {
                         >
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3.5 py-1.5 text-xs font-medium text-primary">
                                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                All-in-One Booking & CRM Platform
+                                Platform Booking & CRM All-in-One
                             </span>
                         </motion.div>
 
@@ -29,10 +29,10 @@ export default function HeroSection() {
                             className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight text-neutral-900 md:text-5xl lg:text-6xl"
                         >
                             <span className="bg-gradient-to-r from-primary via-primary to-primary-light bg-clip-text text-transparent">
-                                Book smarter.
+                                Booking Lebih Pintar.
                             </span>
                             <br />
-                            Grow faster.
+                            Bisnis Lebih Berkembang.
                         </motion.h1>
 
                         <motion.p
@@ -41,9 +41,9 @@ export default function HeroSection() {
                             transition={{ duration: 0.5, delay: 0.15 }}
                             className="mx-auto mt-5 max-w-md text-base leading-relaxed text-neutral-500 lg:mx-0 lg:text-lg"
                         >
-                            Online booking, customer management, and analytics
-                            — all in one platform. Stop juggling tools and start
-                            growing your business.
+                            Booking online, manajemen pelanggan, dan analitik
+                            — semua dalam satu platform. Berhenti berganti-ganti
+                            alat dan mulailah mengembangkan bisnis Anda.
                         </motion.p>
 
                         <motion.div
@@ -53,7 +53,7 @@ export default function HeroSection() {
                             className="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:justify-start"
                         >
                             <Button className="w-full sm:w-auto shadow-xl shadow-primary/25">
-                                Start Free Trial
+                                Mulai Uji Coba Gratis
                             </Button>
                             <Button
                                 variant="secondary"
@@ -72,7 +72,7 @@ export default function HeroSection() {
                                         d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
                                     />
                                 </svg>
-                                Book a Demo
+                                Jadwalkan Demo
                             </Button>
                         </motion.div>
 
@@ -96,7 +96,7 @@ export default function HeroSection() {
                                         d="M4.5 12.75l6 6 9-13.5"
                                     />
                                 </svg>
-                                No credit card required
+                                Tanpa kartu kredit
                             </span>
                             <span className="inline-flex items-center gap-1.5 text-xs text-neutral-400">
                                 <svg
@@ -112,7 +112,7 @@ export default function HeroSection() {
                                         d="M4.5 12.75l6 6 9-13.5"
                                     />
                                 </svg>
-                                14-day free trial
+                                Uji coba 14 hari
                             </span>
                             <span className="inline-flex items-center gap-1.5 text-xs text-neutral-400">
                                 <svg
@@ -128,7 +128,7 @@ export default function HeroSection() {
                                         d="M4.5 12.75l6 6 9-13.5"
                                     />
                                 </svg>
-                                Cancel anytime
+                                Batalkan kapan saja
                             </span>
                         </motion.div>
                     </div>
@@ -154,7 +154,7 @@ export default function HeroSection() {
                             10K+
                         </p>
                         <p className="mt-1 text-sm text-neutral-400">
-                            Active Businesses
+                            Bisnis Aktif
                         </p>
                     </div>
                     <div className="text-center">
@@ -162,7 +162,7 @@ export default function HeroSection() {
                             50K+
                         </p>
                         <p className="mt-1 text-sm text-neutral-400">
-                            Daily Bookings
+                            Booking Harian
                         </p>
                     </div>
                     <div className="text-center">
@@ -170,7 +170,7 @@ export default function HeroSection() {
                             98%
                         </p>
                         <p className="mt-1 text-sm text-neutral-400">
-                            Satisfaction Rate
+                            Tingkat Kepuasan
                         </p>
                     </div>
                 </motion.div>

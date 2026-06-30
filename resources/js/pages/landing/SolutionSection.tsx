@@ -4,33 +4,33 @@ import Section from '@/molecules/Section';
 const solutions = [
     {
         icon: '📅',
-        title: 'Smart Booking Engine',
-        desc: 'Online booking with real-time availability, automated scheduling, and instant confirmations.',
+        title: 'Booking Otomatis',
+        desc: 'Booking online dengan ketersediaan real-time, penjadwalan otomatis, dan konfirmasi instan.',
     },
     {
         icon: '👥',
-        title: 'Built-in CRM',
-        desc: 'Complete customer profiles with visit history, preferences, notes, and communication logs.',
+        title: 'CRM Terintegrasi',
+        desc: 'Profil pelanggan lengkap dengan riwayat kunjungan, preferensi, catatan, dan log komunikasi.',
     },
     {
         icon: '📊',
-        title: 'Real-time Analytics',
-        desc: 'Know your revenue, booking trends, popular services, and customer lifetime value.',
+        title: 'Analitik Real-time',
+        desc: 'Ketahui pendapatan, tren booking, layanan populer, dan nilai seumur hidup pelanggan.',
     },
     {
         icon: '⏰',
-        title: 'Staff Management',
-        desc: 'Intelligent scheduling, conflict detection, role-based permissions, and performance tracking.',
+        title: 'Manajemen Staf',
+        desc: 'Penjadwalan cerdas, deteksi konflik, izin berbasis peran, dan pelacakan kinerja.',
     },
     {
         icon: '📱',
-        title: 'Automated Reminders',
-        desc: 'WhatsApp and email reminders that reduce no-shows by up to 80%.',
+        title: 'Pengingat Otomatis',
+        desc: 'Pengingat via WhatsApp dan Email yang mengurangi no-show hingga 80%.',
     },
     {
         icon: '📋',
-        title: 'Reports & Insights',
-        desc: 'Custom reports on revenue, bookings, customer behavior, and staff productivity.',
+        title: 'Laporan & Insight',
+        desc: 'Laporan khusus tentang pendapatan, booking, perilaku pelanggan, dan produktivitas staf.',
     },
 ];
 
@@ -38,8 +38,8 @@ export default function SolutionSection() {
     return (
         <Section
             id="solution"
-            heading="One platform. Endless possibilities."
-            subheading="Everything you need to run your service business, beautifully integrated."
+            heading="Satu platform. Tak terbatas kemungkinannya."
+            subheading="Semua yang Anda butuhkan untuk menjalankan bisnis jasa, terintegrasi dengan indah."
             className="bg-neutral-50/50"
         >
             <div className="mx-auto max-w-5xl">
@@ -73,8 +73,8 @@ export default function SolutionSection() {
                     className="mt-10 rounded-2xl bg-gradient-to-r from-primary/5 to-primary-light/5 p-6 text-center md:p-8"
                 >
                     <p className="text-lg font-semibold text-primary md:text-xl">
-                        Everything you need to run and grow your business —
-                        in one place.
+                        Semua yang Anda butuhkan untuk menjalankan dan
+                        mengembangkan bisnis — dalam satu tempat.
                     </p>
                 </motion.div>
             </div>

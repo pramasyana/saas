@@ -6,8 +6,8 @@ export default function GoalSection() {
     return (
         <Section
             id="goal"
-            heading="One platform. Complete control."
-            subheading="From first booking to loyal customer — we handle everything in between."
+            heading="Satu platform. Kontrol penuh."
+            subheading="Dari booking pertama hingga pelanggan setia — kami menangani semuanya di antaranya."
             className="bg-neutral-50/50"
         >
             <div className="mx-auto max-w-4xl text-center">
@@ -21,20 +21,20 @@ export default function GoalSection() {
                         🎯
                     </div>
                     <h3 className="mt-6 text-xl font-bold text-neutral-900">
-                        Replace 5 tools with one
+                        Ganti 5 tools dengan satu
                     </h3>
                     <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-neutral-500">
-                        Stop juggling a booking app, a CRM, a reminder tool, a
-                        spreadsheet, and a payment processor. Our platform
-                        combines everything into a single, elegant interface
-                        that your team will actually enjoy using.
+                        Berhenti bolak-balik pakai aplikasi booking, CRM, alat
+                        pengingat, spreadsheet, dan payment processor.
+                        Platform kami menggabungkan semuanya dalam satu
+                        antarmuka elegan yang benar-benar akan dinikmati tim Anda.
                     </p>
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                         <Button variant="primary" size="lg">
-                            Start Free Trial
+                            Mulai Uji Coba Gratis
                         </Button>
                         <Button variant="outline" size="lg">
-                            Schedule a Demo
+                            Jadwalkan Demo
                         </Button>
                     </div>
                 </motion.div>

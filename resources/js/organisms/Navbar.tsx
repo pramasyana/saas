@@ -4,9 +4,9 @@ import Button from '@/atoms/Button';
 import { cn } from '@/lib/utils';
 
 const links = [
-    { label: 'Features', href: '#features' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'About', href: '#about' },
+    { label: 'Fitur', href: '#features' },
+    { label: 'Harga', href: '#pricing' },
+    { label: 'Tentang', href: '#about' },
     { label: 'FAQ', href: '#faq' },
 ];
 
@@ -71,9 +71,9 @@ export default function Navbar() {
                     </ul>
                     <div className="ml-6 flex items-center gap-3">
                         <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900">
-                            Sign In
+                            Masuk
                         </button>
-                        <Button size="sm">Start Free Trial</Button>
+                        <Button size="sm">Mulai Uji Coba</Button>
                     </div>
                 </nav>
 
@@ -135,10 +135,10 @@ export default function Navbar() {
                     </nav>
                     <hr className="my-4 border-border" />
                     <button className="mb-3 block w-full rounded-lg px-3 py-2.5 text-center text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100">
-                        Sign In
+                        Masuk
                     </button>
                     <Button size="sm" className="w-full">
-                        Start Free Trial
+                        Mulai Uji Coba
                     </Button>
                 </motion.div>
             )}
