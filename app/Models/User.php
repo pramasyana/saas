@@ -40,7 +40,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function sendEmailVerificationNotification(): void
+    public function sendEmailVerificationNotification(string $context = 'new_account'): void
     {
         $url = URL::temporarySignedRoute(
             'verification.verify',
@@ -51,6 +51,6 @@ class User extends Authenticatable
             ],
         );
 
-        $this->notify(new VerifyEmail($url));
+        $this->notify(new VerifyEmail($url, $context));
     }
 }

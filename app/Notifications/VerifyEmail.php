@@ -11,9 +11,15 @@ class VerifyEmail extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /** @var 'new_account'|'resend' */
+    private readonly string $context;
+
     public function __construct(
         private readonly string $verificationUrl,
-    ) {}
+        string $context = 'new_account',
+    ) {
+        $this->context = in_array($context, ['new_account', 'resend']) ? $context : 'new_account';
+    }
 
     public function backoff(): array
     {
@@ -34,10 +40,15 @@ class VerifyEmail extends Notification implements ShouldQueue
     {
         $mailer = app(MailService::class);
 
+        $subject = match ($this->context) {
+            'new_account' => 'Verifikasi Email - Akun Baru',
+            'resend' => 'Verifikasi Email - Pengingat',
+        };
+
         $mailer->send(
             toEmail: $notifiable->email,
             toName: $notifiable->name,
-            subject: 'Verifikasi Email - '.config('app.name'),
+            subject: $subject,
             html: $this->buildHtml($notifiable),
             text: $this->buildText($notifiable),
             userId: (int) $notifiable->getKey(),
@@ -47,19 +58,30 @@ class VerifyEmail extends Notification implements ShouldQueue
     private function buildHtml(object $notifiable): string
     {
         return view('emails.verify-email', [
-            'appName' => config('app.name'),
             'name' => $notifiable->name,
+            'email' => $notifiable->email,
             'verificationUrl' => $this->verificationUrl,
+            'context' => $this->context,
+            'expiresIn' => now()->addHour()->diffForHumans(),
         ])->render();
     }
 
     private function buildText(object $notifiable): string
     {
-        $appName = config('app.name');
+        $greeting = "Halo {$notifiable->name},";
 
-        return "Halo {$notifiable->name},\n\n"
-            ."Terima kasih telah mendaftar di {$appName}. Silakan verifikasi alamat email Anda dengan mengklik link berikut:\n\n"
-            ."{$this->verificationUrl}\n\n"
-            ."Jika Anda tidak membuat akun ini, abaikan email ini.\n";
+        $body = match ($this->context) {
+            'new_account' => "Akun baru telah dibuat untuk Anda. Silakan verifikasi alamat email {$notifiable->email} dengan mengklik link di bawah ini.",
+            'resend' => "Anda menerima email ini karena ada permintaan verifikasi ulang untuk alamat {$notifiable->email}. Silakan verifikasi dengan mengklik link di bawah ini.",
+        };
+
+        return implode("\n\n", [
+            $greeting,
+            $body,
+            $this->verificationUrl,
+            'Tautan ini berlaku selama 1 jam.',
+            '',
+            'Jika Anda tidak merasa melakukan ini, abaikan email ini. Akun Anda tidak akan aktif sampai email diverifikasi.',
+        ]);
     }
 }

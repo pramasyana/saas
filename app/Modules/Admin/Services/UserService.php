@@ -34,7 +34,7 @@ class UserService
 
             $user = $this->userRepository->create($data);
 
-            $user->sendEmailVerificationNotification();
+            $user->sendEmailVerificationNotification('new_account');
 
             Log::info('User created', [
                 'user_id' => $user->id,
@@ -94,7 +94,7 @@ class UserService
             throw new \RuntimeException('Email sudah terverifikasi.');
         }
 
-        $user->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification('resend');
 
         Log::info('Verification email resent', [
             'user_id' => $user->id,
