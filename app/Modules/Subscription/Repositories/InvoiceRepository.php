@@ -7,7 +7,7 @@ use App\Modules\Subscription\Models\Invoice;
 
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
-    public function paginate(array $filters = [], int $perPage = 15)
+    public function paginate(array $filters = [], int $perPage = 15): \Illuminate\Pagination\LengthAwarePaginator
     {
         $query = Invoice::with('subscription.user', 'subscription.plan');
 

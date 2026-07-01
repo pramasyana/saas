@@ -7,7 +7,7 @@ use App\Modules\Subscription\Models\Subscription;
 
 class SubscriptionRepository implements SubscriptionRepositoryInterface
 {
-    public function paginate(array $filters = [], int $perPage = 15)
+    public function paginate(array $filters = [], int $perPage = 15): \Illuminate\Pagination\LengthAwarePaginator
     {
         $query = Subscription::with(['user', 'plan']);
 
