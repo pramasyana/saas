@@ -34,4 +34,9 @@ class FeatureDefinitionRepository implements FeatureDefinitionRepositoryInterfac
     {
         return $definition->delete();
     }
+
+    public function getAllOrdered(): Collection
+    {
+        return $this->getAll();
+    }
 }

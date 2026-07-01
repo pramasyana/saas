@@ -16,4 +16,7 @@ interface SubscriptionRepositoryInterface
     public function update(Subscription $subscription, array $data): Subscription;
 
     public function delete(Subscription $subscription): void;
+
+    /** @return array{active: int, cancelled: int, total_revenue: float} */
+    public function getStats(): array;
 }

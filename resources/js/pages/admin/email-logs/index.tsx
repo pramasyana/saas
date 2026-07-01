@@ -80,12 +80,12 @@ function LogCard({ log }: { log: EmailLog }) {
 
     return (
         <div className={`group relative overflow-hidden rounded-xl border bg-white shadow-sm transition-all duration-200 hover:shadow-md ${
-            isSent ? 'border-emerald-200' : 'border-red-200'
+            isSent ? 'border-success/20' : 'border-danger/20'
         }`}>
             <div className={`absolute left-0 top-0 h-full w-1 ${
                 isSent
-                    ? 'bg-gradient-to-b from-emerald-400 to-emerald-500'
-                    : 'bg-gradient-to-b from-red-400 to-red-500'
+                    ? 'bg-gradient-to-b from-success to-success-dark'
+                    : 'bg-gradient-to-b from-danger to-danger-dark'
             }`} />
 
             <div className="pl-5 pr-5">
@@ -120,11 +120,11 @@ function LogCard({ log }: { log: EmailLog }) {
                             <div className="flex shrink-0 items-center gap-2">
                                 <span className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold shadow-sm ${
                                     isSent
-                                        ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                                        : 'bg-red-50 text-red-700 ring-1 ring-red-200'
+                                        ? 'bg-success-light text-success ring-1 ring-success/20'
+                                        : 'bg-danger-light text-danger ring-1 ring-danger/20'
                                 }`}>
                                     <span className={`inline-block h-2 w-2 rounded-full ${
-                                        isSent ? 'bg-emerald-500' : 'bg-red-500'
+                                        isSent ? 'bg-success' : 'bg-danger'
                                     }`} />
                                     {isSent ? 'Terkirim' : 'Gagal'}
                                 </span>
@@ -156,7 +156,7 @@ function LogCard({ log }: { log: EmailLog }) {
                             <div className="mt-3">
                                 <button
                                     onClick={() => setExpanded(!expanded)}
-                                    className="inline-flex items-center gap-1.5 rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 transition-colors hover:bg-red-100 ring-1 ring-red-200"
+                                    className="inline-flex items-center gap-1.5 rounded-lg bg-danger-light px-2.5 py-1.5 text-xs font-medium text-danger transition-colors hover:bg-danger/10 ring-1 ring-danger/20"
                                 >
                                     <svg className={`h-3.5 w-3.5 transition-transform ${expanded ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -169,15 +169,15 @@ function LogCard({ log }: { log: EmailLog }) {
                 </div>
 
                 {!isSent && log.error_message && expanded && (
-                    <div className="border-t border-red-100 pb-4 pt-3">
-                        <div className="rounded-lg border border-red-200 bg-red-50/50 overflow-hidden">
-                            <div className="flex items-center gap-2 border-b border-red-100 bg-red-50 px-4 py-2">
-                                <svg className="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <div className="border-t border-danger/10 pb-4 pt-3">
+                        <div className="rounded-lg border border-danger/20 bg-danger-light/50 overflow-hidden">
+                            <div className="flex items-center gap-2 border-b border-danger/10 bg-danger-light px-4 py-2">
+                                <svg className="h-4 w-4 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                                 </svg>
-                                <span className="text-xs font-semibold text-red-700">Error Message</span>
+                                <span className="text-xs font-semibold text-danger">Error Message</span>
                             </div>
-                            <pre className="overflow-x-auto p-4 text-xs leading-relaxed text-red-800 font-mono whitespace-pre-wrap break-all">
+                            <pre className="overflow-x-auto p-4 text-xs leading-relaxed text-danger font-mono whitespace-pre-wrap break-all">
                                 {log.error_message}
                             </pre>
                         </div>
@@ -275,9 +275,9 @@ export default function EmailLogs({ title, stats }: EmailLogsPageProps) {
 
             <FadeIn delay={0.05}>
                 <div className="mb-6 grid gap-4 sm:grid-cols-3">
-                    <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
+                    <div className="rounded-xl border border-success/20 bg-gradient-to-br from-success-light to-white p-5 shadow-sm">
                         <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-success-light text-success">
                                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -286,13 +286,13 @@ export default function EmailLogs({ title, stats }: EmailLogsPageProps) {
                                 <p className="text-2xl font-bold tracking-tight text-neutral-900">
                                     {stats.total_sent.toLocaleString('id-ID')}
                                 </p>
-                                <p className="text-sm text-emerald-700 font-medium">Terkirim</p>
+                                <p className="text-sm text-success font-medium">Terkirim</p>
                             </div>
                         </div>
                     </div>
-                    <div className="rounded-xl border border-red-200 bg-gradient-to-br from-red-50 to-white p-5 shadow-sm">
+                    <div className="rounded-xl border border-danger/20 bg-gradient-to-br from-danger-light to-white p-5 shadow-sm">
                         <div className="flex items-center gap-4">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-danger-light text-danger">
                                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                                 </svg>
@@ -301,7 +301,7 @@ export default function EmailLogs({ title, stats }: EmailLogsPageProps) {
                                 <p className="text-2xl font-bold tracking-tight text-neutral-900">
                                     {stats.total_failed.toLocaleString('id-ID')}
                                 </p>
-                                <p className="text-sm text-red-700 font-medium">Gagal</p>
+                                <p className="text-sm text-danger font-medium">Gagal</p>
                             </div>
                         </div>
                     </div>
@@ -338,7 +338,7 @@ export default function EmailLogs({ title, stats }: EmailLogsPageProps) {
                             >
                                 {(filters.status || undefined) === (tab.value || undefined) && (
                                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${
-                                        tab.value === 'sent' ? 'bg-emerald-500' : tab.value === 'failed' ? 'bg-red-500' : 'bg-primary'
+                                        tab.value === 'sent' ? 'bg-success' : tab.value === 'failed' ? 'bg-danger' : 'bg-primary'
                                     }`} />
                                 )}
                                 {tab.label}
@@ -389,8 +389,8 @@ export default function EmailLogs({ title, stats }: EmailLogsPageProps) {
                 <div className="space-y-3">
                     {isError ? (
                         <div className="flex flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-white px-6 py-20 text-center shadow-sm">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 ring-1 ring-red-200">
-                                <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-danger-light ring-1 ring-danger/20">
+                                <svg className="h-8 w-8 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                                 </svg>
                             </div>
@@ -433,7 +433,7 @@ export default function EmailLogs({ title, stats }: EmailLogsPageProps) {
                         ))
                     )}
 
-                    {meta && meta.last_page > 1 && (
+                    {meta && (
                         <div className="flex flex-col items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-6 py-3.5 shadow-sm sm:flex-row">
                             <p className="text-sm text-neutral-500">
                                 <span className="font-semibold text-neutral-700">{meta.total}</span> data · Halaman <span className="font-semibold text-neutral-700">{meta.current_page}</span> dari <span className="font-semibold text-neutral-700">{meta.last_page}</span>
@@ -486,8 +486,8 @@ export default function EmailLogs({ title, stats }: EmailLogsPageProps) {
                         className="mx-4 w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 ring-1 ring-red-200">
-                            <svg className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-danger-light ring-1 ring-danger/20">
+                            <svg className="h-6 w-6 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                             </svg>
                         </div>

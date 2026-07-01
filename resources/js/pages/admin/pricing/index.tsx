@@ -120,22 +120,22 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                         </div>
                     </div>
                 </div>
-                <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
+                <div className="rounded-xl border border-success/20 bg-gradient-to-br from-success-light to-white p-5 shadow-sm">
                     <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-success-light text-success">
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div>
                             <p className="text-2xl font-bold tracking-tight text-neutral-900">{stats.active_plans}</p>
-                            <p className="text-sm text-emerald-700 font-medium">Plan Aktif</p>
+                            <p className="text-sm text-success font-medium">Plan Aktif</p>
                         </div>
                     </div>
                 </div>
-                <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
+                <div className="rounded-xl border border-warning/20 bg-gradient-to-br from-warning-light to-white p-5 shadow-sm">
                     <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-warning-light text-warning">
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -144,7 +144,7 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                             <p className="text-2xl font-bold tracking-tight text-neutral-900">
                                 {stats.cheapest_price ? formatPrice(stats.cheapest_price) : '-'}
                             </p>
-                            <p className="text-sm text-amber-700 font-medium">Harga Termurah</p>
+                            <p className="text-sm text-warning font-medium">Harga Termurah</p>
                         </div>
                     </div>
                 </div>
@@ -190,8 +190,8 @@ export default function Pricing({ title, stats }: PricingPageProps) {
 
             {isError ? (
                 <div className="flex flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-white px-6 py-20 text-center shadow-sm">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 ring-1 ring-red-200">
-                        <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-danger-light ring-1 ring-danger/20">
+                        <svg className="h-8 w-8 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                         </svg>
                     </div>
@@ -229,7 +229,7 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                                 key={plan.id}
                                 className={`group relative flex flex-col rounded-2xl border bg-white shadow-sm transition-all duration-200 hover:shadow-lg ${
                                     plan.is_active
-                                        ? plan.is_popular ? 'border-amber-300 ring-2 ring-amber-200' : 'border-neutral-200'
+                                        ? plan.is_popular ? 'border-warning/40 ring-2 ring-warning/20' : 'border-neutral-200'
                                         : 'border-neutral-200/60 bg-neutral-50/50'
                                 }`}
                             >
@@ -265,11 +265,11 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                                                     disabled={togglePopularMutation.isPending}
                                                     className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold transition-all ${
                                                         plan.is_popular
-                                                            ? 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-                                                            : 'bg-neutral-100 text-neutral-400 hover:bg-amber-50 hover:text-amber-500'
+                                                            ? 'bg-warning-light text-warning hover:bg-warning/20'
+                                                            : 'bg-neutral-100 text-neutral-400 hover:bg-warning-light hover:text-warning'
                                                     }`}
                                                 >
-                                                    <svg className={`h-3 w-3 ${plan.is_popular ? 'fill-amber-500' : 'fill-none stroke-current'}`} viewBox="0 0 20 20" strokeWidth={1.5}>
+                                                    <svg className={`h-3 w-3 ${plan.is_popular ? 'fill-warning' : 'fill-none stroke-current'}`} viewBox="0 0 20 20" strokeWidth={1.5}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                     </svg>
                                                     {plan.is_popular ? 'Populer' : 'Jadikan Populer'}
@@ -288,7 +288,7 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                                         <div className="flex items-baseline gap-1">
                                             <span className="text-3xl font-bold tracking-tight text-neutral-900">
                                                 {plan.price_monthly === 0 ? (
-                                                    <span className="text-2xl font-semibold text-emerald-600">Gratis</span>
+                                                    <span className="text-2xl font-semibold text-success">Gratis</span>
                                                 ) : (
                                                     formatPrice(plan.price_monthly)
                                                 )}
@@ -302,7 +302,7 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                                                 {formatPrice(plan.price_yearly)}
                                                 <span className="text-neutral-400">/tahun</span>
                                                 {plan.price_monthly > 0 && (
-                                                    <span className="ml-1.5 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                                                    <span className="ml-1.5 inline-flex items-center rounded-full bg-success-light px-2 py-0.5 text-[10px] font-semibold text-success">
                                                         Hemat {Math.round((1 - plan.price_yearly / (plan.price_monthly * 12)) * 100)}%
                                                     </span>
                                                 )}
@@ -316,7 +316,7 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                                             {visibleFeatures.map((f) => (
                                                 <li key={f.id} className="flex items-start gap-2.5 text-sm">
                                                     {f.definition.type === 'boolean' ? (
-                                                        <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                                        <svg className="mt-0.5 h-4 w-4 shrink-0 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                                         </svg>
                                                     ) : (
@@ -365,7 +365,7 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                 </div>
             )}
 
-            {meta && meta.last_page > 1 && (
+            {meta && (
                 <div className="mt-5 flex flex-col items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-6 py-3.5 shadow-sm sm:flex-row">
                     <p className="text-sm text-neutral-500">
                         <span className="font-semibold text-neutral-700">{meta.total}</span> data · Halaman <span className="font-semibold text-neutral-700">{meta.current_page}</span> dari <span className="font-semibold text-neutral-700">{meta.last_page}</span>
@@ -411,8 +411,8 @@ export default function Pricing({ title, stats }: PricingPageProps) {
             {deleteTarget && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setDeleteTarget(null)}>
                     <div className="mx-4 w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 ring-1 ring-red-200">
-                            <svg className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-danger-light ring-1 ring-danger/20">
+                            <svg className="h-6 w-6 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                             </svg>
                         </div>

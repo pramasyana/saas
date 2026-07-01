@@ -80,8 +80,8 @@ const statIcons = {
 
 const statConfigs: Record<string, { color: string; bg: string }> = {
     total_users: { color: 'text-primary', bg: 'bg-primary-50' },
-    total_admins: { color: 'text-amber-600', bg: 'bg-warning-light' },
-    new_this_month: { color: 'text-emerald-600', bg: 'bg-success-light' },
+    total_admins: { color: 'text-warning', bg: 'bg-warning-light' },
+    new_this_month: { color: 'text-success', bg: 'bg-success-light' },
 };
 
 export default function Users({ title, stats }: UsersPageProps) {

@@ -61,4 +61,17 @@ class PlanRepository implements PlanRepositoryInterface
             ->orderBy('sort_order')
             ->get();
     }
+
+    public function getStats(): array
+    {
+        $cheapest = Plan::where('is_active', true)
+            ->where('price_monthly', '>', 0)
+            ->min('price_monthly');
+
+        return [
+            'total_plans' => Plan::withTrashed()->count(),
+            'active_plans' => Plan::where('is_active', true)->count(),
+            'cheapest_price' => $cheapest ? (float) $cheapest : null,
+        ];
+    }
 }

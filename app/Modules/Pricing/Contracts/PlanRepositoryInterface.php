@@ -19,4 +19,7 @@ interface PlanRepositoryInterface
     public function delete(Plan $plan): bool;
 
     public function getAllActive(): Collection;
+
+    /** @return array{total_plans: int, active_plans: int, cheapest_price: float|null} */
+    public function getStats(): array;
 }

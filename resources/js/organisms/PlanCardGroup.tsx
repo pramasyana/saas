@@ -184,7 +184,7 @@ export default function PlanCardGroup({ mode, plans, billingInterval: controlled
                                     <p className="mt-1 text-xs text-neutral-400 line-through">
                                         {formatPrice(plan.price_monthly * 12)}/thn
                                     </p>
-                                    <p className="mt-0.5 text-xs font-medium text-emerald-600">
+                                    <p className="mt-0.5 text-xs font-medium text-success">
                                         Hemat {savings}%
                                     </p>
                                     <p className="mt-0.5 text-xs text-neutral-400">
@@ -194,7 +194,7 @@ export default function PlanCardGroup({ mode, plans, billingInterval: controlled
                             )}
 
                             {isYearly && plan.price_yearly && plan.price_monthly > 0 && mode === 'link' && (
-                                <p className="mt-1 text-xs text-emerald-600 font-medium">
+                                <p className="mt-1 text-xs text-success font-medium">
                                     Hemat {savings}%
                                 </p>
                             )}

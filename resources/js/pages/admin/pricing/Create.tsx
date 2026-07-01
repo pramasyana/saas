@@ -165,9 +165,9 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
                     <div className="grid gap-8 lg:grid-cols-3">
                         <div className="lg:col-span-2 space-y-8">
                             <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
-                                <div className="border-b border-neutral-100 bg-gradient-to-r from-emerald-50 to-white px-6 py-4">
+                                <div className="border-b border-neutral-100 bg-gradient-to-r from-success-light to-white px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 ring-1 ring-emerald-200/50">
+                                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-light text-success ring-1 ring-success/20">
                                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
@@ -214,7 +214,7 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
                                                 />
                                             </div>
                                             {Number(form.price_monthly) > 0 && Number(form.price_yearly) > 0 && (
-                                                <p className="mt-1 text-xs text-emerald-600 font-medium">
+                                                <p className="mt-1 text-xs text-success font-medium">
                                                     Hemat {Math.round((1 - Number(form.price_yearly) / (Number(form.price_monthly) * 12)) * 100)}% dibanding bayar bulanan
                                                 </p>
                                             )}
@@ -224,9 +224,9 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
                             </div>
 
                             <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
-                                <div className="border-b border-neutral-100 bg-gradient-to-r from-violet-50 to-white px-6 py-4">
+                                <div className="border-b border-neutral-100 bg-gradient-to-r from-primary-50 to-white px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-100 text-violet-600 ring-1 ring-violet-200/50">
+                                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-100 text-primary ring-1 ring-primary-200/50">
                                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
                                             </svg>
@@ -267,7 +267,7 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
                                                                             [fd.id]: prev[fd.id] === 'true' ? 'false' : 'true',
                                                                         }))}
                                                                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
-                                                                            features[fd.id] === 'true' ? 'bg-emerald-500' : 'bg-neutral-300'
+                                                                            features[fd.id] === 'true' ? 'bg-success' : 'bg-neutral-300'
                                                                         }`}
                                                                     >
                                                                         <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ${
@@ -301,9 +301,9 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
 
                         <div className="space-y-8">
                             <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
-                                <div className="border-b border-neutral-100 bg-gradient-to-r from-amber-50 to-white px-6 py-4">
+                                <div className="border-b border-neutral-100 bg-gradient-to-r from-warning-light to-white px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-amber-600 ring-1 ring-amber-200/50">
+                                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-warning-light text-warning ring-1 ring-warning/20">
                                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -325,7 +325,7 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
                                             type="button"
                                             onClick={() => setForm((prev) => ({ ...prev, is_active: !prev.is_active }))}
                                             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
-                                                form.is_active ? 'bg-emerald-500' : 'bg-neutral-300'
+                                                form.is_active ? 'bg-success' : 'bg-neutral-300'
                                             }`}
                                         >
                                             <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ${
@@ -343,7 +343,7 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
                                             type="button"
                                             onClick={() => setForm((prev) => ({ ...prev, is_popular: !prev.is_popular }))}
                                             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
-                                                form.is_popular ? 'bg-amber-500' : 'bg-neutral-300'
+                                                form.is_popular ? 'bg-warning' : 'bg-neutral-300'
                                             }`}
                                         >
                                             <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ${

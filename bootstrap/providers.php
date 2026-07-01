@@ -5,6 +5,7 @@ use App\Modules\Auth\Providers\AuthServiceProvider;
 use App\Modules\Notification\Providers\NotificationServiceProvider;
 use App\Modules\Pricing\Providers\PricingServiceProvider;
 use App\Modules\Subscription\Providers\SubscriptionServiceProvider;
+use App\Modules\Tenant\Providers\TenantServiceProvider;
 use App\Providers\AppServiceProvider;
 
 return [
@@ -14,4 +15,5 @@ return [
     NotificationServiceProvider::class,
     PricingServiceProvider::class,
     SubscriptionServiceProvider::class,
+    TenantServiceProvider::class,
 ];

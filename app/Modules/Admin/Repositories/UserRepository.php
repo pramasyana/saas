@@ -49,7 +49,7 @@ class UserRepository implements UserRepositoryInterface
     /** @param array<string, mixed> $filters */
     public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = User::query();
+        $query = User::with('tenant');
 
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters): void {
@@ -86,5 +86,14 @@ class UserRepository implements UserRepositoryInterface
     public function delete(User $user): bool
     {
         return $user->delete();
+    }
+
+    public function getStats(): array
+    {
+        return [
+            'total_users' => User::count(),
+            'total_admins' => User::where('is_admin', true)->count(),
+            'new_this_month' => User::whereMonth('created_at', now()->month)->count(),
+        ];
     }
 }

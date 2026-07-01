@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules\Auth\Http\Requests;
 
 use App\Modules\Pricing\Models\Plan;
@@ -24,6 +26,8 @@ class RegisterRequest extends FormRequest
                 'confirmed',
                 'regex:/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).+$/',
             ],
+            'company' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
             'plan_id' => ['required', 'string', 'exists:'.Plan::class.',id'],
             'billing_interval' => ['required', 'string', 'in:monthly,yearly'],
         ];
@@ -39,6 +43,7 @@ class RegisterRequest extends FormRequest
             'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
             'password.regex' => 'Password harus mengandung huruf besar, angka, dan karakter khusus.',
+            'company.required' => 'Nama perusahaan wajib diisi.',
             'plan_id.required' => 'Pilih paket langganan.',
             'plan_id.exists' => 'Paket yang dipilih tidak tersedia.',
             'billing_interval.required' => 'Pilih interval billing.',

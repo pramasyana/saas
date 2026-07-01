@@ -53,6 +53,7 @@ class SubscriptionService
 
             $subscription = $this->subscriptionRepository->create([
                 'user_id' => $data['user_id'],
+                'tenant_id' => $data['tenant_id'] ?? null,
                 'plan_id' => $plan->id,
                 'price_amount' => $priceAmount,
                 'billing_interval' => $interval,

@@ -1,6 +1,6 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import PlanCardGroup from '@/organisms/PlanCardGroup';
 import type { Plan, BillingInterval } from '@/types';
@@ -8,6 +8,8 @@ import type { Plan, BillingInterval } from '@/types';
 interface RegisterForm {
     name: string;
     email: string;
+    company: string;
+    phone: string;
     password: string;
     password_confirmation: string;
     plan_id: string;
@@ -23,31 +25,108 @@ function Spinner() {
     );
 }
 
-function formatPrice(value: number): string {
-    if (value === 0) {
-        return 'Gratis';
-    }
+function PasswordStrength({ password }: { password: string }) {
+    const strength = useMemo(() => {
+        let score = 0;
+        if (password.length >= 8) score++;
+        if (password.length >= 12) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+        return score;
+    }, [password]);
 
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
+    if (!password) return null;
+
+    const labels = ['Lemah', 'Cukup', 'Sedang', 'Baik', 'Kuat', 'Sangat Kuat'];
+    const colors = [
+        'bg-danger',
+        'bg-warning',
+        'bg-warning',
+        'bg-success',
+        'bg-success',
+        'bg-success',
+    ];
+    const textColors = [
+        'text-danger',
+        'text-warning',
+        'text-warning',
+        'text-success',
+        'text-success',
+        'text-success',
+    ];
+
+    const idx = Math.min(strength, 5);
+
+    return (
+        <div className="mt-1.5">
+            <div className="flex gap-0.5">
+                {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="h-1 flex-1 rounded-full bg-neutral-200 overflow-hidden">
+                        <div
+                            className={cn(
+                                'h-full rounded-full transition-all duration-300',
+                                colors[idx],
+                                i <= idx ? 'w-full' : 'w-0',
+                            )}
+                        />
+                    </div>
+                ))}
+            </div>
+            <p className={cn('mt-0.5 text-[11px] font-medium', textColors[idx])}>
+                {labels[idx]}
+            </p>
+        </div>
+    );
 }
 
-const itemVariants = {
-    hidden: { opacity: 0, y: 16 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
-};
-
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.08 } as const,
-    },
-};
+function InputField({ id, label, type, value, onChange, error, placeholder, autoComplete, icon, autoFocus }: {
+    id: string;
+    label: string;
+    type: string;
+    value: string;
+    onChange: (v: string) => void;
+    error?: string;
+    placeholder: string;
+    autoComplete: string;
+    icon: React.ReactNode;
+    autoFocus?: boolean;
+}) {
+    return (
+        <div>
+            <label htmlFor={id} className="block text-xs font-medium text-neutral-600">
+                {label}
+            </label>
+            <div className="relative mt-1">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <span className="text-neutral-400">{icon}</span>
+                </div>
+                <input
+                    id={id}
+                    type={type}
+                    autoComplete={autoComplete}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    className={cn(
+                        'block w-full rounded-lg border py-2 pl-9 pr-3 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm ring-1 ring-inset transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset',
+                        error
+                            ? 'border-danger ring-danger/30 focus:ring-danger'
+                            : 'border-border ring-neutral-300 focus:border-primary focus:ring-primary/30',
+                    )}
+                    placeholder={placeholder}
+                    autoFocus={autoFocus}
+                    required
+                />
+            </div>
+            {error && (
+                <p className="mt-1 text-[11px] text-danger">
+                    {error}
+                </p>
+            )}
+        </div>
+    );
+}
 
 export default function Register() {
     const { plans, defaultPlan, defaultBilling } = usePage<{ plans: Plan[]; defaultPlan: string; defaultBilling: BillingInterval }>().props;
@@ -55,6 +134,8 @@ export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm<RegisterForm>({
         name: '',
         email: '',
+        company: '',
+        phone: '',
         password: '',
         password_confirmation: '',
         plan_id: plans.find((p) => p.slug === defaultPlan)?.id ?? plans[0]?.id ?? '',
@@ -73,60 +154,66 @@ export default function Register() {
     const selectedPlan = plans.find((p) => p.id === data.plan_id);
 
     function getPriceDisplay() {
-        if (!selectedPlan) {
-            return '';
-        }
-
-        if (selectedPlan.price_monthly === 0) {
-            return 'Gratis';
-        }
-
+        if (!selectedPlan) return '';
+        if (selectedPlan.price_monthly === 0) return 'Gratis';
         if (data.billing_interval === 'yearly' && selectedPlan.price_yearly) {
-            return formatPrice(selectedPlan.price_yearly) + '/thn';
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(selectedPlan.price_yearly) + '/thn';
         }
-
-        return formatPrice(selectedPlan.price_monthly) + '/bln';
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(selectedPlan.price_monthly) + '/bln';
     }
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.05 },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 12 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+    };
 
     return (
         <>
             <Head title="Daftar Akun" />
 
             <div className="flex min-h-screen">
-                <div className="relative hidden w-[45%] overflow-hidden bg-gradient-to-br from-[#4C1D95] via-[#5B21B6] to-[#7C3AED] lg:block">
+                <div className="relative hidden w-[44%] overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-primary-light lg:flex lg:flex-col">
                     <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-white/[0.06]" />
                     <div className="absolute -bottom-32 -left-16 h-[28rem] w-[28rem] rounded-full bg-white/[0.04]" />
                     <div className="absolute top-1/3 -left-20 h-64 w-64 rounded-full bg-white/[0.03]" />
                     <div className="absolute right-12 bottom-1/4 h-48 w-48 rounded-full bg-white/[0.05]" />
 
-                    <div className="relative flex h-full flex-col items-center justify-center px-16">
+                    <div className="relative flex flex-1 flex-col items-center justify-center px-16">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, ease: 'easeOut' }}
                             className="text-center"
                         >
-                            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
+                            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
                                 <span className="text-2xl font-bold text-white">B</span>
                             </div>
 
                             <h1 className="text-3xl font-bold tracking-tight text-white">
                                 BookCRM
                             </h1>
-                            <p className="mt-4 text-base leading-relaxed text-white/70">
-                                Mulai perjalanan bisnis Anda.
+                            <p className="mt-3 text-sm leading-relaxed text-white/70">
+                                Booking, CRM, dan analitik
                                 <br />
-                                Booking, CRM, dan analitik dalam satu platform.
+                                dalam satu platform terpadu.
                             </p>
 
-                            <div className="mt-12 space-y-4 text-left">
+                            <div className="mt-10 space-y-3.5 text-left">
                                 {[
                                     { label: 'Manajemen Booking', desc: 'Atur jadwal dan reservasi dengan mudah' },
                                     { label: 'CRM Terpadu', desc: 'Kelola relasi pelanggan dalam satu tempat' },
                                     { label: 'Analitik Real-time', desc: 'Pantau performa bisnis secara langsung' },
                                 ].map((item) => (
                                     <div key={item.label} className="flex items-start gap-3">
-                                        <div className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10">
+                                        <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10">
                                             <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                             </svg>
@@ -156,229 +243,183 @@ export default function Register() {
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        className="w-full max-w-sm"
+                        className="w-full max-w-md"
                     >
-                        <div className="mb-10 text-center lg:hidden">
+                        <div className="mb-8 text-center lg:hidden">
                             <Link href="/" className="inline-flex items-center gap-2.5">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-light text-lg font-bold text-white shadow-sm">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-light text-base font-bold text-white shadow-sm">
                                     B
                                 </div>
                             </Link>
                         </div>
 
-                        <motion.div variants={itemVariants} className="mb-8">
-                            <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+                        <motion.div variants={itemVariants} className="mb-6">
+                            <h1 className="text-xl font-bold tracking-tight text-neutral-900">
                                 Daftar Gratis
                             </h1>
-                            <p className="mt-1.5 text-sm text-neutral-500">
-                                Mulai uji coba 14 hari, tanpa kartu kredit.
+                            <p className="mt-1 text-sm text-neutral-500">
+                                Mulai uji coba 14 hari. Tanpa kartu kredit.
                             </p>
                         </motion.div>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            {selectedPlan && (
-                                <motion.div variants={itemVariants}>
+                        <form onSubmit={handleSubmit} noValidate>
+                            <motion.div variants={itemVariants} className="mb-4">
+                                {selectedPlan && (
                                     <div
                                         role="button"
                                         tabIndex={0}
                                         onClick={() => setModalOpen(true)}
                                         onKeyDown={(e) => e.key === 'Enter' && setModalOpen(true)}
-                                        className="flex cursor-pointer items-center gap-3 rounded-xl border border-primary/20 bg-primary-50/60 p-3.5 transition-all hover:border-primary/40 hover:bg-primary-50"
+                                        className="flex cursor-pointer items-center gap-3 rounded-lg border border-primary/20 bg-primary-50/50 p-2.5 transition-all hover:border-primary/40"
                                     >
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white shadow-sm">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-xs font-bold text-white">
                                             {selectedPlan.name.charAt(0)}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-neutral-900 truncate">
+                                            <p className="text-sm font-semibold text-neutral-900 truncate leading-tight">
                                                 {selectedPlan.name}
                                             </p>
-                                            <p className="text-xs text-primary font-medium">
+                                            <p className="text-[11px] text-primary font-medium">
                                                 {getPriceDisplay()}
                                                 {data.billing_interval === 'yearly' && selectedPlan.price_yearly && selectedPlan.price_monthly > 0 && (
-                                                    <span className="ml-1.5 text-emerald-600">
+                                                    <span className="ml-1 text-success">
                                                         Hemat {Math.round((1 - selectedPlan.price_yearly / (selectedPlan.price_monthly * 12)) * 100)}%
                                                     </span>
                                                 )}
                                             </p>
                                         </div>
-                                        <div className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-primary shadow-sm ring-1 ring-primary/20">
+                                        <span className="shrink-0 rounded-lg bg-white px-2.5 py-1 text-[11px] font-medium text-primary shadow-sm ring-1 ring-primary/20">
                                             Ganti
-                                        </div>
+                                        </span>
                                     </div>
-                                </motion.div>
-                            )}
+                                )}
+                            </motion.div>
 
-                            <motion.div variants={itemVariants}>
-                                <label htmlFor="name" className="block text-sm font-medium text-neutral-700">
-                                    Nama Lengkap
-                                </label>
-                                <div className="relative mt-1.5">
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                        <svg className="h-4 w-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                        </svg>
-                                    </div>
-                                    <input
+                            <div className="space-y-3">
+                                <motion.div variants={itemVariants} className="grid gap-3 sm:grid-cols-2">
+                                    <InputField
                                         id="name"
+                                        label="Nama Lengkap"
                                         type="text"
-                                        autoComplete="name"
                                         value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
-                                        className={cn(
-                                            'block w-full rounded-xl border py-2.5 pl-10 pr-3.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm ring-1 ring-inset transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset',
-                                            errors.name
-                                                ? 'border-danger ring-danger/30 focus:ring-danger'
-                                                : 'border-border ring-neutral-300 focus:border-primary focus:ring-primary/30',
-                                        )}
+                                        onChange={(v) => setData('name', v)}
+                                        error={errors.name}
                                         placeholder="Nama lengkap"
+                                        autoComplete="name"
                                         autoFocus
-                                        required
+                                        icon={
+                                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                            </svg>
+                                        }
                                     />
-                                </div>
-                                {errors.name && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -4 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="mt-1.5 text-xs text-danger"
-                                    >
-                                        {errors.name}
-                                    </motion.p>
-                                )}
-                            </motion.div>
-
-                            <motion.div variants={itemVariants}>
-                                <label htmlFor="email" className="block text-sm font-medium text-neutral-700">
-                                    Alamat Email
-                                </label>
-                                <div className="relative mt-1.5">
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                        <svg className="h-4 w-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                        </svg>
-                                    </div>
-                                    <input
+                                    <InputField
                                         id="email"
+                                        label="Alamat Email"
                                         type="email"
-                                        autoComplete="email"
                                         value={data.email}
-                                        onChange={(e) => setData('email', e.target.value)}
-                                        className={cn(
-                                            'block w-full rounded-xl border py-2.5 pl-10 pr-3.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm ring-1 ring-inset transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset',
-                                            errors.email
-                                                ? 'border-danger ring-danger/30 focus:ring-danger'
-                                                : 'border-border ring-neutral-300 focus:border-primary focus:ring-primary/30',
-                                        )}
+                                        onChange={(v) => setData('email', v)}
+                                        error={errors.email}
                                         placeholder="email@contoh.com"
-                                        required
+                                        autoComplete="email"
+                                        icon={
+                                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                            </svg>
+                                        }
                                     />
-                                </div>
-                                {errors.email && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -4 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="mt-1.5 text-xs text-danger"
-                                    >
-                                        {errors.email}
-                                    </motion.p>
-                                )}
-                            </motion.div>
+                                </motion.div>
 
-                            <motion.div variants={itemVariants}>
-                                <label htmlFor="password" className="block text-sm font-medium text-neutral-700">
-                                    Password
-                                </label>
-                                <div className="relative mt-1.5">
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                        <svg className="h-4 w-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                                        </svg>
-                                    </div>
-                                    <input
-                                        id="password"
-                                        type="password"
-                                        autoComplete="new-password"
-                                        value={data.password}
-                                        onChange={(e) => setData('password', e.target.value)}
-                                        className={cn(
-                                            'block w-full rounded-xl border py-2.5 pl-10 pr-3.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm ring-1 ring-inset transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset',
-                                            errors.password
-                                                ? 'border-danger ring-danger/30 focus:ring-danger'
-                                                : 'border-border ring-neutral-300 focus:border-primary focus:ring-primary/30',
-                                        )}
-                                        placeholder="Min. 8 karakter"
-                                        required
+                                <motion.div variants={itemVariants} className="grid gap-3 sm:grid-cols-2">
+                                    <InputField
+                                        id="company"
+                                        label="Nama Perusahaan"
+                                        type="text"
+                                        value={data.company}
+                                        onChange={(v) => setData('company', v)}
+                                        error={errors.company}
+                                        placeholder="Nama perusahaan"
+                                        autoComplete="organization"
+                                        icon={
+                                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                                            </svg>
+                                        }
                                     />
-                                </div>
-                                {errors.password && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -4 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="mt-1.5 text-xs text-danger"
-                                    >
-                                        {errors.password}
-                                    </motion.p>
-                                )}
-                            </motion.div>
+                                    <InputField
+                                        id="phone"
+                                        label="No. Telepon"
+                                        type="tel"
+                                        value={data.phone}
+                                        onChange={(v) => setData('phone', v)}
+                                        error={errors.phone}
+                                        placeholder="+62 xxx xxxx"
+                                        autoComplete="tel"
+                                        icon={
+                                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                                            </svg>
+                                        }
+                                    />
+                                </motion.div>
 
-                            <motion.div variants={itemVariants}>
-                                <label htmlFor="password_confirmation" className="block text-sm font-medium text-neutral-700">
-                                    Konfirmasi Password
-                                </label>
-                                <div className="relative mt-1.5">
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                        <svg className="h-4 w-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                                        </svg>
+                                <motion.div variants={itemVariants} className="grid gap-3 sm:grid-cols-2">
+                                    <div>
+                                        <InputField
+                                            id="password"
+                                            label="Password"
+                                            type="password"
+                                            value={data.password}
+                                            onChange={(v) => setData('password', v)}
+                                            error={errors.password}
+                                            placeholder="Min. 8 karakter"
+                                            autoComplete="new-password"
+                                            icon={
+                                                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                                </svg>
+                                            }
+                                        />
+                                        <PasswordStrength password={data.password} />
                                     </div>
-                                    <input
+                                    <InputField
                                         id="password_confirmation"
+                                        label="Konfirmasi Password"
                                         type="password"
-                                        autoComplete="new-password"
                                         value={data.password_confirmation}
-                                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                                        className={cn(
-                                            'block w-full rounded-xl border py-2.5 pl-10 pr-3.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm ring-1 ring-inset transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset',
-                                            errors.password_confirmation
-                                                ? 'border-danger ring-danger/30 focus:ring-danger'
-                                                : 'border-border ring-neutral-300 focus:border-primary focus:ring-primary/30',
-                                        )}
+                                        onChange={(v) => setData('password_confirmation', v)}
+                                        error={errors.password_confirmation}
                                         placeholder="Ulangi password"
-                                        required
+                                        autoComplete="new-password"
+                                        icon={
+                                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                                            </svg>
+                                        }
                                     />
-                                </div>
-                                {errors.password_confirmation && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -4 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="mt-1.5 text-xs text-danger"
-                                    >
-                                        {errors.password_confirmation}
-                                    </motion.p>
-                                )}
+                                </motion.div>
+                            </div>
+
+                            <motion.div variants={itemVariants} className="mt-4">
+                                <p className="text-xs text-neutral-500">
+                                    Dengan mendaftar, Anda menyetujui{' '}
+                                    <Link href="/" className="font-medium text-primary hover:text-primary-dark underline underline-offset-2">
+                                        Syarat & Ketentuan
+                                    </Link>{' '}
+                                    dan{' '}
+                                    <Link href="/" className="font-medium text-primary hover:text-primary-dark underline underline-offset-2">
+                                        Kebijakan Privasi
+                                    </Link>{' '}
+                                    BookCRM.
+                                </p>
                             </motion.div>
 
-                            <motion.div variants={itemVariants}>
-                                <div className="rounded-xl bg-neutral-50 px-4 py-3">
-                                    <p className="text-xs leading-relaxed text-neutral-500">
-                                        Dengan mendaftar, Anda menyetujui{' '}
-                                        <Link href="/" className="font-medium text-primary hover:text-primary-dark underline underline-offset-2">
-                                            Syarat & Ketentuan
-                                        </Link>{' '}
-                                        dan{' '}
-                                        <Link href="/" className="font-medium text-primary hover:text-primary-dark underline underline-offset-2">
-                                            Kebijakan Privasi
-                                        </Link>{' '}
-                                        BookCRM.
-                                    </p>
-                                </div>
-                            </motion.div>
-
-                            <motion.div variants={itemVariants}>
+                            <motion.div variants={itemVariants} className="mt-4">
                                 <button
                                     type="submit"
                                     disabled={processing}
                                     className={cn(
-                                        'flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200',
+                                        'flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200',
                                         processing
                                             ? 'cursor-not-allowed bg-primary/70'
                                             : 'bg-primary hover:bg-primary-dark hover:shadow-md active:scale-[0.98]',
@@ -390,7 +431,12 @@ export default function Register() {
                                             Mendaftarkan...
                                         </>
                                     ) : (
-                                        'Buat Akun'
+                                        <>
+                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                            </svg>
+                                            Buat Akun
+                                        </>
                                     )}
                                 </button>
                             </motion.div>
@@ -408,9 +454,9 @@ export default function Register() {
 
                         <motion.p
                             variants={itemVariants}
-                            className="mt-8 text-center text-xs text-neutral-400"
+                            className="mt-6 text-center text-[11px] text-neutral-400"
                         >
-                            &copy; {new Date().getFullYear()} BookCRM. All rights reserved.
+                            &copy; {new Date().getFullYear()} BookCRM
                         </motion.p>
                     </motion.div>
                 </div>

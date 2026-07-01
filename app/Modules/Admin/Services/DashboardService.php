@@ -2,6 +2,7 @@
 
 namespace App\Modules\Admin\Services;
 
+use App\Modules\Admin\Contracts\TenantStatsRepositoryInterface;
 use App\Modules\Admin\Contracts\UserRepositoryInterface;
 use App\Modules\Admin\DTOs\DashboardStatsDTO;
 use Carbon\CarbonImmutable;
@@ -12,6 +13,7 @@ class DashboardService
 {
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
+        private readonly TenantStatsRepositoryInterface $tenantStatsRepository,
     ) {}
 
     public function getStats(): DashboardStatsDTO
@@ -27,12 +29,17 @@ class DashboardService
             ? round(($newThisMonth / $totalUsers) * 100, 1)
             : 0;
 
+        $totalTenants = $this->tenantStatsRepository->count();
+        $newTenantsThisMonth = $this->tenantStatsRepository->countWhereBetween('created_at', [$now->startOfMonth(), $now]);
+
         Log::info('Dashboard stats fetched', [
             'total_users' => $totalUsers,
             'new_today' => $newToday,
             'new_this_week' => $newThisWeek,
             'new_this_month' => $newThisMonth,
             'total_admins' => $totalAdmins,
+            'total_tenants' => $totalTenants,
+            'new_tenants_this_month' => $newTenantsThisMonth,
         ]);
 
         return new DashboardStatsDTO(
@@ -42,6 +49,8 @@ class DashboardService
             new_this_month: $newThisMonth,
             total_admins: $totalAdmins,
             user_growth: $userGrowth,
+            total_tenants: $totalTenants,
+            new_tenants_this_month: $newTenantsThisMonth,
         );
     }
 

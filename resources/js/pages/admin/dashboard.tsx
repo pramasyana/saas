@@ -35,6 +35,8 @@ interface DashboardStats {
     new_this_month: number;
     total_admins: number;
     user_growth: number;
+    total_tenants: number;
+    new_tenants_this_month: number;
 }
 
 interface DashboardProps {
@@ -47,7 +49,7 @@ const colorMap = {
     primary: { bg: 'bg-primary-50', icon: 'text-primary', ring: 'ring-primary/10' },
     success: { bg: 'bg-success-light', icon: 'text-success', ring: 'ring-success/20' },
     warning: { bg: 'bg-warning-light', icon: 'text-warning', ring: 'ring-warning/20' },
-    info: { bg: 'bg-sky-50', icon: 'text-sky-600', ring: 'ring-sky-200' },
+    info: { bg: 'bg-primary-50', icon: 'text-primary', ring: 'ring-primary-200' },
 };
 
 function UsersIcon({ className }: { className?: string }) {
@@ -94,6 +96,14 @@ function CalendarIcon({ className }: { className?: string }) {
     return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+    );
+}
+
+function BuildingIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
         </svg>
     );
 }
@@ -151,6 +161,13 @@ export default function AdminDashboard({ stats, recent_users, weekly_signups }: 
             subtitle: 'Total admin panel',
             icon: <ShieldIcon />,
             color: 'warning',
+        },
+        {
+            label: 'Tenants',
+            value: stats.total_tenants,
+            subtitle: `${stats.new_tenants_this_month} baru bulan ini`,
+            icon: <BuildingIcon />,
+            color: 'primary',
         },
     ];
 
@@ -219,8 +236,8 @@ export default function AdminDashboard({ stats, recent_users, weekly_signups }: 
                                             className={cn(
                                                 'inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-medium',
                                                 s.trend.positive
-                                                    ? 'bg-success-light text-emerald-700'
-                                                    : 'bg-danger-light text-red-700',
+                                                    ? 'bg-success-light text-success'
+                                                    : 'bg-danger-light text-danger',
                                             )}
                                         >
                                             <ArrowUpIcon

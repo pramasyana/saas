@@ -46,6 +46,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/admin/subscriptions.php'));
 
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/tenants.php'));
+
             Route::middleware('api')
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/public.php'));
@@ -61,9 +65,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => AdminMiddleware::class,
         ]);
 
-        $middleware->redirectGuestsTo(fn () => route('admin.login'));
+        $middleware->redirectGuestsTo(fn () => route('tenant.login'));
 
-        $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
+        $middleware->redirectUsersTo(fn (Request $request) => $request->user()?->is_admin
+            ? route('admin.dashboard')
+            : route('tenant.dashboard')
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

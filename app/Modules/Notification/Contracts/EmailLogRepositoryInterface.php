@@ -11,4 +11,7 @@ interface EmailLogRepositoryInterface
     public function deleteOlderThan(string $date): int;
 
     public function countOlderThan(string $date): int;
+
+    /** @return array{total_sent: int, total_failed: int, total_logs: int} */
+    public function getStats(): array;
 }

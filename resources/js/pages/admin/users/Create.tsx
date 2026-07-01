@@ -117,7 +117,7 @@ export default function Create({ title }: CreatePageProps) {
 
                         <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-warning-light text-warning">
                                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                                     </svg>
@@ -135,7 +135,7 @@ export default function Create({ title }: CreatePageProps) {
                                     'Role Admin memberikan akses penuh ke seluruh panel.',
                                 ].map((info, i) => (
                                     <li key={i} className="flex items-start gap-2.5 text-xs text-neutral-600">
-                                        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-amber-50 text-[10px] font-bold text-amber-600">
+                                        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-warning-light text-[10px] font-bold text-warning">
                                             !
                                         </span>
                                         {info}

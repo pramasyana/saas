@@ -31,10 +31,10 @@ const styles: StylesConfig<SelectOption, false> = {
             ? 'var(--color-primary)'
             : 'var(--color-neutral-300)',
         boxShadow: state.isFocused
-            ? '0 0 0 2px rgba(124, 58, 237, 0.3)'
-            : '0 1px 2px rgba(0, 0, 0, 0.05)',
+            ? '0 0 0 2px var(--color-primary-100)'
+            : '0 1px 2px var(--color-neutral-200)',
         minHeight: 'unset',
-        backgroundColor: state.isDisabled ? 'var(--color-neutral-50)' : '#fff',
+        backgroundColor: state.isDisabled ? 'var(--color-neutral-50)' : 'white',
         cursor: state.isDisabled ? 'not-allowed' : 'pointer',
         transition: 'all 0.2s',
         '&:hover': {
@@ -67,7 +67,7 @@ const styles: StylesConfig<SelectOption, false> = {
         ...base,
         borderRadius: '0.75rem',
         border: '1px solid var(--color-neutral-200)',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 10px 15px -3px var(--color-neutral-300)',
         marginTop: '6px',
         zIndex: 50,
         overflow: 'hidden',

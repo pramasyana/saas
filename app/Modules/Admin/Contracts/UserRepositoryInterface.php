@@ -32,4 +32,7 @@ interface UserRepositoryInterface
     public function update(User $user, array $data): User;
 
     public function delete(User $user): bool;
+
+    /** @return array{total_users: int, total_admins: int, new_this_month: int} */
+    public function getStats(): array;
 }

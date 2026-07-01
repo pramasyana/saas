@@ -49,7 +49,7 @@ export default function TenantLogin() {
             <Head title="Masuk ke Akun" />
 
             <div className="flex min-h-screen">
-                <div className="relative hidden w-[45%] overflow-hidden bg-gradient-to-br from-[#4C1D95] via-[#5B21B6] to-[#7C3AED] lg:block">
+                <div className="relative hidden w-[45%] overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-primary-light lg:block">
                     <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-white/[0.06]" />
                     <div className="absolute -bottom-32 -left-16 h-[28rem] w-[28rem] rounded-full bg-white/[0.04]" />
                     <div className="absolute top-1/3 -left-20 h-64 w-64 rounded-full bg-white/[0.03]" />

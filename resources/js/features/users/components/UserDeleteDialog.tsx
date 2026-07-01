@@ -48,7 +48,7 @@ export default function UserDeleteDialog({ open, user, deleting, error, onClose,
                     <Button
                         onClick={onConfirm}
                         disabled={deleting}
-                        className="bg-danger text-white hover:bg-red-700"
+                        className="bg-danger text-white hover:bg-danger"
                     >
                         {deleting ? (
                             <span className="flex items-center gap-2">

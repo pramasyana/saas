@@ -16,4 +16,6 @@ interface FeatureDefinitionRepositoryInterface
     public function update(FeatureDefinition $definition, array $data): FeatureDefinition;
 
     public function delete(FeatureDefinition $definition): bool;
+
+    public function getAllOrdered(): Collection;
 }

@@ -6,6 +6,8 @@ export interface User {
     is_active: boolean;
     email_verified_at: string | null;
     is_verified: boolean;
+    tenant_id: string | null;
+    tenant: { id: string; name: string | null } | null;
     created_at: string;
     joined_at: string;
 }

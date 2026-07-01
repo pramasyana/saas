@@ -48,4 +48,13 @@ class EmailLogRepository implements EmailLogRepositoryInterface
     {
         return EmailLog::where('created_at', '<', $date)->count();
     }
+
+    public function getStats(): array
+    {
+        return [
+            'total_sent' => EmailLog::where('status', 'sent')->count(),
+            'total_failed' => EmailLog::where('status', 'failed')->count(),
+            'total_logs' => EmailLog::count(),
+        ];
+    }
 }

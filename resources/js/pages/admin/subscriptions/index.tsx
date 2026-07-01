@@ -55,16 +55,16 @@ export default function Subscriptions({ title, stats }: SubscriptionsPageProps) 
             </div>
 
             <div className="mb-6 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
+                <div className="rounded-xl border border-success/20 bg-gradient-to-br from-success-light to-white p-5 shadow-sm">
                     <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-success-light text-success">
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div>
                             <p className="text-2xl font-bold tracking-tight text-neutral-900">{stats.active}</p>
-                            <p className="text-sm text-emerald-700 font-medium">Aktif</p>
+                            <p className="text-sm text-success font-medium">Aktif</p>
                         </div>
                     </div>
                 </div>
@@ -81,9 +81,9 @@ export default function Subscriptions({ title, stats }: SubscriptionsPageProps) 
                         </div>
                     </div>
                 </div>
-                <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
+                <div className="rounded-xl border border-warning/20 bg-gradient-to-br from-warning-light to-white p-5 shadow-sm">
                     <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-warning-light text-warning">
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -92,7 +92,7 @@ export default function Subscriptions({ title, stats }: SubscriptionsPageProps) 
                             <p className="text-2xl font-bold tracking-tight text-neutral-900">
                                 {stats.total_revenue ? formatPrice(stats.total_revenue) : 'Rp 0'}
                             </p>
-                            <p className="text-sm text-amber-700 font-medium">MRR</p>
+                            <p className="text-sm text-warning font-medium">MRR</p>
                         </div>
                     </div>
                 </div>
@@ -188,9 +188,9 @@ export default function Subscriptions({ title, stats }: SubscriptionsPageProps) 
                                     <td className="px-5 py-4">
                                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${
                                             sub.status === 'active'
-                                                ? 'bg-emerald-50 text-emerald-700'
+                                                ? 'bg-success-light text-success'
                                                 : sub.status === 'cancelled'
-                                                ? 'bg-red-50 text-red-700'
+                                                ? 'bg-danger-light text-danger'
                                                 : 'bg-neutral-100 text-neutral-600'
                                         }`}>
                                             {sub.status}
@@ -209,7 +209,7 @@ export default function Subscriptions({ title, stats }: SubscriptionsPageProps) 
                 </div>
             )}
 
-            {meta && meta.last_page > 1 && (
+            {meta && (
                 <div className="mt-5 flex flex-col items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-6 py-3.5 shadow-sm sm:flex-row">
                     <p className="text-sm text-neutral-500">
                         <span className="font-semibold text-neutral-700">{meta.total}</span> data · Halaman <span className="font-semibold text-neutral-700">{meta.current_page}</span> dari <span className="font-semibold text-neutral-700">{meta.last_page}</span>

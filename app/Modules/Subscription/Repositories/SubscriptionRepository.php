@@ -52,4 +52,13 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     {
         $subscription->delete();
     }
+
+    public function getStats(): array
+    {
+        return [
+            'active' => Subscription::where('status', 'active')->count(),
+            'cancelled' => Subscription::where('status', 'cancelled')->count(),
+            'total_revenue' => (float) Subscription::where('status', 'active')->sum('price_amount'),
+        ];
+    }
 }

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules\Subscription\Models;
 
+use App\Models\Tenant;
 use App\Models\User;
 use App\Modules\Pricing\Models\Plan;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +22,7 @@ class Subscription extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'tenant_id',
         'user_id',
         'plan_id',
         'price_amount',
@@ -50,6 +54,11 @@ class Subscription extends Model
                 $model->id = (string) Str::uuid();
             }
         });
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
     }
 
     public function user(): BelongsTo

@@ -1,7 +1,7 @@
 export default function DashboardMockup() {
     return (
         <div className="relative mx-auto w-full max-w-[600px]">
-            <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-2xl shadow-primary/5 [box-shadow:0_0_0_1px_rgba(0,0,0,0.02),0_20px_60px_-12px_rgba(0,0,0,0.12)]">
+            <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-2xl shadow-primary/5">
                 <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
                     <div className="flex items-center gap-2.5">
                         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-white">

@@ -4,20 +4,21 @@ namespace App\Modules\Admin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Modules\Admin\Contracts\UserRepositoryInterface;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly UserRepositoryInterface $userRepository,
+    ) {}
+
     public function index(): Response
     {
         return Inertia::render('admin/users/index', [
             'title' => 'Manajemen User',
-            'stats' => [
-                'total_users' => User::count(),
-                'total_admins' => User::where('is_admin', true)->count(),
-                'new_this_month' => User::whereMonth('created_at', now()->month)->count(),
-            ],
+            'stats' => $this->userRepository->getStats(),
         ]);
     }
 

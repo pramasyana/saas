@@ -105,17 +105,25 @@ export default function UserTable({ users, currentUserId, onDelete, onToggleActi
                                 </div>
                             </div>
                             <div className="mt-3 flex flex-wrap items-center gap-2 pl-[52px]">
+                                {user.tenant && (
+                                    <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 ring-1 ring-inset ring-neutral-200">
+                                        <svg className="h-3 w-3 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                                        </svg>
+                                        {user.tenant.name}
+                                    </span>
+                                )}
                                 <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                                     user.is_admin
                                         ? 'bg-primary-50 text-primary ring-1 ring-inset ring-primary/10'
-                                        : 'bg-success-light text-emerald-700 ring-1 ring-inset ring-success/20'
+                                        : 'bg-success-light text-success ring-1 ring-inset ring-success/20'
                                 }`}>
                                     {user.is_admin ? 'Admin' : 'User'}
                                 </span>
                                 <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                                     user.is_verified
-                                        ? 'bg-success-light text-emerald-700 ring-1 ring-inset ring-success/20'
-                                        : 'bg-warning-light text-amber-700 ring-1 ring-inset ring-warning/20'
+                                        ? 'bg-success-light text-success ring-1 ring-inset ring-success/20'
+                                        : 'bg-warning-light text-warning ring-1 ring-inset ring-warning/20'
                                 }`}>
                                     {user.is_verified ? 'Terverifikasi' : 'Belum Verifikasi'}
                                 </span>
@@ -162,6 +170,9 @@ export default function UserTable({ users, currentUserId, onDelete, onToggleActi
                             User
                         </th>
                         <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                            Perusahaan
+                        </th>
+                        <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
                             Role
                         </th>
                         <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
@@ -201,13 +212,27 @@ export default function UserTable({ users, currentUserId, onDelete, onToggleActi
                                     </div>
                                 </td>
                                 <td className="whitespace-nowrap px-6 py-4">
+                                    {user.tenant ? (
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary-50 text-xs font-bold text-primary">
+                                                {user.tenant.name?.charAt(0) ?? '?'}
+                                            </div>
+                                            <span className="text-sm text-neutral-700 truncate max-w-[160px]">
+                                                {user.tenant.name}
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <span className="text-sm text-neutral-400">-</span>
+                                    )}
+                                </td>
+                                <td className="whitespace-nowrap px-6 py-4">
                                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                                         user.is_admin
                                             ? 'bg-primary-50 text-primary ring-1 ring-inset ring-primary/10'
-                                            : 'bg-success-light text-emerald-700 ring-1 ring-inset ring-success/20'
+                                            : 'bg-success-light text-success ring-1 ring-inset ring-success/20'
                                     }`}>
                                         <span className={`mr-1.5 inline-block h-1.5 w-1.5 rounded-full ${
-                                            user.is_admin ? 'bg-primary' : 'bg-emerald-500'
+                                            user.is_admin ? 'bg-primary' : 'bg-success'
                                         }`} />
                                         {user.is_admin ? 'Admin' : 'User'}
                                     </span>
@@ -216,8 +241,8 @@ export default function UserTable({ users, currentUserId, onDelete, onToggleActi
                                     <div className="flex items-center gap-2">
                                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                                             user.is_verified
-                                                ? 'bg-success-light text-emerald-700 ring-1 ring-inset ring-success/20'
-                                                : 'bg-warning-light text-amber-700 ring-1 ring-inset ring-warning/20'
+                                                ? 'bg-success-light text-success ring-1 ring-inset ring-success/20'
+                                                : 'bg-warning-light text-warning ring-1 ring-inset ring-warning/20'
                                         }`}>
                                             {user.is_verified ? 'Terverifikasi' : 'Belum Verifikasi'}
                                         </span>

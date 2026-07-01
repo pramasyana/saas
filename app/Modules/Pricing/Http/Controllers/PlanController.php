@@ -3,28 +3,29 @@
 namespace App\Modules\Pricing\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Pricing\Models\FeatureDefinition;
-use App\Modules\Pricing\Models\Plan;
+use App\Modules\Pricing\Contracts\FeatureDefinitionRepositoryInterface;
+use App\Modules\Pricing\Contracts\PlanRepositoryInterface;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PlanController extends Controller
 {
+    public function __construct(
+        private readonly PlanRepositoryInterface $planRepository,
+        private readonly FeatureDefinitionRepositoryInterface $featureDefinitionRepository,
+    ) {}
+
     public function index(): Response
     {
         return Inertia::render('admin/pricing/index', [
             'title' => 'Manajemen Pricing',
-            'stats' => [
-                'total_plans' => Plan::withTrashed()->count(),
-                'active_plans' => Plan::where('is_active', true)->count(),
-                'cheapest_price' => Plan::where('is_active', true)->where('price_monthly', '>', 0)->min('price_monthly') ? (float) Plan::where('is_active', true)->where('price_monthly', '>', 0)->min('price_monthly') : null,
-            ],
+            'stats' => $this->planRepository->getStats(),
         ]);
     }
 
     public function create(): Response
     {
-        $definitions = FeatureDefinition::orderBy('sort_order')->get();
+        $definitions = $this->featureDefinitionRepository->getAllOrdered();
 
         return Inertia::render('admin/pricing/Create', [
             'title' => 'Tambah Plan',
@@ -41,8 +42,10 @@ class PlanController extends Controller
 
     public function edit(string $id): Response
     {
-        $plan = Plan::with('features.definition')->findOrFail($id);
-        $definitions = FeatureDefinition::orderBy('sort_order')->get();
+        $plan = $this->planRepository->findById($id);
+        abort_unless((bool) $plan, 404);
+
+        $definitions = $this->featureDefinitionRepository->getAllOrdered();
 
         return Inertia::render('admin/pricing/Edit', [
             'title' => 'Edit Plan',
