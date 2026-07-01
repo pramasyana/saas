@@ -2,29 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Modules\Pricing\Database\Seeders\FeatureDefinitionSeeder;
+use App\Modules\Pricing\Database\Seeders\PlanSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => 'admin@bookcrm.test',
-            'password' => bcrypt('password'),
-            'is_admin' => true,
-        ]);
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'user@bookcrm.test',
+        $this->call([
+            FeatureDefinitionSeeder::class,
+            PlanSeeder::class,
         ]);
     }
 }
+
