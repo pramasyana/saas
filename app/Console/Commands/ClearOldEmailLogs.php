@@ -19,6 +19,7 @@ class ClearOldEmailLogs extends Command
 
         if ($count === 0) {
             $this->info('Tidak ada email logs yang perlu dihapus.');
+
             return;
         }
 

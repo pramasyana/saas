@@ -26,6 +26,7 @@ class FeatureDefinitionRepository implements FeatureDefinitionRepositoryInterfac
     public function update(FeatureDefinition $definition, array $data): FeatureDefinition
     {
         $definition->update($data);
+
         return $definition;
     }
 

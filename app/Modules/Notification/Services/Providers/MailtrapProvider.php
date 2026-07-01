@@ -32,7 +32,7 @@ class MailtrapProvider implements MailProvider
 
     public function send(string $toEmail, ?string $toName, string $subject, string $html, ?string $text = null): void
     {
-        $email = (new MailtrapEmail())
+        $email = (new MailtrapEmail)
             ->from(new Address($this->fromAddress, $this->fromName))
             ->to(new Address($toEmail, $toName ?? $toEmail))
             ->subject($subject)

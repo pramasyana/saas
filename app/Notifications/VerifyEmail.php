@@ -37,7 +37,7 @@ class VerifyEmail extends Notification implements ShouldQueue
         $mailer->send(
             toEmail: $notifiable->email,
             toName: $notifiable->name,
-            subject: 'Verifikasi Email - ' . config('app.name'),
+            subject: 'Verifikasi Email - '.config('app.name'),
             html: $this->buildHtml($notifiable),
             text: $this->buildText($notifiable),
             userId: (int) $notifiable->getKey(),
@@ -58,8 +58,8 @@ class VerifyEmail extends Notification implements ShouldQueue
         $appName = config('app.name');
 
         return "Halo {$notifiable->name},\n\n"
-            . "Terima kasih telah mendaftar di {$appName}. Silakan verifikasi alamat email Anda dengan mengklik link berikut:\n\n"
-            . "{$this->verificationUrl}\n\n"
-            . "Jika Anda tidak membuat akun ini, abaikan email ini.\n";
+            ."Terima kasih telah mendaftar di {$appName}. Silakan verifikasi alamat email Anda dengan mengklik link berikut:\n\n"
+            ."{$this->verificationUrl}\n\n"
+            ."Jika Anda tidak membuat akun ini, abaikan email ini.\n";
     }
 }

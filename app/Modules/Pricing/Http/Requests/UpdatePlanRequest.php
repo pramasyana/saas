@@ -15,7 +15,7 @@ class UpdatePlanRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:255',
-            'slug' => 'sometimes|string|max:255|unique:plans,slug,' . $this->route('id'),
+            'slug' => 'sometimes|string|max:255|unique:plans,slug,'.$this->route('id'),
             'description' => 'nullable|string|max:1000',
             'price_monthly' => 'sometimes|numeric|min:0',
             'price_yearly' => 'nullable|numeric|min:0',

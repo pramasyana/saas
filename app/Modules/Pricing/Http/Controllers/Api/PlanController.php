@@ -84,6 +84,7 @@ class PlanController extends Controller
     {
         try {
             $this->planService->delete($id);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Plan berhasil dihapus.',

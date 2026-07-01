@@ -11,11 +11,11 @@ test('admin users page renders via inertia', function () {
     $response = $this->actingAs($admin)
         ->get(route('admin.users'));
 
-        $response->assertOk()
-            ->assertInertia(fn ($page) => $page
-                ->component('admin/users/index')
-                ->has('title')
-            );
+    $response->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('admin/users/index')
+            ->has('title')
+        );
 });
 
 test('admin users create page renders via inertia', function () {

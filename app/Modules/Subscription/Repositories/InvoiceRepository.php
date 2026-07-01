@@ -4,10 +4,11 @@ namespace App\Modules\Subscription\Repositories;
 
 use App\Modules\Subscription\Contracts\InvoiceRepositoryInterface;
 use App\Modules\Subscription\Models\Invoice;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class InvoiceRepository implements InvoiceRepositoryInterface
 {
-    public function paginate(array $filters = [], int $perPage = 15): \Illuminate\Pagination\LengthAwarePaginator
+    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = Invoice::with('subscription.user', 'subscription.plan');
 
@@ -39,6 +40,7 @@ class InvoiceRepository implements InvoiceRepositoryInterface
     public function update(Invoice $invoice, array $data): Invoice
     {
         $invoice->update($data);
+
         return $invoice->fresh('subscription');
     }
 }

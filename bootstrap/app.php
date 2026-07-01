@@ -28,21 +28,21 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/auth.php'));
 
-    Route::middleware('web')
-        ->prefix('api/v1')
-        ->group(base_path('routes/api/v1/admin/users.php'));
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/users.php'));
 
-    Route::middleware('web')
-        ->prefix('api/v1')
-        ->group(base_path('routes/api/v1/admin/pricing.php'));
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/pricing.php'));
 
-    Route::middleware('web')
-        ->prefix('api/v1')
-        ->group(base_path('routes/api/v1/admin/subscriptions.php'));
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/subscriptions.php'));
 
-    Route::middleware('api')
-        ->prefix('api/v1')
-        ->group(base_path('routes/api/v1/public.php'));
+            Route::middleware('api')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/public.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

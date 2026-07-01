@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 class Invoice extends Model
 {
     protected $keyType = 'string';
+
     public $incrementing = false;
 
     protected $fillable = [

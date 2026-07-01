@@ -4,10 +4,11 @@ namespace App\Modules\Subscription\Repositories;
 
 use App\Modules\Subscription\Contracts\SubscriptionRepositoryInterface;
 use App\Modules\Subscription\Models\Subscription;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SubscriptionRepository implements SubscriptionRepositoryInterface
 {
-    public function paginate(array $filters = [], int $perPage = 15): \Illuminate\Pagination\LengthAwarePaginator
+    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = Subscription::with(['user', 'plan']);
 
@@ -43,6 +44,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function update(Subscription $subscription, array $data): Subscription
     {
         $subscription->update($data);
+
         return $subscription->fresh(['user', 'plan']);
     }
 

@@ -5,7 +5,6 @@ namespace App\Modules\Pricing\Services;
 use App\Modules\Pricing\Contracts\PlanRepositoryInterface;
 use App\Modules\Pricing\Models\FeatureDefinition;
 use App\Modules\Pricing\Models\Plan;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -28,6 +27,7 @@ class PlanService
         if (! $plan) {
             throw new RuntimeException('Plan tidak ditemukan.');
         }
+
         return $plan;
     }
 
@@ -71,14 +71,30 @@ class PlanService
             $plan = $this->findById($id);
 
             $planData = [];
-            if (isset($data['name'])) $planData['name'] = $data['name'];
-            if (isset($data['slug'])) $planData['slug'] = $data['slug'];
-            if (isset($data['description'])) $planData['description'] = $data['description'];
-            if (isset($data['price_monthly'])) $planData['price_monthly'] = $data['price_monthly'];
-            if (array_key_exists('price_yearly', $data)) $planData['price_yearly'] = $data['price_yearly'];
-            if (isset($data['is_active'])) $planData['is_active'] = $data['is_active'];
-            if (isset($data['is_popular'])) $planData['is_popular'] = $data['is_popular'];
-            if (isset($data['sort_order'])) $planData['sort_order'] = $data['sort_order'];
+            if (isset($data['name'])) {
+                $planData['name'] = $data['name'];
+            }
+            if (isset($data['slug'])) {
+                $planData['slug'] = $data['slug'];
+            }
+            if (isset($data['description'])) {
+                $planData['description'] = $data['description'];
+            }
+            if (isset($data['price_monthly'])) {
+                $planData['price_monthly'] = $data['price_monthly'];
+            }
+            if (array_key_exists('price_yearly', $data)) {
+                $planData['price_yearly'] = $data['price_yearly'];
+            }
+            if (isset($data['is_active'])) {
+                $planData['is_active'] = $data['is_active'];
+            }
+            if (isset($data['is_popular'])) {
+                $planData['is_popular'] = $data['is_popular'];
+            }
+            if (isset($data['sort_order'])) {
+                $planData['sort_order'] = $data['sort_order'];
+            }
 
             if (! empty($data['is_popular'])) {
                 Plan::where('id', '!=', $plan->id)->update(['is_popular' => false]);

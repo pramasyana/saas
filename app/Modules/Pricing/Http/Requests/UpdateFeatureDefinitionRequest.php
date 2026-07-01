@@ -14,7 +14,7 @@ class UpdateFeatureDefinitionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'key' => 'sometimes|string|max:255|unique:feature_definitions,key,' . $this->route('id'),
+            'key' => 'sometimes|string|max:255|unique:feature_definitions,key,'.$this->route('id'),
             'label' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'type' => 'sometimes|string|in:boolean,numeric',

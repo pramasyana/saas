@@ -25,6 +25,7 @@ class FeatureDefinitionService
         if (! $definition) {
             throw new RuntimeException('Feature definition tidak ditemukan.');
         }
+
         return $definition;
     }
 

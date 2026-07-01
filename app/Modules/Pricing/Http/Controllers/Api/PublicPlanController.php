@@ -21,6 +21,12 @@ class PublicPlanController extends Controller
             'status' => 'success',
             'message' => 'OK',
             'data' => PlanResource::collection($plans),
+            'meta' => [
+                'current_page' => $plans->currentPage(),
+                'last_page' => $plans->lastPage(),
+                'per_page' => $plans->perPage(),
+                'total' => $plans->total(),
+            ],
         ]);
     }
 }

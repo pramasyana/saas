@@ -11,6 +11,7 @@ class PlanFeature extends Model
     protected $table = 'plan_feature';
 
     protected $keyType = 'string';
+
     public $incrementing = false;
 
     protected $fillable = [

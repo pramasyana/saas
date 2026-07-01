@@ -27,6 +27,7 @@ class SubscriptionService
         if (! $subscription) {
             throw new RuntimeException('Subscription tidak ditemukan.');
         }
+
         return $subscription;
     }
 

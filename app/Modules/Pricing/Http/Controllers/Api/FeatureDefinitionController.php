@@ -53,6 +53,7 @@ class FeatureDefinitionController extends Controller
     {
         try {
             $this->featureDefinitionService->delete($id);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Feature definition berhasil dihapus.',

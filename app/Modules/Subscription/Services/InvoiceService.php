@@ -24,12 +24,13 @@ class InvoiceService
         if (! $invoice) {
             throw new \RuntimeException('Invoice tidak ditemukan.');
         }
+
         return $invoice;
     }
 
     public function generate(Subscription $subscription): Invoice
     {
-        $number = 'INV-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+        $number = 'INV-'.now()->format('Ymd').'-'.strtoupper(Str::random(6));
 
         return $this->invoiceRepository->create([
             'subscription_id' => $subscription->id,
@@ -43,6 +44,7 @@ class InvoiceService
     public function markAsPaid(string $id): Invoice
     {
         $invoice = $this->findById($id);
+
         return $this->invoiceRepository->update($invoice, [
             'status' => 'paid',
             'paid_at' => now(),
@@ -52,6 +54,7 @@ class InvoiceService
     public function markAsFailed(string $id, ?string $notes = null): Invoice
     {
         $invoice = $this->findById($id);
+
         return $this->invoiceRepository->update($invoice, [
             'status' => 'failed',
             'notes' => $notes,

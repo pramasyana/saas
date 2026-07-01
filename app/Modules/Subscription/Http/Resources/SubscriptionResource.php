@@ -2,8 +2,8 @@
 
 namespace App\Modules\Subscription\Http\Resources;
 
-use App\Modules\Pricing\Http\Resources\PlanResource;
 use App\Modules\Admin\Http\Resources\UserResource;
+use App\Modules\Pricing\Http\Resources\PlanResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

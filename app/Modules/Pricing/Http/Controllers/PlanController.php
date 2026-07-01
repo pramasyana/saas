@@ -5,7 +5,6 @@ namespace App\Modules\Pricing\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Pricing\Models\FeatureDefinition;
 use App\Modules\Pricing\Models\Plan;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 

@@ -2,7 +2,9 @@
 
 namespace App\Modules\Notification\Providers;
 
+use App\Modules\Notification\Contracts\EmailLogRepositoryInterface;
 use App\Modules\Notification\Contracts\MailProvider;
+use App\Modules\Notification\Repositories\EmailLogRepository;
 use App\Modules\Notification\Services\MailService;
 use App\Modules\Notification\Services\Providers\LogProvider;
 use App\Modules\Notification\Services\Providers\MailtrapProvider;
@@ -13,6 +15,8 @@ class NotificationServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(EmailLogRepositoryInterface::class, EmailLogRepository::class);
+
         $this->app->singleton(MailProvider::class, fn () => $this->resolveProvider());
 
         $this->app->singleton(MailService::class, fn ($app) => new MailService(
@@ -24,7 +28,8 @@ class NotificationServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Notification::extend('mailtrap', function ($app) {
-            return new class($app->make(MailService::class)) {
+            return new class($app->make(MailService::class))
+            {
                 public function __construct(private MailService $mailer) {}
 
                 public function send(object $notifiable, \Illuminate\Notifications\Notification $notification): void
@@ -40,7 +45,7 @@ class NotificationServiceProvider extends ServiceProvider
         return match (config('mail-provider.default')) {
             'mailtrap' => new MailtrapProvider,
             'log' => new LogProvider,
-            default => throw new \RuntimeException('Unknown mail provider: ' . config('mail-provider.default')),
+            default => throw new \RuntimeException('Unknown mail provider: '.config('mail-provider.default')),
         };
     }
 }
