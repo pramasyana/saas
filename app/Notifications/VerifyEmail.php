@@ -22,7 +22,7 @@ class VerifyEmail extends Notification implements ShouldQueue
 
     public function retryUntil(): \DateTime
     {
-        return now()->addHour();
+        return now()->addHour()->toDateTime();
     }
 
     public function via(object $notifiable): array
@@ -40,6 +40,7 @@ class VerifyEmail extends Notification implements ShouldQueue
             subject: 'Verifikasi Email - ' . config('app.name'),
             html: $this->buildHtml($notifiable),
             text: $this->buildText($notifiable),
+            userId: (int) $notifiable->getKey(),
         );
     }
 

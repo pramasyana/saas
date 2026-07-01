@@ -15,7 +15,10 @@ class NotificationServiceProvider extends ServiceProvider
     {
         $this->app->singleton(MailProvider::class, fn () => $this->resolveProvider());
 
-        $this->app->singleton(MailService::class);
+        $this->app->singleton(MailService::class, fn ($app) => new MailService(
+            provider: $app->make(MailProvider::class),
+            channel: config('mail-provider.default', 'log'),
+        ));
     }
 
     public function boot(): void

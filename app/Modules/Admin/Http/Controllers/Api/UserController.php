@@ -80,6 +80,34 @@ class UserController extends Controller
         ]);
     }
 
+    public function resendVerification(int $id): JsonResponse
+    {
+        try {
+            $this->userService->resendVerification($id);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Email verifikasi berhasil dikirim.',
+            ]);
+        } catch (\RuntimeException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    public function emailLogs(int $id): JsonResponse
+    {
+        $logs = $this->userService->getEmailLogs($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'OK',
+            'data' => $logs,
+        ]);
+    }
+
     public function destroy(int $id): JsonResponse
     {
         try {

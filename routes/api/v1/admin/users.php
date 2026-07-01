@@ -9,5 +9,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users/{id}', [UserController::class, 'show']);
     Route::put('/admin/users/{id}', [UserController::class, 'update']);
     Route::put('/admin/users/{id}/toggle-active', [UserController::class, 'toggleActive']);
+    Route::post('/admin/users/{id}/resend-verification', [UserController::class, 'resendVerification']);
+    Route::get('/admin/users/{id}/email-logs', [UserController::class, 'emailLogs']);
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
 });

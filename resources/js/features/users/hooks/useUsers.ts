@@ -39,6 +39,10 @@ function toggleActive(id: number): Promise<UserResponse> {
     return api.put(`/api/v1/admin/users/${id}/toggle-active`).then((res) => res.data);
 }
 
+function resendVerification(id: number): Promise<{ status: string; message: string }> {
+    return api.post(`/api/v1/admin/users/${id}/resend-verification`).then((res) => res.data);
+}
+
 export function useUsers(filters: UserFilters) {
     return useQuery({
         queryKey: ['users', filters],
@@ -93,6 +97,17 @@ export function useToggleActive() {
 
     return useMutation({
         mutationFn: (id: number) => toggleActive(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+        },
+    });
+}
+
+export function useResendVerification() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: number) => resendVerification(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
         },

@@ -25,6 +25,18 @@ export interface PaginationMeta {
     total: number;
 }
 
+export interface EmailLog {
+    id: string;
+    user_id: number;
+    channel: string;
+    subject: string;
+    status: 'sent' | 'failed';
+    error_message: string | null;
+    attempt: number;
+    metadata: Record<string, unknown> | null;
+    created_at: string;
+}
+
 export interface UserFilters {
     search?: string;
     is_admin?: string;

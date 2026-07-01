@@ -7,6 +7,8 @@ interface UserTableProps {
     onDelete: (user: User) => void;
     onToggleActive: (id: number) => void;
     togglingActive: number | null;
+    onResendVerification?: (id: number) => void;
+    sendingVerification?: number | null;
 }
 
 const avatarColors = [
@@ -35,7 +37,7 @@ function getInitials(name: string): string {
         .slice(0, 2);
 }
 
-export default function UserTable({ users, currentUserId, onDelete, onToggleActive, togglingActive }: UserTableProps) {
+export default function UserTable({ users, currentUserId, onDelete, onToggleActive, togglingActive, onResendVerification, sendingVerification }: UserTableProps) {
     if (users.length === 0) {
         return (
             <div className="flex flex-col items-center gap-4 px-6 py-16">
@@ -117,6 +119,19 @@ export default function UserTable({ users, currentUserId, onDelete, onToggleActi
                                 }`}>
                                     {user.is_verified ? 'Terverifikasi' : 'Belum Verifikasi'}
                                 </span>
+                                {!user.is_verified && onResendVerification && (
+                                    <button
+                                        type="button"
+                                        disabled={sendingVerification === user.id}
+                                        onClick={() => onResendVerification(user.id)}
+                                        className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary-50 disabled:opacity-50"
+                                    >
+                                        <svg className={`h-3.5 w-3.5 ${sendingVerification === user.id ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                                        </svg>
+                                        Kirim Ulang
+                                    </button>
+                                )}
                                 <span className="text-xs text-neutral-400">{user.joined_at}</span>
                             </div>
                             <div className="mt-2 flex items-center gap-2 pl-[52px]">
@@ -198,13 +213,29 @@ export default function UserTable({ users, currentUserId, onDelete, onToggleActi
                                     </span>
                                 </td>
                                 <td className="whitespace-nowrap px-6 py-4">
-                                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                        user.is_verified
-                                            ? 'bg-success-light text-emerald-700 ring-1 ring-inset ring-success/20'
-                                            : 'bg-warning-light text-amber-700 ring-1 ring-inset ring-warning/20'
-                                    }`}>
-                                        {user.is_verified ? 'Terverifikasi' : 'Belum Verifikasi'}
-                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                            user.is_verified
+                                                ? 'bg-success-light text-emerald-700 ring-1 ring-inset ring-success/20'
+                                                : 'bg-warning-light text-amber-700 ring-1 ring-inset ring-warning/20'
+                                        }`}>
+                                            {user.is_verified ? 'Terverifikasi' : 'Belum Verifikasi'}
+                                        </span>
+                                        {!user.is_verified && onResendVerification && (
+                                            <button
+                                                type="button"
+                                                disabled={sendingVerification === user.id}
+                                                onClick={() => onResendVerification(user.id)}
+                                                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary-50 disabled:opacity-50"
+                                                title="Kirim ulang verifikasi email"
+                                            >
+                                                <svg className={`h-3.5 w-3.5 ${sendingVerification === user.id ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                                                </svg>
+                                                Kirim Ulang
+                                            </button>
+                                        )}
+                                    </div>
                                 </td>
                                 <td className="whitespace-nowrap px-6 py-4">
                                     <div className="flex items-center gap-2">

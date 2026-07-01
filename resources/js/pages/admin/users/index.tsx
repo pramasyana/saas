@@ -4,7 +4,7 @@ import AdminLayout from '@/layouts/AdminLayout';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import { useUsers, useDeleteUser, useToggleActive } from '@/features/users/hooks/useUsers';
+import { useUsers, useDeleteUser, useToggleActive, useResendVerification } from '@/features/users/hooks/useUsers';
 import UserTable from '@/features/users/components/UserTable';
 import UserDeleteDialog from '@/features/users/components/UserDeleteDialog';
 import { useToastStore } from '@/stores/toast';
@@ -97,6 +97,8 @@ export default function Users({ title, stats }: UsersPageProps) {
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
     const [togglingActive, setTogglingActive] = useState<number | null>(null);
+    const [sendingVerification, setSendingVerification] = useState<number | null>(null);
+    const resendMutation = useResendVerification();
 
     useEffect(() => {
         if (searchTimeout.current) clearTimeout(searchTimeout.current);
@@ -138,6 +140,21 @@ export default function Users({ title, stats }: UsersPageProps) {
             },
             onSuccess: () => {
                 addToast('success', 'Status berhasil diubah.');
+            },
+        });
+    }
+
+    function handleResendVerification(id: number) {
+        setSendingVerification(id);
+        resendMutation.mutate(id, {
+            onSettled: () => {
+                setSendingVerification(null);
+            },
+            onSuccess: (data) => {
+                addToast('success', data.message || 'Email verifikasi berhasil dikirim.');
+            },
+            onError: (err) => {
+                addToast('error', extractMessage(err) || 'Gagal mengirim email verifikasi.');
             },
         });
     }
@@ -268,6 +285,8 @@ export default function Users({ title, stats }: UsersPageProps) {
                             onDelete={openDelete}
                             onToggleActive={handleToggleActive}
                             togglingActive={togglingActive}
+                            onResendVerification={handleResendVerification}
+                            sendingVerification={sendingVerification}
                         />
                     )}
 

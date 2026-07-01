@@ -4,6 +4,7 @@ namespace App\Modules\Admin\Services;
 
 use App\Models\User;
 use App\Modules\Admin\Contracts\UserRepositoryInterface;
+use App\Modules\Notification\Models\EmailLog;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -83,6 +84,32 @@ class UserService
 
             return $user;
         });
+    }
+
+    public function resendVerification(int $id): void
+    {
+        $user = $this->findById($id);
+
+        if ($user->hasVerifiedEmail()) {
+            throw new \RuntimeException('Email sudah terverifikasi.');
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        Log::info('Verification email resent', [
+            'user_id' => $user->id,
+            'sent_by' => auth()->id(),
+        ]);
+    }
+
+    /** @return EmailLog[] */
+    public function getEmailLogs(int $userId): array
+    {
+        return EmailLog::where('user_id', $userId)
+            ->latest()
+            ->take(10)
+            ->get()
+            ->toArray();
     }
 
     public function delete(int $id): void
