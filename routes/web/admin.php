@@ -7,6 +7,7 @@ use App\Modules\Admin\Http\Controllers\SettingsController;
 use App\Modules\Admin\Http\Controllers\UserController;
 use App\Modules\Admin\Http\Controllers\VerificationController;
 use App\Modules\Pricing\Http\Controllers\PlanController;
+use App\Modules\Subscription\Http\Controllers\SubscriptionController as SubscriptionPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -28,5 +29,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/pricing', [PlanController::class, 'index'])->name('admin.pricing');
     Route::get('/admin/pricing/create', [PlanController::class, 'create'])->name('admin.pricing.create');
     Route::get('/admin/pricing/{id}/edit', [PlanController::class, 'edit'])->name('admin.pricing.edit');
+    Route::get('/admin/subscriptions', [SubscriptionPageController::class, 'index'])->name('admin.subscriptions');
     Route::post('/admin/logout', [AuthController::class, 'destroy'])->name('admin.logout');
 });
