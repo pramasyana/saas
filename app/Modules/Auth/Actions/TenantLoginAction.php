@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Modules\Admin\Actions;
+namespace App\Modules\Auth\Actions;
 
-use App\Modules\Admin\Http\Requests\LoginRequest;
+use App\Modules\Auth\Http\Requests\TenantLoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
-class LoginAction
+class TenantLoginAction
 {
-    public function execute(LoginRequest $request): RedirectResponse
+    public function execute(TenantLoginRequest $request): RedirectResponse
     {
         return DB::transaction(function () use ($request) {
-            $credentials = $request->only('email', 'password');
-
-            if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
                 throw ValidationException::withMessages([
                     'email' => __('auth.failed'),
                 ]);
@@ -44,7 +41,7 @@ class LoginAction
                 ]);
             }
 
-            if (! Auth::user()->is_admin) {
+            if (Auth::user()->is_admin) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
@@ -54,13 +51,7 @@ class LoginAction
                 ]);
             }
 
-            Log::info('Admin login successful', [
-                'user_id' => Auth::id(),
-                'email' => $request->email,
-                'ip' => $request->ip(),
-            ]);
-
-            return redirect()->intended(route('admin.dashboard'));
+            return redirect()->intended(route('tenant.dashboard'));
         });
     }
 }

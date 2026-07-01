@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Button from '@/atoms/Button';
 import DashboardMockup from '@/organisms/DashboardMockup';
@@ -52,9 +53,11 @@ export default function HeroSection() {
                             transition={{ duration: 0.5, delay: 0.2 }}
                             className="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:justify-start"
                         >
-                            <Button className="w-full sm:w-auto shadow-xl shadow-primary/25">
-                                Mulai Uji Coba Gratis
-                            </Button>
+                            <Link href="/register" className="w-full sm:w-auto">
+                                <Button className="w-full shadow-xl shadow-primary/25">
+                                    Mulai Uji Coba Gratis
+                                </Button>
+                            </Link>
                             <Button
                                 variant="secondary"
                                 className="w-full sm:w-auto"

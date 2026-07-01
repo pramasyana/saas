@@ -5,9 +5,10 @@ import Button from '@/atoms/Button';
 interface VerificationSuccessProps {
     title: string;
     message: string;
+    loginUrl?: string;
 }
 
-export default function VerificationSuccess({ title, message }: VerificationSuccessProps) {
+export default function VerificationSuccess({ title, message, loginUrl = '/admin/login' }: VerificationSuccessProps) {
     return (
         <>
             <Head title={title} />
@@ -21,7 +22,7 @@ export default function VerificationSuccess({ title, message }: VerificationSucc
                         </div>
                         <h1 className="text-xl font-bold text-neutral-900">{title}</h1>
                         <p className="mt-2 text-sm text-neutral-500">{message}</p>
-                        <Link href="/admin/login" className="mt-6 inline-block">
+                        <Link href={loginUrl} className="mt-6 inline-block">
                             <Button>Login Sekarang</Button>
                         </Link>
                     </div>

@@ -20,10 +20,13 @@ class VerificationController extends Controller
             abort(403, 'Link verifikasi tidak valid.');
         }
 
+        $loginUrl = $user->is_admin ? route('admin.login') : route('tenant.login');
+
         if ($user->hasVerifiedEmail()) {
             return Inertia::render('admin/verification-success', [
                 'title' => 'Email Terverifikasi',
                 'message' => 'Email Anda sudah diverifikasi sebelumnya.',
+                'loginUrl' => $loginUrl,
             ]);
         }
 
@@ -34,6 +37,7 @@ class VerificationController extends Controller
         return Inertia::render('admin/verification-success', [
             'title' => 'Email Terverifikasi',
             'message' => 'Selamat! Email Anda berhasil diverifikasi. Anda sekarang dapat login.',
+            'loginUrl' => $loginUrl,
         ]);
     }
 }

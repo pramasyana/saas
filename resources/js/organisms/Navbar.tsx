@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Button from '@/atoms/Button';
@@ -70,10 +71,12 @@ export default function Navbar() {
                         ))}
                     </ul>
                     <div className="ml-6 flex items-center gap-3">
-                        <button className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900">
+                        <Link href="/login" className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900">
                             Masuk
-                        </button>
-                        <Button size="sm">Mulai Uji Coba</Button>
+                        </Link>
+                        <Link href="/register">
+                            <Button size="sm">Mulai Uji Coba</Button>
+                        </Link>
                     </div>
                 </nav>
 
@@ -134,12 +137,14 @@ export default function Navbar() {
                         </ul>
                     </nav>
                     <hr className="my-4 border-border" />
-                    <button className="mb-3 block w-full rounded-lg px-3 py-2.5 text-center text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100">
+                    <Link href="/login" className="mb-3 block w-full rounded-lg px-3 py-2.5 text-center text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100">
                         Masuk
-                    </button>
-                    <Button size="sm" className="w-full">
-                        Mulai Uji Coba
-                    </Button>
+                    </Link>
+                    <Link href="/register">
+                        <Button size="sm" className="w-full">
+                            Mulai Uji Coba
+                        </Button>
+                    </Link>
                 </motion.div>
             )}
         </motion.header>

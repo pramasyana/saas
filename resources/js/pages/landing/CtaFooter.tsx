@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Button from '@/atoms/Button';
 
@@ -21,13 +22,15 @@ export default function CtaFooter() {
                         dalam satu tempat.
                     </p>
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                        <Button
-                            variant="primary"
-                            size="lg"
-                            className="bg-white text-primary hover:bg-white/90"
-                        >
-                            Mulai Uji Coba Gratis
-                        </Button>
+                        <Link href="/register">
+                            <Button
+                                variant="primary"
+                                size="lg"
+                                className="bg-white text-primary hover:bg-white/90"
+                            >
+                                Mulai Uji Coba Gratis
+                            </Button>
+                        </Link>
                         <Button
                             variant="outline"
                             size="lg"
