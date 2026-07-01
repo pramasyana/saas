@@ -2,6 +2,7 @@
 
 use App\Modules\Admin\Http\Controllers\AuthController;
 use App\Modules\Admin\Http\Controllers\DashboardController;
+use App\Modules\Admin\Http\Controllers\EmailLogController;
 use App\Modules\Admin\Http\Controllers\SettingsController;
 use App\Modules\Admin\Http\Controllers\UserController;
 use App\Modules\Admin\Http\Controllers\VerificationController;
@@ -22,5 +23,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
     Route::get('/admin/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.settings');
+    Route::get('/admin/email-logs', [EmailLogController::class, 'index'])->name('admin.email-logs');
     Route::post('/admin/logout', [AuthController::class, 'destroy'])->name('admin.logout');
 });
