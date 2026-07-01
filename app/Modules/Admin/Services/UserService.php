@@ -29,8 +29,11 @@ class UserService
     {
         return DB::transaction(function () use ($data) {
             $data['password'] = bcrypt($data['password']);
+            $data['email_verified_at'] = null;
 
             $user = $this->userRepository->create($data);
+
+            $user->sendEmailVerificationNotification();
 
             Log::info('User created', [
                 'user_id' => $user->id,
@@ -56,6 +59,25 @@ class UserService
 
             Log::info('User updated', [
                 'user_id' => $user->id,
+                'updated_by' => auth()->id(),
+            ]);
+
+            return $user;
+        });
+    }
+
+    public function toggleActive(int $id): User
+    {
+        return DB::transaction(function () use ($id) {
+            $user = $this->findById($id);
+
+            $user = $this->userRepository->update($user, [
+                'is_active' => ! $user->is_active,
+            ]);
+
+            Log::info('User active status toggled', [
+                'user_id' => $user->id,
+                'is_active' => $user->is_active,
                 'updated_by' => auth()->id(),
             ]);
 

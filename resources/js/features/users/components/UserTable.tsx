@@ -5,6 +5,8 @@ interface UserTableProps {
     users: User[];
     currentUserId?: number;
     onDelete: (user: User) => void;
+    onToggleActive: (id: number) => void;
+    togglingActive: number | null;
 }
 
 const avatarColors = [
@@ -33,7 +35,7 @@ function getInitials(name: string): string {
         .slice(0, 2);
 }
 
-export default function UserTable({ users, currentUserId, onDelete }: UserTableProps) {
+export default function UserTable({ users, currentUserId, onDelete, onToggleActive, togglingActive }: UserTableProps) {
     if (users.length === 0) {
         return (
             <div className="flex flex-col items-center gap-4 px-6 py-16">
@@ -56,6 +58,7 @@ export default function UserTable({ users, currentUserId, onDelete }: UserTableP
             <div className="divide-y divide-neutral-100 lg:hidden">
                 {users.map((user) => {
                     const isCurrentUser = user.id === currentUserId;
+                    const toggling = togglingActive === user.id;
                     return (
                         <div key={user.id} className="px-4 py-4 transition-colors hover:bg-neutral-50">
                             <div className="flex items-start justify-between">
@@ -99,7 +102,7 @@ export default function UserTable({ users, currentUserId, onDelete }: UserTableP
                                     )}
                                 </div>
                             </div>
-                            <div className="mt-3 flex items-center gap-3 pl-[52px]">
+                            <div className="mt-3 flex flex-wrap items-center gap-2 pl-[52px]">
                                 <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                                     user.is_admin
                                         ? 'bg-primary-50 text-primary ring-1 ring-inset ring-primary/10'
@@ -107,7 +110,29 @@ export default function UserTable({ users, currentUserId, onDelete }: UserTableP
                                 }`}>
                                     {user.is_admin ? 'Admin' : 'User'}
                                 </span>
+                                <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                                    user.is_verified
+                                        ? 'bg-success-light text-emerald-700 ring-1 ring-inset ring-success/20'
+                                        : 'bg-warning-light text-amber-700 ring-1 ring-inset ring-warning/20'
+                                }`}>
+                                    {user.is_verified ? 'Terverifikasi' : 'Belum Verifikasi'}
+                                </span>
                                 <span className="text-xs text-neutral-400">{user.joined_at}</span>
+                            </div>
+                            <div className="mt-2 flex items-center gap-2 pl-[52px]">
+                                <span className="text-xs text-neutral-500">Aktif</span>
+                                <button
+                                    type="button"
+                                    disabled={toggling}
+                                    onClick={() => onToggleActive(user.id)}
+                                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:opacity-50 ${
+                                        user.is_active ? 'bg-primary' : 'bg-neutral-300'
+                                    }`}
+                                >
+                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                                        user.is_active ? 'translate-x-4' : 'translate-x-0'
+                                    }`} />
+                                </button>
                             </div>
                         </div>
                     );
@@ -125,6 +150,12 @@ export default function UserTable({ users, currentUserId, onDelete }: UserTableP
                             Role
                         </th>
                         <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                            Verifikasi
+                        </th>
+                        <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                            Status
+                        </th>
+                        <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
                             Bergabung
                         </th>
                         <th className="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-neutral-500">
@@ -135,6 +166,7 @@ export default function UserTable({ users, currentUserId, onDelete }: UserTableP
                 <tbody className="divide-y divide-neutral-100 bg-white">
                     {users.map((user) => {
                         const isCurrentUser = user.id === currentUserId;
+                        const toggling = togglingActive === user.id;
                         return (
                             <tr key={user.id} className="transition-colors hover:bg-neutral-50">
                                 <td className="whitespace-nowrap px-6 py-4">
@@ -164,6 +196,34 @@ export default function UserTable({ users, currentUserId, onDelete }: UserTableP
                                         }`} />
                                         {user.is_admin ? 'Admin' : 'User'}
                                     </span>
+                                </td>
+                                <td className="whitespace-nowrap px-6 py-4">
+                                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                        user.is_verified
+                                            ? 'bg-success-light text-emerald-700 ring-1 ring-inset ring-success/20'
+                                            : 'bg-warning-light text-amber-700 ring-1 ring-inset ring-warning/20'
+                                    }`}>
+                                        {user.is_verified ? 'Terverifikasi' : 'Belum Verifikasi'}
+                                    </span>
+                                </td>
+                                <td className="whitespace-nowrap px-6 py-4">
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            type="button"
+                                            disabled={toggling}
+                                            onClick={() => onToggleActive(user.id)}
+                                            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:opacity-50 ${
+                                                user.is_active ? 'bg-primary' : 'bg-neutral-300'
+                                            }`}
+                                        >
+                                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                                                user.is_active ? 'translate-x-4' : 'translate-x-0'
+                                            }`} />
+                                        </button>
+                                        <span className="text-xs text-neutral-500">
+                                            {user.is_active ? 'Aktif' : 'Nonaktif'}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500">
                                     <div className="flex items-center gap-2">

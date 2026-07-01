@@ -4,7 +4,7 @@ import AdminLayout from '@/layouts/AdminLayout';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import { useUsers, useDeleteUser } from '@/features/users/hooks/useUsers';
+import { useUsers, useDeleteUser, useToggleActive } from '@/features/users/hooks/useUsers';
 import UserTable from '@/features/users/components/UserTable';
 import UserDeleteDialog from '@/features/users/components/UserDeleteDialog';
 import { useToastStore } from '@/stores/toast';
@@ -27,8 +27,14 @@ interface StatCard {
     bg: string;
 }
 
-function extractMessage(error: unknown): string {
+function extractMessage(error: unknown): string | undefined {
+    if (!error) return undefined;
+    if (error instanceof Error && 'response' in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        return axiosError.response?.data?.message ?? error.message;
+    }
     if (error instanceof Error) return error.message;
+    if (typeof error === 'string') return error;
     return 'Terjadi kesalahan.';
 }
 
@@ -90,6 +96,7 @@ export default function Users({ title, stats }: UsersPageProps) {
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
+    const [togglingActive, setTogglingActive] = useState<number | null>(null);
 
     useEffect(() => {
         if (searchTimeout.current) clearTimeout(searchTimeout.current);
@@ -104,6 +111,7 @@ export default function Users({ title, stats }: UsersPageProps) {
     const { data, isLoading, isError, error } = useUsers(filters);
     const deleteMutation = useDeleteUser();
 
+    const toggleMutation = useToggleActive();
     const deleteError = extractMessage(deleteMutation.error);
 
     const statCards: StatCard[] = [
@@ -120,6 +128,18 @@ export default function Users({ title, stats }: UsersPageProps) {
         setUserToDelete(user);
         deleteMutation.reset();
         setDeleteOpen(true);
+    }
+
+    function handleToggleActive(id: number) {
+        setTogglingActive(id);
+        toggleMutation.mutate(id, {
+            onSettled: () => {
+                setTogglingActive(null);
+            },
+            onSuccess: () => {
+                addToast('success', 'Status berhasil diubah.');
+            },
+        });
     }
 
     function handleDelete() {
@@ -242,7 +262,13 @@ export default function Users({ title, stats }: UsersPageProps) {
                     ) : isLoading ? (
                         <TableSkeleton />
                     ) : (
-                        <UserTable users={users} currentUserId={auth.user.id} onDelete={openDelete} />
+                        <UserTable
+                            users={users}
+                            currentUserId={auth.user.id}
+                            onDelete={openDelete}
+                            onToggleActive={handleToggleActive}
+                            togglingActive={togglingActive}
+                        />
                     )}
 
                     {meta && (

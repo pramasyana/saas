@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\User;
+use App\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 
 uses(RefreshDatabase::class);
 
@@ -47,6 +49,8 @@ test('admin can filter admin users via API', function () {
 });
 
 test('admin can create user via API', function () {
+    Notification::fake();
+
     $admin = User::factory()->create(['is_admin' => true]);
 
     $response = $this->actingAs($admin)
@@ -60,6 +64,11 @@ test('admin can create user via API', function () {
     $response->assertCreated()
         ->assertJsonPath('data.name', 'New User');
     $this->assertDatabaseHas('users', ['email' => 'new@test.com']);
+
+    $user = User::where('email', 'new@test.com')->first();
+    expect($user->email_verified_at)->toBeNull();
+
+    Notification::assertSentTo($user, VerifyEmail::class);
 });
 
 test('admin can update user via API', function () {

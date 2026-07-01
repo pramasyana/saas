@@ -8,5 +8,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/users', [UserController::class, 'store']);
     Route::get('/admin/users/{id}', [UserController::class, 'show']);
     Route::put('/admin/users/{id}', [UserController::class, 'update']);
+    Route::put('/admin/users/{id}/toggle-active', [UserController::class, 'toggleActive']);
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
 });

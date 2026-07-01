@@ -35,6 +35,10 @@ function deleteUser(id: number): Promise<void> {
     return api.delete(`/api/v1/admin/users/${id}`).then((res) => res.data);
 }
 
+function toggleActive(id: number): Promise<UserResponse> {
+    return api.put(`/api/v1/admin/users/${id}/toggle-active`).then((res) => res.data);
+}
+
 export function useUsers(filters: UserFilters) {
     return useQuery({
         queryKey: ['users', filters],
@@ -78,6 +82,17 @@ export function useDeleteUser() {
 
     return useMutation({
         mutationFn: (id: number) => deleteUser(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+        },
+    });
+}
+
+export function useToggleActive() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: number) => toggleActive(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
         },

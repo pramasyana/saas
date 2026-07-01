@@ -129,10 +129,10 @@ export default function Create({ title }: CreatePageProps) {
                             </div>
                             <ul className="mt-4 space-y-2.5">
                                 {[
-                                    'User akan menerima email konfigurasi akun jika fitur mail aktif.',
+                                    'User akan menerima email verifikasi setelah akun dibuat.',
+                                    'User hanya bisa login setelah email diverifikasi.',
+                                    'Link verifikasi berlaku selama 60 menit.',
                                     'Role Admin memberikan akses penuh ke seluruh panel.',
-                                    'Password dapat direset kapan saja oleh admin.',
-                                    'Email harus unik dan belum terdaftar di sistem.',
                                 ].map((info, i) => (
                                     <li key={i} className="flex items-start gap-2.5 text-xs text-neutral-600">
                                         <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-amber-50 text-[10px] font-bold text-amber-600">

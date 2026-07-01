@@ -24,6 +24,16 @@ class LoginAction
 
             $request->session()->regenerate();
 
+            if (Auth::user()->email_verified_at === null) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                throw ValidationException::withMessages([
+                    'email' => 'Email belum diverifikasi. Silakan cek email Anda.',
+                ]);
+            }
+
             if (! Auth::user()->is_admin) {
                 Auth::logout();
                 $request->session()->invalidate();

@@ -69,6 +69,17 @@ class UserController extends Controller
         ]);
     }
 
+    public function toggleActive(int $id): JsonResponse
+    {
+        $user = $this->userService->toggleActive($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => $user->is_active ? 'User diaktifkan.' : 'User dinonaktifkan.',
+            'data' => new UserResource($user),
+        ]);
+    }
+
     public function destroy(int $id): JsonResponse
     {
         try {
