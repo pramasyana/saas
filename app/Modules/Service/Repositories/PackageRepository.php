@@ -1,0 +1,91 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Service\Repositories;
+
+use App\Modules\Service\Contracts\PackageRepositoryInterface;
+use App\Modules\Service\Models\Package;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+
+class PackageRepository implements PackageRepositoryInterface
+{
+    public function paginate(string $tenantId, array $filters = [], int $perPage = 15): LengthAwarePaginator
+    {
+        $query = Package::where('tenant_id', $tenantId);
+
+        if (! empty($filters['search'])) {
+            $query->where(function ($q) use ($filters): void {
+                $q->where('name', 'like', "%{$filters['search']}%");
+            });
+        }
+
+        if (isset($filters['is_active'])) {
+            $query->where('is_active', filter_var($filters['is_active'], FILTER_VALIDATE_BOOLEAN));
+        }
+
+        return $query->with('services')
+            ->orderBy('name')
+            ->paginate($perPage);
+    }
+
+    public function findAllByTenant(string $tenantId): Collection
+    {
+        return Package::where('tenant_id', $tenantId)
+            ->where('is_active', true)
+            ->with('services')
+            ->get();
+    }
+
+    public function findById(string $id): ?Package
+    {
+        return Package::with('services')->find($id);
+    }
+
+    public function findOrFail(string $id): Package
+    {
+        return Package::with('services')->findOrFail($id);
+    }
+
+    public function create(array $data): Package
+    {
+        return Package::create($data);
+    }
+
+    public function update(Package $package, array $data): Package
+    {
+        $package->update($data);
+
+        return $package;
+    }
+
+    public function delete(Package $package): bool
+    {
+        return $package->delete();
+    }
+
+    public function syncServices(Package $package, array $services): void
+    {
+        $package->services()->sync(
+            collect($services)->mapWithKeys(fn (array $item, int $index) => [
+                $item['service_id'] => [
+                    'quantity' => $item['quantity'] ?? 1,
+                    'sort_order' => $item['sort_order'] ?? $index,
+                ],
+            ])->toArray()
+        );
+    }
+
+    public function countByTenant(string $tenantId): int
+    {
+        return Package::where('tenant_id', $tenantId)->count();
+    }
+
+    public function countActiveByTenant(string $tenantId): int
+    {
+        return Package::where('tenant_id', $tenantId)
+            ->where('is_active', true)
+            ->count();
+    }
+}

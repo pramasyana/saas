@@ -17,6 +17,12 @@ use App\Modules\Staff\Http\Controllers\Tenant\LeaveController;
 use App\Modules\Staff\Http\Controllers\Tenant\ScheduleController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffUserController;
+use App\Modules\Service\Http\Controllers\Tenant\CategoryController as ServiceCategoryController;
+use App\Modules\Service\Http\Controllers\Tenant\ServiceController as TenantServiceController;
+use App\Modules\Service\Http\Controllers\Tenant\PackageController as ServicePackageController;
+use App\Modules\Service\Http\Controllers\Tenant\AddonController as ServiceAddonController;
+use App\Modules\Service\Http\Controllers\Tenant\PricingRuleController as ServicePricingRuleController;
+use App\Modules\Service\Http\Controllers\Tenant\PromotionController as ServicePromotionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -47,6 +53,28 @@ Route::middleware('auth')->group(function () {
         Route::get('/customers/{id}/edit', [CrmCustomerController::class, 'edit'])->name('customers.edit');
         Route::get('/tags', [CrmTagController::class, 'index'])->name('tags');
         Route::get('/membership-tiers', [CrmMembershipTierController::class, 'index'])->name('membership-tiers');
+    });
+
+    // Service pages
+    Route::prefix('service')->name('tenant.service.')->group(function () {
+        Route::get('/categories', [ServiceCategoryController::class, 'index'])->name('categories');
+        Route::get('/categories/create', [ServiceCategoryController::class, 'create'])->name('categories.create');
+        Route::get('/categories/{id}/edit', [ServiceCategoryController::class, 'edit'])->name('categories.edit');
+        Route::get('/services', [TenantServiceController::class, 'index'])->name('services');
+        Route::get('/services/create', [TenantServiceController::class, 'create'])->name('services.create');
+        Route::get('/services/{id}/edit', [TenantServiceController::class, 'edit'])->name('services.edit');
+        Route::get('/packages', [ServicePackageController::class, 'index'])->name('packages');
+        Route::get('/packages/create', [ServicePackageController::class, 'create'])->name('packages.create');
+        Route::get('/packages/{id}/edit', [ServicePackageController::class, 'edit'])->name('packages.edit');
+        Route::get('/addons', [ServiceAddonController::class, 'index'])->name('addons');
+        Route::get('/addons/create', [ServiceAddonController::class, 'create'])->name('addons.create');
+        Route::get('/addons/{id}/edit', [ServiceAddonController::class, 'edit'])->name('addons.edit');
+        Route::get('/pricing-rules', [ServicePricingRuleController::class, 'index'])->name('pricing-rules');
+        Route::get('/pricing-rules/create', [ServicePricingRuleController::class, 'create'])->name('pricing-rules.create');
+        Route::get('/pricing-rules/{id}/edit', [ServicePricingRuleController::class, 'edit'])->name('pricing-rules.edit');
+        Route::get('/promotions', [ServicePromotionController::class, 'index'])->name('promotions');
+        Route::get('/promotions/create', [ServicePromotionController::class, 'create'])->name('promotions.create');
+        Route::get('/promotions/{id}/edit', [ServicePromotionController::class, 'edit'])->name('promotions.edit');
     });
 
     Route::prefix('staff')->name('tenant.staff.')->group(function () {

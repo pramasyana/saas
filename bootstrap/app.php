@@ -39,6 +39,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/tenant/crm.php'));
 
+            Route::middleware(['web', 'auth', 'tenant'])
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/tenant/service.php'));
+
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
