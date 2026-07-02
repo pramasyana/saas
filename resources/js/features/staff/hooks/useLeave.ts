@@ -37,6 +37,7 @@ export function useLeaves(filters: Filters) {
 
 export function useCreateLeave() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createLeave,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'leaves'] }),
@@ -45,6 +46,7 @@ export function useCreateLeave() {
 
 export function useUpdateLeaveStatus() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, status }: { id: string; status: string }) => updateLeaveStatus(id, status),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'leaves'] }),
@@ -53,6 +55,7 @@ export function useUpdateLeaveStatus() {
 
 export function useDeleteLeave() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteLeave,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'leaves'] }),

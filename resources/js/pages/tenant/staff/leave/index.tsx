@@ -1,17 +1,18 @@
 import { Head, Link } from '@inertiajs/react';
-import { useState, type ReactNode } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
+import { useState  } from 'react';
+import type {ReactNode} from 'react';
+import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Badge from '@/atoms/Badge';
-import Pagination from '@/molecules/Pagination';
-import DateRangePicker from '@/molecules/DateRangePicker';
+import LeaveDeleteDialog from '@/features/staff/components/LeaveDeleteDialog';
 import { useLeaves, useUpdateLeaveStatus, useDeleteLeave } from '@/features/staff/hooks/useLeave';
 import { useAllStaff } from '@/features/staff/hooks/useStaff';
-import { useToastStore } from '@/stores/toast';
 import type { Leave } from '@/features/staff/types';
-import LeaveDeleteDialog from '@/features/staff/components/LeaveDeleteDialog';
+import TenantLayout from '@/layouts/TenantLayout';
+import DateRangePicker from '@/molecules/DateRangePicker';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface Stats {
     total: number;
@@ -44,13 +45,24 @@ interface StatCard {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -127,7 +139,9 @@ export default function LeavePage({ title, stats }: LeavePageProps) {
         { label: 'Ditolak', value: stats.rejected, icon: statIcons.rejected, color: 'text-danger', bg: 'bg-danger-50' },
     ];
 
-    function handlePage(page: number) { setFilters((prev) => ({ ...prev, page })); }
+    function handlePage(page: number) {
+ setFilters((prev) => ({ ...prev, page })); 
+}
 
     function openDelete(leave: Leave) {
         setLeaveToDelete(leave);
@@ -136,7 +150,10 @@ export default function LeavePage({ title, stats }: LeavePageProps) {
     }
 
     function handleDelete() {
-        if (!leaveToDelete) return;
+        if (!leaveToDelete) {
+return;
+}
+
         deleteMutation.mutate(leaveToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);
@@ -174,6 +191,7 @@ export default function LeavePage({ title, stats }: LeavePageProps) {
     function calcDuration(start: string, end: string): number {
         const s = new Date(start + 'T00:00:00').getTime();
         const e = new Date(end + 'T00:00:00').getTime();
+
         return Math.floor((e - s) / (1000 * 60 * 60 * 24)) + 1;
     }
 
@@ -501,7 +519,9 @@ export default function LeavePage({ title, stats }: LeavePageProps) {
                 leave={leaveToDelete!}
                 deleting={deleteMutation.isPending}
                 error={deleteError}
-                onClose={() => { setDeleteOpen(false); setLeaveToDelete(null); deleteMutation.reset(); }}
+                onClose={() => {
+ setDeleteOpen(false); setLeaveToDelete(null); deleteMutation.reset(); 
+}}
                 onConfirm={handleDelete}
             />
         </TenantLayout>

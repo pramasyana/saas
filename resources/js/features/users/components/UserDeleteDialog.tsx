@@ -11,7 +11,9 @@ interface UserDeleteDialogProps {
 }
 
 export default function UserDeleteDialog({ open, user, deleting, error, onClose, onConfirm }: UserDeleteDialogProps) {
-    if (!open) return null;
+    if (!open) {
+return null;
+}
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

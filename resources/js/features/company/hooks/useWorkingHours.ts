@@ -8,6 +8,7 @@ export function useWorkingHours(branchId?: string | null) {
         queryFn: async () => {
             const params = branchId ? { branch_id: branchId } : {};
             const { data } = await api.get('/api/v1/company/working-hours', { params });
+
             return data.data ?? data;
         },
     });
@@ -15,9 +16,11 @@ export function useWorkingHours(branchId?: string | null) {
 
 export function useUpdateWorkingHours() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: async (payload: { branch_id?: string; hours: Partial<WorkingHour>[] }) => {
             const { data } = await api.put('/api/v1/company/working-hours', payload);
+
             return data;
         },
         onSuccess: () => {

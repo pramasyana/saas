@@ -1,15 +1,16 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
+import { useEffect, useRef, useState  } from 'react';
+import type {ReactNode} from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Pagination from '@/molecules/Pagination';
-import { useUsers, useDeleteUser, useToggleActive, useResendVerification } from '@/features/users/hooks/useUsers';
-import UserTable from '@/features/users/components/UserTable';
 import UserDeleteDialog from '@/features/users/components/UserDeleteDialog';
-import { useToastStore } from '@/stores/toast';
+import UserTable from '@/features/users/components/UserTable';
+import { useUsers, useDeleteUser, useToggleActive, useResendVerification } from '@/features/users/hooks/useUsers';
 import type { User, UserFilters } from '@/features/users/types';
+import AdminLayout from '@/layouts/AdminLayout';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface UsersPageProps {
     title: string;
@@ -29,13 +30,24 @@ interface StatCard {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -86,7 +98,7 @@ const statConfigs: Record<string, { color: string; bg: string }> = {
 };
 
 export default function Users({ title, stats }: UsersPageProps) {
-    const { auth } = usePage().props as { auth: { user: { id: number } } };
+    const { auth } = usePage().props as { auth: { user: { id: string } } };
     const addToast = useToastStore((s) => s.addToast);
     const [filters, setFilters] = useState<UserFilters>({
         page: 1,
@@ -97,17 +109,23 @@ export default function Users({ title, stats }: UsersPageProps) {
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
-    const [togglingActive, setTogglingActive] = useState<number | null>(null);
-    const [sendingVerification, setSendingVerification] = useState<number | null>(null);
+    const [togglingActive, setTogglingActive] = useState<string | null>(null);
+    const [sendingVerification, setSendingVerification] = useState<string | null>(null);
     const resendMutation = useResendVerification();
 
     useEffect(() => {
-        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
+
         searchTimeout.current = setTimeout(() => {
             setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
         }, 400);
+
         return () => {
-            if (searchTimeout.current) clearTimeout(searchTimeout.current);
+            if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
         };
     }, [searchInput]);
 
@@ -133,7 +151,7 @@ export default function Users({ title, stats }: UsersPageProps) {
         setDeleteOpen(true);
     }
 
-    function handleToggleActive(id: number) {
+    function handleToggleActive(id: string) {
         setTogglingActive(id);
         toggleMutation.mutate(id, {
             onSettled: () => {
@@ -145,7 +163,7 @@ export default function Users({ title, stats }: UsersPageProps) {
         });
     }
 
-    function handleResendVerification(id: number) {
+    function handleResendVerification(id: string) {
         setSendingVerification(id);
         resendMutation.mutate(id, {
             onSettled: () => {
@@ -161,7 +179,10 @@ export default function Users({ title, stats }: UsersPageProps) {
     }
 
     function handleDelete() {
-        if (!userToDelete) return;
+        if (!userToDelete) {
+return;
+}
+
         deleteMutation.mutate(userToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);

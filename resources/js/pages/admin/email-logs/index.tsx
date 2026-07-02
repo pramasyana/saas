@@ -1,13 +1,14 @@
 import { Head } from '@inertiajs/react';
-import { useState, useRef, useEffect, type ReactNode } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
+import { useState, useRef, useEffect  } from 'react';
+import type {ReactNode} from 'react';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Pagination from '@/molecules/Pagination';
 import { useEmailLogs, useClearOldEmailLogs } from '@/features/email-logs/hooks/useEmailLogs';
-import { useToastStore } from '@/stores/toast';
-import { useDebounce } from '@/hooks/useDebounce';
 import type { EmailLog, EmailLogFilters } from '@/features/email-logs/types';
+import { useDebounce } from '@/hooks/useDebounce';
+import AdminLayout from '@/layouts/AdminLayout';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface EmailLogsPageProps {
     title: string;
@@ -38,22 +39,40 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
 function formatRelativeTime(iso: string): string {
     const diff = Date.now() - new Date(iso).getTime();
     const seconds = Math.floor(diff / 1000);
-    if (seconds < 60) return 'Baru saja';
+
+    if (seconds < 60) {
+return 'Baru saja';
+}
+
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} menit lalu`;
+
+    if (minutes < 60) {
+return `${minutes} menit lalu`;
+}
+
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} jam lalu`;
+
+    if (hours < 24) {
+return `${hours} jam lalu`;
+}
+
     const days = Math.floor(hours / 24);
-    if (days < 7) return `${days} hari lalu`;
+
+    if (days < 7) {
+return `${days} hari lalu`;
+}
+
     return new Date(iso).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 

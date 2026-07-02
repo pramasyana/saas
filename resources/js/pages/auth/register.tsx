@@ -28,16 +28,37 @@ function Spinner() {
 function PasswordStrength({ password }: { password: string }) {
     const strength = useMemo(() => {
         let score = 0;
-        if (password.length >= 8) score++;
-        if (password.length >= 12) score++;
-        if (/[A-Z]/.test(password)) score++;
-        if (/[a-z]/.test(password)) score++;
-        if (/[0-9]/.test(password)) score++;
-        if (/[^A-Za-z0-9]/.test(password)) score++;
+
+        if (password.length >= 8) {
+score++;
+}
+
+        if (password.length >= 12) {
+score++;
+}
+
+        if (/[A-Z]/.test(password)) {
+score++;
+}
+
+        if (/[a-z]/.test(password)) {
+score++;
+}
+
+        if (/[0-9]/.test(password)) {
+score++;
+}
+
+        if (/[^A-Za-z0-9]/.test(password)) {
+score++;
+}
+
         return score;
     }, [password]);
 
-    if (!password) return null;
+    if (!password) {
+return null;
+}
 
     const labels = ['Lemah', 'Cukup', 'Sedang', 'Baik', 'Kuat', 'Sangat Kuat'];
     const colors = [
@@ -154,11 +175,18 @@ export default function Register() {
     const selectedPlan = plans.find((p) => p.id === data.plan_id);
 
     function getPriceDisplay() {
-        if (!selectedPlan) return '';
-        if (selectedPlan.price_monthly === 0) return 'Gratis';
+        if (!selectedPlan) {
+return '';
+}
+
+        if (selectedPlan.price_monthly === 0) {
+return 'Gratis';
+}
+
         if (data.billing_interval === 'yearly' && selectedPlan.price_yearly) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(selectedPlan.price_yearly) + '/thn';
         }
+
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(selectedPlan.price_monthly) + '/bln';
     }
 

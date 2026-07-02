@@ -46,6 +46,7 @@ export function useAllStaff() {
 
 export function useCreateStaff() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createStaff,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff'] }),
@@ -54,6 +55,7 @@ export function useCreateStaff() {
 
 export function useUpdateStaff() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: StaffFormData }) => updateStaff(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff'] }),
@@ -62,6 +64,7 @@ export function useUpdateStaff() {
 
 export function useDeleteStaff() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteStaff,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff'] }),

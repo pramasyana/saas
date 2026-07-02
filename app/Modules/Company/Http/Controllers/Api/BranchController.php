@@ -26,6 +26,7 @@ class BranchController extends Controller
             $filters = $request->only(['search', 'is_active', 'sort', 'direction']);
             $filters['per_page'] = 1000;
             $branches = $this->companyService->getBranches($tenantId, $filters);
+
             return response()->json([
                 'status' => 'success',
                 'data' => BranchResource::collection($branches->items()),

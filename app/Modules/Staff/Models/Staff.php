@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Staff\Models;
 
+use App\Modules\Company\Models\Branch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -71,6 +72,6 @@ class Staff extends Model
 
     public function branch(): BelongsTo
     {
-        return $this->belongsTo(\App\Modules\Company\Models\Branch::class, 'branch_id');
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }

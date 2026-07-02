@@ -11,7 +11,9 @@ interface CommissionDeleteDialogProps {
 }
 
 export default function CommissionDeleteDialog({ open, commission, deleting, error, onClose, onConfirm }: CommissionDeleteDialogProps) {
-    if (!open) return null;
+    if (!open) {
+return null;
+}
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

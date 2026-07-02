@@ -23,9 +23,6 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware('web')
                 ->group(base_path('routes/web/auth.php'));
 
-            Route::middleware('web')
-                ->group(base_path('routes/web/tenant.php'));
-
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
@@ -53,14 +50,6 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware('api')
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/public.php'));
-
-            Route::middleware('web')
-                ->prefix('api/v1')
-                ->group(base_path('routes/api/v1/tenant/staff.php'));
-
-            Route::middleware('web')
-                ->prefix('api/v1')
-                ->group(base_path('routes/api/v1/tenant/company.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

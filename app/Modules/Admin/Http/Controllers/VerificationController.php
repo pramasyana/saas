@@ -12,7 +12,7 @@ use Inertia\Response;
 
 class VerificationController extends Controller
 {
-    public function verify(Request $request, int $id, string $hash): RedirectResponse|Response
+    public function verify(Request $request, string $id, string $hash): RedirectResponse|Response
     {
         $user = User::findOrFail($id);
 

@@ -3,12 +3,12 @@ import type { User } from '@/features/users/types';
 
 interface UserTableProps {
     users: User[];
-    currentUserId?: number;
+    currentUserId?: string;
     onDelete: (user: User) => void;
-    onToggleActive: (id: number) => void;
-    togglingActive: number | null;
-    onResendVerification?: (id: number) => void;
-    sendingVerification?: number | null;
+    onToggleActive: (id: string) => void;
+    togglingActive: string | null;
+    onResendVerification?: (id: string) => void;
+    sendingVerification?: string | null;
 }
 
 const avatarColors = [
@@ -22,9 +22,11 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
@@ -61,6 +63,7 @@ export default function UserTable({ users, currentUserId, onDelete, onToggleActi
                 {users.map((user) => {
                     const isCurrentUser = user.id === currentUserId;
                     const toggling = togglingActive === user.id;
+
                     return (
                         <div key={user.id} className="px-4 py-4 transition-colors hover:bg-neutral-50">
                             <div className="flex items-start justify-between">
@@ -193,6 +196,7 @@ export default function UserTable({ users, currentUserId, onDelete, onToggleActi
                     {users.map((user) => {
                         const isCurrentUser = user.id === currentUserId;
                         const toggling = togglingActive === user.id;
+
                         return (
                             <tr key={user.id} className="transition-colors hover:bg-neutral-50">
                                 <td className="whitespace-nowrap px-6 py-4">

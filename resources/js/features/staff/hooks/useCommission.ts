@@ -36,6 +36,7 @@ export function useCommissions(filters: Filters) {
 
 export function useCreateCommission() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createCommission,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'commissions'] }),
@@ -44,6 +45,7 @@ export function useCreateCommission() {
 
 export function useUpdateCommission() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: CommissionFormData }) => updateCommission(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'commissions'] }),
@@ -52,6 +54,7 @@ export function useUpdateCommission() {
 
 export function useDeleteCommission() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteCommission,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'commissions'] }),

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/axios';
 import type { EmailLog, EmailLogFilters } from '@/features/email-logs/types';
 import type { PaginationMeta } from '@/features/users/types';
+import api from '@/lib/axios';
 
 interface EmailLogsResponse {
     status: string;

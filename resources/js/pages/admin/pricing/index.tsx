@@ -1,13 +1,13 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Pagination from '@/molecules/Pagination';
 import { usePlans, useTogglePopular, useDeletePlan } from '@/features/pricing/hooks/usePlans';
-import { useToastStore } from '@/stores/toast';
-import { useDebounce } from '@/hooks/useDebounce';
 import type { PlanFilters } from '@/features/pricing/types';
+import { useDebounce } from '@/hooks/useDebounce';
+import AdminLayout from '@/layouts/AdminLayout';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface PricingPageProps {
     title: string;
@@ -78,7 +78,10 @@ export default function Pricing({ title, stats }: PricingPageProps) {
     }
 
     function handleDelete() {
-        if (!deleteTarget) return;
+        if (!deleteTarget) {
+return;
+}
+
         deleteMutation.mutate(deleteTarget.id, {
             onSuccess: () => {
                 setDeleteTarget(null);
@@ -229,6 +232,7 @@ export default function Pricing({ title, stats }: PricingPageProps) {
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {plans.map((plan) => {
                         const visibleFeatures = plan.features.filter(f => !(f.definition.type === 'boolean' && f.value !== 'true'));
+
                         return (
                             <div
                                 key={plan.id}

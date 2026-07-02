@@ -2,7 +2,6 @@
 
 namespace App\Modules\Notification\Models;
 
-use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

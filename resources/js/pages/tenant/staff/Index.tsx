@@ -1,16 +1,17 @@
 import { Head, Link } from '@inertiajs/react';
-import { useEffect, useState, type ReactNode } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
+import { useEffect, useState  } from 'react';
+import type {ReactNode} from 'react';
+import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Badge from '@/atoms/Badge';
-import Pagination from '@/molecules/Pagination';
-import { useStaff, useDeleteStaff } from '@/features/staff/hooks/useStaff';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
-import { useToastStore } from '@/stores/toast';
-import type { Staff } from '@/features/staff/types';
 import StaffDeleteDialog from '@/features/staff/components/StaffDeleteDialog';
+import { useStaff, useDeleteStaff } from '@/features/staff/hooks/useStaff';
+import type { Staff } from '@/features/staff/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface Stats {
     total: number;
@@ -38,13 +39,24 @@ interface StatCard {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -63,9 +75,11 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
@@ -110,6 +124,7 @@ export default function StaffIndexPage({ title, stats }: StaffIndexPageProps) {
         const timer = setTimeout(() => {
             setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
         }, 400);
+
         return () => clearTimeout(timer);
     }, [searchInput]);
 
@@ -128,7 +143,9 @@ export default function StaffIndexPage({ title, stats }: StaffIndexPageProps) {
         { label: 'Cabang', value: branches.length, icon: statIcons.branch, color: 'text-amber-600', bg: 'bg-amber-50' },
     ];
 
-    function handlePage(page: number) { setFilters((prev) => ({ ...prev, page })); }
+    function handlePage(page: number) {
+ setFilters((prev) => ({ ...prev, page })); 
+}
 
     function openDelete(staff: Staff) {
         setStaffToDelete(staff);
@@ -136,7 +153,10 @@ export default function StaffIndexPage({ title, stats }: StaffIndexPageProps) {
     }
 
     function handleDelete() {
-        if (!staffToDelete) return;
+        if (!staffToDelete) {
+return;
+}
+
         deleteMutation.mutate(staffToDelete.id, {
             onSuccess: () => {
                 setStaffToDelete(null);
@@ -427,7 +447,9 @@ export default function StaffIndexPage({ title, stats }: StaffIndexPageProps) {
                 staff={staffToDelete!}
                 deleting={deleteMutation.isPending}
                 error={deleteError}
-                onClose={() => { setStaffToDelete(null); deleteMutation.reset(); }}
+                onClose={() => {
+ setStaffToDelete(null); deleteMutation.reset(); 
+}}
                 onConfirm={handleDelete}
             />
         </TenantLayout>

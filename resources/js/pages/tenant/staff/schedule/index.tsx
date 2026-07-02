@@ -1,19 +1,19 @@
 import { Head, Link } from '@inertiajs/react';
-import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import TenantLayout from '@/layouts/TenantLayout';
+import { useEffect, useRef, useState } from 'react';
+import Badge from '@/atoms/Badge';
+import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Button from '@/atoms/Button';
-import Badge from '@/atoms/Badge';
-import { useSchedules, useUpdateSchedules } from '@/features/staff/hooks/useSchedule';
-import { useAllStaff } from '@/features/staff/hooks/useStaff';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
 import { useWorkingHours } from '@/features/company/hooks/useWorkingHours';
-import { useToastStore } from '@/stores/toast';
-import type { StaffSchedule } from '@/features/staff/types';
 import type { WorkingHour } from '@/features/company/types';
+import { useSchedules, useUpdateSchedules } from '@/features/staff/hooks/useSchedule';
+import { useAllStaff } from '@/features/staff/hooks/useStaff';
+import type { StaffSchedule } from '@/features/staff/types';
+import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
+import { useToastStore } from '@/stores/toast';
 
 const DAY_LABELS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
@@ -33,20 +33,42 @@ function defaultSchedules(): StaffSchedule[] {
 
 function getSummary(schedules: StaffSchedule[]): string {
     const activeDays = schedules.filter((s) => s.is_active);
-    if (activeDays.length === 0) return 'Tidak bekerja';
-    if (activeDays.length === 7) return 'Bekerja setiap hari';
+
+    if (activeDays.length === 0) {
+return 'Tidak bekerja';
+}
+
+    if (activeDays.length === 7) {
+return 'Bekerja setiap hari';
+}
+
     const dayNames = activeDays.map((s) => DAY_LABELS[s.day_of_week].slice(0, 3));
-    if (activeDays.length <= 3) return `Bekerja: ${dayNames.join(', ')}`;
+
+    if (activeDays.length <= 3) {
+return `Bekerja: ${dayNames.join(', ')}`;
+}
+
     return `Bekerja ${activeDays.length} hari/minggu`;
 }
 
 function getBranchSummary(hours: WorkingHour[]): { openCount: number; summary: string } {
     const openDays = hours.filter((h) => h.is_open);
     const count = openDays.length;
-    if (openDays.length === 0) return { openCount: count, summary: 'Tutup setiap hari' };
-    if (openDays.length === 7) return { openCount: count, summary: 'Buka setiap hari' };
+
+    if (openDays.length === 0) {
+return { openCount: count, summary: 'Tutup setiap hari' };
+}
+
+    if (openDays.length === 7) {
+return { openCount: count, summary: 'Buka setiap hari' };
+}
+
     const dayNames = openDays.map((h) => DAY_LABELS[h.day_of_week].slice(0, 3));
-    if (openDays.length <= 3) return { openCount: count, summary: `Buka: ${dayNames.join(', ')}` };
+
+    if (openDays.length <= 3) {
+return { openCount: count, summary: `Buka: ${dayNames.join(', ')}` };
+}
+
     return { openCount: count, summary: `Buka ${openDays.length} hari/minggu` };
 }
 
@@ -99,6 +121,7 @@ export default function StaffSchedulePage() {
         if (schedules.length > 0) {
             const merged = DAY_LABELS.map((_, i) => {
                 const existing = schedules.find((s: StaffSchedule) => s.day_of_week === i);
+
                 return existing || { staff_id: selectedStaff, day_of_week: i, is_active: true, start_time: '08:00', end_time: '17:00' };
             });
             setLocalSchedules(merged);
@@ -125,7 +148,10 @@ export default function StaffSchedulePage() {
     }
 
     function handleSave() {
-        if (!selectedStaff) return;
+        if (!selectedStaff) {
+return;
+}
+
         mutation.mutate(
             { staff_id: selectedStaff, schedules: localSchedules },
             {

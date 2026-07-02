@@ -15,7 +15,7 @@ class StaffRepository implements StaffRepositoryInterface
     {
         $query = Staff::where('tenant_id', $tenantId);
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters): void {
                 $q->where('name', 'like', "%{$filters['search']}%")
                     ->orWhere('email', 'like', "%{$filters['search']}%")
@@ -64,6 +64,7 @@ class StaffRepository implements StaffRepositoryInterface
     public function update(Staff $staff, array $data): Staff
     {
         $staff->update($data);
+
         return $staff;
     }
 

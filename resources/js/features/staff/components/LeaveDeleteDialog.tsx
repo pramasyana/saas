@@ -11,7 +11,9 @@ interface LeaveDeleteDialogProps {
 }
 
 export default function LeaveDeleteDialog({ open, leave, deleting, error, onClose, onConfirm }: LeaveDeleteDialogProps) {
-    if (!open) return null;
+    if (!open) {
+return null;
+}
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

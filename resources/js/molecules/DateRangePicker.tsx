@@ -32,6 +32,7 @@ export default function DateRangePicker({
     function handleFromChange(e: React.ChangeEvent<HTMLInputElement>) {
         const newFrom = e.target.value;
         onFromChange(newFrom);
+
         if (to && newFrom && to < newFrom) {
             onToChange('');
         }
@@ -39,7 +40,11 @@ export default function DateRangePicker({
 
     function handleToChange(e: React.ChangeEvent<HTMLInputElement>) {
         const newTo = e.target.value;
-        if (from && newTo && newTo < from) return;
+
+        if (from && newTo && newTo < from) {
+return;
+}
+
         onToChange(newTo);
     }
 

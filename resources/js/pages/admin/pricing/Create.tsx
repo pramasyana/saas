@@ -1,9 +1,10 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState, type FormEvent } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
+import { useState  } from 'react';
+import type {FormEvent} from 'react';
 import { useCreatePlan } from '@/features/pricing/hooks/usePlans';
-import { useToastStore } from '@/stores/toast';
 import type { FeatureDefinition, PlanFormData } from '@/features/pricing/types';
+import AdminLayout from '@/layouts/AdminLayout';
+import { useToastStore } from '@/stores/toast';
 
 interface CreatePlanPageProps {
     title: string;
@@ -30,6 +31,7 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
         feature_definitions.forEach((fd) => {
             initial[fd.id] = fd.default_value ?? '';
         });
+
         return initial;
     });
 
@@ -240,7 +242,10 @@ export default function CreatePlan({ title, feature_definitions }: CreatePlanPag
                                 <div className="p-6">
                                     {categories.map((category) => {
                                         const catDefs = feature_definitions.filter((fd) => fd.category === category);
-                                        if (catDefs.length === 0) return null;
+
+                                        if (catDefs.length === 0) {
+return null;
+}
 
                                         return (
                                             <div key={category} className="mb-8 last:mb-0">

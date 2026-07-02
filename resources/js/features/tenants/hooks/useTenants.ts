@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/axios';
 import type { Tenant, TenantFilters, TenantFormData, PaginationMeta } from '@/features/tenants/types';
+import api from '@/lib/axios';
 
 interface TenantsResponse {
     status: string;

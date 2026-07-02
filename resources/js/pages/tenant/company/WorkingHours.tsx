@@ -1,14 +1,14 @@
 import { Head, Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
 import WorkingHourEditor from '@/features/company/components/WorkingHourEditor';
-import { useWorkingHours, useUpdateWorkingHours } from '@/features/company/hooks/useWorkingHours';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
-import { useToastStore } from '@/stores/toast';
+import { useWorkingHours, useUpdateWorkingHours } from '@/features/company/hooks/useWorkingHours';
 import type { WorkingHour } from '@/features/company/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import { useToastStore } from '@/stores/toast';
 
 const DAY_LABELS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
@@ -23,10 +23,21 @@ function defaultHours(): WorkingHour[] {
 
 function getSummary(hours: { day_of_week: number; is_open: boolean; open_time?: string | null }[]): string {
     const openDays = hours.filter((h) => h.is_open);
-    if (openDays.length === 0) return 'Tutup setiap hari';
-    if (openDays.length === 7) return 'Buka setiap hari';
+
+    if (openDays.length === 0) {
+return 'Tutup setiap hari';
+}
+
+    if (openDays.length === 7) {
+return 'Buka setiap hari';
+}
+
     const dayNames = openDays.map((h) => DAY_LABELS[h.day_of_week].slice(0, 3));
-    if (openDays.length <= 3) return `Buka: ${dayNames.join(', ')}`;
+
+    if (openDays.length <= 3) {
+return `Buka: ${dayNames.join(', ')}`;
+}
+
     return `Buka ${openDays.length} hari/minggu`;
 }
 

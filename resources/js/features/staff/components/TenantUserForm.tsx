@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from 'react';
+import type { FormEvent} from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@/atoms/Button';
 import type { TenantUser, TenantUserFormData } from '@/features/staff/types';
 import { cn } from '@/lib/utils';
@@ -25,11 +26,24 @@ const checks: PasswordCheck[] = [
 ];
 
 function getStrength(pw: string): { score: number; label: string; color: string; width: string } {
-    if (!pw) return { score: 0, label: '', color: '', width: '0%' };
+    if (!pw) {
+return { score: 0, label: '', color: '', width: '0%' };
+}
+
     const passed = checks.filter((c) => c.test(pw)).length;
-    if (passed <= 1) return { score: 1, label: 'Lemah', color: 'bg-danger', width: '25%' };
-    if (passed <= 2) return { score: 2, label: 'Sedang', color: 'bg-warning', width: '50%' };
-    if (passed <= 3) return { score: 3, label: 'Baik', color: 'bg-primary', width: '75%' };
+
+    if (passed <= 1) {
+return { score: 1, label: 'Lemah', color: 'bg-danger', width: '25%' };
+}
+
+    if (passed <= 2) {
+return { score: 2, label: 'Sedang', color: 'bg-warning', width: '50%' };
+}
+
+    if (passed <= 3) {
+return { score: 3, label: 'Baik', color: 'bg-primary', width: '75%' };
+}
+
     return { score: 4, label: 'Kuat', color: 'bg-success', width: '100%' };
 }
 
@@ -59,10 +73,12 @@ export default function TenantUserForm({ user, saving, errors = {}, onSave, onCa
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         const payload = { ...form };
+
         if (user && !payload.password) {
             delete payload.password;
             delete payload.password_confirmation;
         }
+
         onSave(payload);
     }
 
@@ -84,6 +100,7 @@ export default function TenantUserForm({ user, saving, errors = {}, onSave, onCa
         hint?: string,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">
@@ -117,6 +134,7 @@ export default function TenantUserForm({ user, saving, errors = {}, onSave, onCa
         required?: boolean,
     ) {
         const isConfirm = field === 'password_confirmation';
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">{label}</label>
@@ -288,6 +306,7 @@ export default function TenantUserForm({ user, saving, errors = {}, onSave, onCa
                                     <div className="grid gap-1.5 sm:grid-cols-2">
                                         {checks.map((check) => {
                                             const passed = check.test(pw);
+
                                             return (
                                                 <div key={check.key} className="flex items-center gap-2 text-xs">
                                                     <div className={cn(

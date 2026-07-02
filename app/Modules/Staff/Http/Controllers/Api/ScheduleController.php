@@ -20,7 +20,7 @@ class ScheduleController extends Controller
     public function index(Request $request): JsonResponse
     {
         $staffId = $request->input('staff_id');
-        if (!$staffId) {
+        if (! $staffId) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Parameter staff_id wajib diisi.',

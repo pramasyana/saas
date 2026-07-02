@@ -9,7 +9,7 @@ use App\Modules\Auth\Contracts\AuthUserRepositoryInterface;
 
 class AuthUserRepository implements AuthUserRepositoryInterface
 {
-    public function findById(int $id): ?User
+    public function findById(string $id): ?User
     {
         return User::find($id);
     }

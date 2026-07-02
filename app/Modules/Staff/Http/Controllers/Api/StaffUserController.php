@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 class StaffUserController extends Controller
 {
@@ -71,7 +70,7 @@ class StaffUserController extends Controller
         ], 201);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(string $id): JsonResponse
     {
         $tenantId = auth()->user()->tenant_id;
         $user = User::where('tenant_id', $tenantId)->findOrFail($id);
@@ -83,7 +82,7 @@ class StaffUserController extends Controller
         ]);
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         $tenantId = auth()->user()->tenant_id;
         $user = User::where('tenant_id', $tenantId)->findOrFail($id);
@@ -95,7 +94,7 @@ class StaffUserController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
@@ -110,7 +109,7 @@ class StaffUserController extends Controller
         ]);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         $tenantId = auth()->user()->tenant_id;
         $user = User::where('tenant_id', $tenantId)->findOrFail($id);

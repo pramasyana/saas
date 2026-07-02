@@ -14,6 +14,7 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
         if (typeof window !== 'undefined') {
             return localStorage.getItem(STORAGE_KEY) === 'true';
         }
+
         return false;
     })(),
     mobileOpen: false,
@@ -21,6 +22,7 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
         set((state) => {
             const next = !state.collapsed;
             localStorage.setItem(STORAGE_KEY, String(next));
+
             return { collapsed: next };
         }),
     setMobileOpen: (open) => set({ mobileOpen: open }),

@@ -2,14 +2,14 @@ import { Head, Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
 import FadeIn from '@/atoms/FadeIn';
 import CommissionForm from '@/features/staff/components/CommissionForm';
 import { useUpdateCommission } from '@/features/staff/hooks/useCommission';
 import { useAllStaff } from '@/features/staff/hooks/useStaff';
-import { useToastStore } from '@/stores/toast';
-import { cn } from '@/lib/utils';
 import type { Commission, CommissionFormData } from '@/features/staff/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import { cn } from '@/lib/utils';
+import { useToastStore } from '@/stores/toast';
 
 interface EditPageProps {
     title: string;
@@ -19,13 +19,16 @@ interface EditPageProps {
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
+
         if (data.errors && typeof data.errors === 'object') {
             return data.errors as Record<string, string[]>;
         }
+
         if (data.message && typeof data.message === 'string') {
             return { _general: [data.message] };
         }
     }
+
     return {};
 }
 

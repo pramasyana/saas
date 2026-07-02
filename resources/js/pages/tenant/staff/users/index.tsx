@@ -1,15 +1,16 @@
 import { Head, Link } from '@inertiajs/react';
-import { useEffect, useState, type ReactNode } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
+import { useEffect, useState  } from 'react';
+import type {ReactNode} from 'react';
+import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
-import Badge from '@/atoms/Badge';
 import Select from '@/atoms/Select';
-import Pagination from '@/molecules/Pagination';
-import { useTenantUsers, useDeleteTenantUser } from '@/features/staff/hooks/useTenantUsers';
-import { useToastStore } from '@/stores/toast';
-import type { TenantUser } from '@/features/staff/types';
 import TenantUserDeleteDialog from '@/features/staff/components/TenantUserDeleteDialog';
+import { useTenantUsers, useDeleteTenantUser } from '@/features/staff/hooks/useTenantUsers';
+import type { TenantUser } from '@/features/staff/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface Stats {
     total: number;
@@ -38,13 +39,24 @@ interface StatCard {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -63,9 +75,11 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
@@ -111,6 +125,7 @@ export default function TenantUsersPage({ title, stats }: UsersPageProps) {
         const timer = setTimeout(() => {
             setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
         }, 400);
+
         return () => clearTimeout(timer);
     }, [searchInput]);
 
@@ -128,7 +143,9 @@ export default function TenantUsersPage({ title, stats }: UsersPageProps) {
         { label: 'Baru Bulan Ini', value: stats.new_this_month, icon: statIcons.trending, color: 'text-amber-600', bg: 'bg-amber-50' },
     ];
 
-    function handlePage(page: number) { setFilters((prev) => ({ ...prev, page })); }
+    function handlePage(page: number) {
+ setFilters((prev) => ({ ...prev, page })); 
+}
 
     function openDelete(user: TenantUser) {
         setUserToDelete(user);
@@ -137,7 +154,10 @@ export default function TenantUsersPage({ title, stats }: UsersPageProps) {
     }
 
     function handleDelete() {
-        if (!userToDelete) return;
+        if (!userToDelete) {
+return;
+}
+
         deleteMutation.mutate(userToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);
@@ -438,7 +458,9 @@ export default function TenantUsersPage({ title, stats }: UsersPageProps) {
                 user={userToDelete!}
                 deleting={deleteMutation.isPending}
                 error={deleteError}
-                onClose={() => { setDeleteOpen(false); setUserToDelete(null); deleteMutation.reset(); }}
+                onClose={() => {
+ setDeleteOpen(false); setUserToDelete(null); deleteMutation.reset(); 
+}}
                 onConfirm={handleDelete}
             />
         </TenantLayout>

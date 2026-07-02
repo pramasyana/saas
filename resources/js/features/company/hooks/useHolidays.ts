@@ -41,6 +41,7 @@ export function useHolidays(filters: HolidaysFilters = {}) {
 
 export function useCreateHoliday() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: (data: HolidayFormData) => createHoliday(data),
         onSuccess: () => {
@@ -51,6 +52,7 @@ export function useCreateHoliday() {
 
 export function useUpdateHoliday() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: HolidayFormData }) => updateHoliday(id, data),
         onSuccess: () => {
@@ -61,6 +63,7 @@ export function useUpdateHoliday() {
 
 export function useDeleteHoliday() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: (id: string) => deleteHoliday(id),
         onSuccess: () => {

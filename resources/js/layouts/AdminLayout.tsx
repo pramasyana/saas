@@ -1,8 +1,8 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { type ReactNode } from 'react';
+import type {ReactNode} from 'react';
+import ToastContainer from '@/atoms/Toast';
 import { cn } from '@/lib/utils';
 import { useSidebarStore } from '@/stores/sidebar';
-import ToastContainer from '@/atoms/Toast';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -88,6 +88,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         if (href === '/admin/dashboard') {
             return url === '/admin/dashboard';
         }
+
         return url.startsWith(href);
     }
 
@@ -125,6 +126,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     <nav className="space-y-0.5">
                         {navItems.map((item) => {
                             const active = isActive(item.href);
+
                             return (
                                 <Link
                                     key={item.href}

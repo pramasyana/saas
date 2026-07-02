@@ -9,6 +9,8 @@ use App\Modules\Staff\Contracts\CommissionRepositoryInterface;
 use App\Modules\Staff\Contracts\LeaveRepositoryInterface;
 use App\Modules\Staff\Contracts\ScheduleRepositoryInterface;
 use App\Modules\Staff\Contracts\StaffRepositoryInterface;
+use App\Modules\Staff\Models\Attendance;
+use App\Modules\Staff\Models\Commission;
 use App\Modules\Staff\Models\Leave;
 use App\Modules\Staff\Models\Staff;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -60,6 +62,7 @@ class StaffService
     {
         return DB::transaction(function () use ($id, $data) {
             $staff = $this->staffRepository->findOrFail($id);
+
             return $this->staffRepository->update($staff, $data);
         });
     }
@@ -77,27 +80,30 @@ class StaffService
         return $this->staffRepository->findOrFail($id);
     }
 
-    public function getAttendanceById(string $id): \App\Modules\Staff\Models\Attendance
+    public function getAttendanceById(string $id): Attendance
     {
         $attendance = $this->attendanceRepository->findById($id);
-        if (!$attendance) {
+        if (! $attendance) {
             throw new \RuntimeException('Attendance not found');
         }
+
         return $attendance;
     }
 
-    public function getCommissionById(string $id): \App\Modules\Staff\Models\Commission
+    public function getCommissionById(string $id): Commission
     {
         $commission = $this->commissionRepository->findById($id);
-        if (!$commission) {
+        if (! $commission) {
             throw new \RuntimeException('Commission not found');
         }
+
         return $commission;
     }
 
     public function getStaffStats(): array
     {
         $tenantId = $this->getTenantId();
+
         return [
             'total' => $this->staffRepository->countByTenant($tenantId),
             'active' => $this->staffRepository->countActiveByTenant($tenantId),
@@ -125,7 +131,7 @@ class StaffService
         return $this->attendanceRepository->paginate($this->getTenantId(), $filters, $perPage);
     }
 
-    public function createAttendance(array $data): \App\Modules\Staff\Models\Attendance
+    public function createAttendance(array $data): Attendance
     {
         return DB::transaction(function () use ($data) {
             return $this->attendanceRepository->create(array_merge($data, [
@@ -134,13 +140,14 @@ class StaffService
         });
     }
 
-    public function updateAttendance(string $id, array $data): \App\Modules\Staff\Models\Attendance
+    public function updateAttendance(string $id, array $data): Attendance
     {
         return DB::transaction(function () use ($id, $data) {
             $attendance = $this->attendanceRepository->findById($id);
-            if (!$attendance) {
+            if (! $attendance) {
                 throw new \RuntimeException('Attendance not found');
             }
+
             return $this->attendanceRepository->update($attendance, $data);
         });
     }
@@ -167,7 +174,7 @@ class StaffService
         return $this->leaveRepository->paginate($this->getTenantId(), $filters, $perPage);
     }
 
-    public function createLeave(array $data): \App\Modules\Staff\Models\Leave
+    public function createLeave(array $data): Leave
     {
         return DB::transaction(function () use ($data) {
             return $this->leaveRepository->create(array_merge($data, [
@@ -176,10 +183,11 @@ class StaffService
         });
     }
 
-    public function approveLeave(string $id, string $status): \App\Modules\Staff\Models\Leave
+    public function approveLeave(string $id, string $status): Leave
     {
         return DB::transaction(function () use ($id, $status) {
             $leave = $this->leaveRepository->findOrFail($id);
+
             return $this->leaveRepository->update($leave, [
                 'status' => $status,
                 'approved_by' => auth()->id(),
@@ -199,6 +207,7 @@ class StaffService
     public function getLeaveStats(): array
     {
         $tenantId = $this->getTenantId();
+
         return [
             'total' => $this->leaveRepository->countByTenant($tenantId),
             'pending' => $this->leaveRepository->countByStatus($tenantId, 'pending'),
@@ -214,7 +223,7 @@ class StaffService
         return $this->commissionRepository->paginate($this->getTenantId(), $filters, $perPage);
     }
 
-    public function createCommission(array $data): \App\Modules\Staff\Models\Commission
+    public function createCommission(array $data): Commission
     {
         return DB::transaction(function () use ($data) {
             return $this->commissionRepository->create(array_merge($data, [
@@ -223,13 +232,14 @@ class StaffService
         });
     }
 
-    public function updateCommission(string $id, array $data): \App\Modules\Staff\Models\Commission
+    public function updateCommission(string $id, array $data): Commission
     {
         return DB::transaction(function () use ($id, $data) {
             $commission = $this->commissionRepository->findById($id);
-            if (!$commission) {
+            if (! $commission) {
                 throw new \RuntimeException('Commission not found');
             }
+
             return $this->commissionRepository->update($commission, $data);
         });
     }
@@ -260,7 +270,7 @@ class StaffService
 
         $topStaffName = null;
         $topStaffAmount = 0;
-        if (!empty($topStaff)) {
+        if (! empty($topStaff)) {
             $staff = Staff::find($topStaff[0]['staff_id']);
             $topStaffName = $staff?->name;
             $topStaffAmount = (float) $topStaff[0]['total_amount'];

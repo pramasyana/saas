@@ -41,6 +41,7 @@ export default function WorkingHourEditor({ hours, saving, errors = {}, onSave }
             const next = [...prev];
             const current = { ...next[index] };
             current.is_open = !current.is_open;
+
             if (!current.is_open) {
                 current.open_time = null;
                 current.close_time = null;
@@ -48,7 +49,9 @@ export default function WorkingHourEditor({ hours, saving, errors = {}, onSave }
                 current.open_time = '08:00';
                 current.close_time = '17:00';
             }
+
             next[index] = current;
+
             return next;
         });
     }
@@ -57,6 +60,7 @@ export default function WorkingHourEditor({ hours, saving, errors = {}, onSave }
         setItems((prev) => {
             const next = [...prev];
             next[index] = { ...next[index], [field]: value };
+
             return next;
         });
     }

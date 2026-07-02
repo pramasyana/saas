@@ -11,7 +11,9 @@ interface StaffDeleteDialogProps {
 }
 
 export default function StaffDeleteDialog({ open, staff, deleting, error, onClose, onConfirm }: StaffDeleteDialogProps) {
-    if (!open) return null;
+    if (!open) {
+return null;
+}
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

@@ -33,6 +33,7 @@ export function useTenantUsers(filters: Filters) {
 
 export function useCreateTenantUser() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createUser,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'users'] }),
@@ -41,6 +42,7 @@ export function useCreateTenantUser() {
 
 export function useUpdateTenantUser() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: number; data: Partial<TenantUserFormData> }) => updateUser(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'users'] }),
@@ -49,6 +51,7 @@ export function useUpdateTenantUser() {
 
 export function useDeleteTenantUser() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteUser,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'users'] }),

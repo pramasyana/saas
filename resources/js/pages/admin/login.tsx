@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { motion, type Variants } from 'framer-motion';
+import { motion  } from 'framer-motion';
+import type {Variants} from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface LoginForm {

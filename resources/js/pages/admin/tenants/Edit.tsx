@@ -2,13 +2,13 @@ import { Head, Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
 import FadeIn from '@/atoms/FadeIn';
 import TenantForm from '@/features/tenants/components/TenantForm';
 import { useUpdateTenant } from '@/features/tenants/hooks/useTenants';
-import { useToastStore } from '@/stores/toast';
-import { cn } from '@/lib/utils';
 import type { TenantFormData } from '@/features/tenants/types';
+import AdminLayout from '@/layouts/AdminLayout';
+import { cn } from '@/lib/utils';
+import { useToastStore } from '@/stores/toast';
 
 interface EditTenantPageProps {
     title: string;
@@ -25,13 +25,16 @@ interface EditTenantPageProps {
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
+
         if (data.errors && typeof data.errors === 'object') {
             return data.errors as Record<string, string[]>;
         }
+
         if (data.message && typeof data.message === 'string') {
             return { _general: [data.message] };
         }
     }
+
     return {};
 }
 
@@ -46,14 +49,19 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
 function getInitials(name: string | null): string {
-    if (!name) return '?';
+    if (!name) {
+return '?';
+}
+
     return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 }
 

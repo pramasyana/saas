@@ -2,12 +2,12 @@ import { Head, Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
 import FadeIn from '@/atoms/FadeIn';
 import UserForm from '@/features/users/components/UserForm';
 import { useCreateUser } from '@/features/users/hooks/useUsers';
-import { useToastStore } from '@/stores/toast';
 import type { UserFormData } from '@/features/users/types';
+import AdminLayout from '@/layouts/AdminLayout';
+import { useToastStore } from '@/stores/toast';
 
 interface CreatePageProps {
     title: string;
@@ -16,13 +16,16 @@ interface CreatePageProps {
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
+
         if (data.errors && typeof data.errors === 'object') {
             return data.errors as Record<string, string[]>;
         }
+
         if (data.message && typeof data.message === 'string') {
             return { _general: [data.message] };
         }
     }
+
     return {};
 }
 

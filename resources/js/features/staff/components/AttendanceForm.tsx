@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from 'react';
+import type { FormEvent} from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@/atoms/Button';
 import Select from '@/atoms/Select';
 import type { Attendance, AttendanceFormData } from '@/features/staff/types';
@@ -69,6 +70,7 @@ export default function AttendanceForm({ attendance, staff, saving, errors = {},
         required?: boolean,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">

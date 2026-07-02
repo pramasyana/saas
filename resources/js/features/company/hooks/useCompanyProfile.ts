@@ -7,6 +7,7 @@ export function useCompanyProfile() {
         queryKey: ['company', 'profile'],
         queryFn: async () => {
             const { data } = await api.get('/api/v1/company/profile');
+
             return data.data ?? data;
         },
     });
@@ -14,9 +15,11 @@ export function useCompanyProfile() {
 
 export function useUpdateCompanyProfile() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: async (formData: CompanyProfile) => {
             const { data } = await api.put('/api/v1/company/profile', formData);
+
             return data;
         },
         onSuccess: () => {

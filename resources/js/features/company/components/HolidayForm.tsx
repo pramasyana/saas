@@ -1,8 +1,9 @@
-import { type FormEvent, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
+import type {FormEvent} from 'react';
 import Button from '@/atoms/Button';
 import Select from '@/atoms/Select';
-import type { Holiday, HolidayFormData, Branch } from '@/features/company/types';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Holiday, HolidayFormData, Branch } from '@/features/company/types';
 import { cn } from '@/lib/utils';
 
 interface HolidayFormProps {
@@ -50,10 +51,23 @@ export default function HolidayForm({ holiday, saving, errors = {}, onSave }: Ho
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         const payload = { ...form };
-        if (!payload.description) delete payload.description;
-        if (payload.branch_id === '__default__') payload.branch_id = '';
-        if (!payload.branch_id) delete payload.branch_id;
-        if (!payload.is_recurring_yearly) payload.is_recurring_yearly = false;
+
+        if (!payload.description) {
+delete payload.description;
+}
+
+        if (payload.branch_id === '__default__') {
+payload.branch_id = '';
+}
+
+        if (!payload.branch_id) {
+delete payload.branch_id;
+}
+
+        if (!payload.is_recurring_yearly) {
+payload.is_recurring_yearly = false;
+}
+
         onSave(payload);
     }
 
@@ -79,6 +93,7 @@ export default function HolidayForm({ holiday, saving, errors = {}, onSave }: Ho
         hint?: string,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">
@@ -108,6 +123,7 @@ export default function HolidayForm({ holiday, saving, errors = {}, onSave }: Ho
         hint?: string,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">{label}</label>

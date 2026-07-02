@@ -22,7 +22,7 @@ interface UserRepositoryInterface
     /** @return Collection<int, User> */
     public function latest(int $limit): Collection;
 
-    public function findById(int $id): ?User;
+    public function findById(string $id): ?User;
 
     /** @param array<string, mixed> $filters */
     public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator;

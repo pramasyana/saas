@@ -37,6 +37,7 @@ export function useAttendance(filters: Filters) {
 
 export function useCreateAttendance() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createAttendance,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'attendance'] }),
@@ -45,6 +46,7 @@ export function useCreateAttendance() {
 
 export function useUpdateAttendance() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: AttendanceFormData }) => updateAttendance(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'attendance'] }),
@@ -53,6 +55,7 @@ export function useUpdateAttendance() {
 
 export function useDeleteAttendance() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteAttendance,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'attendance'] }),

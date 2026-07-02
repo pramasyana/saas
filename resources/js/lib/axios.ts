@@ -13,6 +13,7 @@ api.interceptors.response.use(
         if (error.response?.status === 419) {
             window.location.href = '/admin/login';
         }
+
         return Promise.reject(error);
     },
 );

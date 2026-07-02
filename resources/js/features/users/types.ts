@@ -1,5 +1,5 @@
 export interface User {
-    id: number;
+    id: string;
     name: string;
     email: string;
     is_admin: boolean;
@@ -29,7 +29,7 @@ export interface PaginationMeta {
 
 export interface EmailLog {
     id: string;
-    user_id: number;
+    user_id: string;
     channel: string;
     subject: string;
     status: 'sent' | 'failed';

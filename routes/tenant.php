@@ -13,8 +13,10 @@ Route::middleware([
 ])->group(base_path('routes/web/tenant.php'));
 
 Route::middleware([
-    'api',
+    'web',
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
-])->prefix('api/v1')
-    ->group(base_path('routes/api/v1/tenant.php'));
+])->prefix('api/v1')->group(function () {
+    require base_path('routes/api/v1/tenant/staff.php');
+    require base_path('routes/api/v1/tenant/company.php');
+});

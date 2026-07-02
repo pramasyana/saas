@@ -11,7 +11,9 @@ interface BranchDeleteDialogProps {
 }
 
 export default function BranchDeleteDialog({ open, branch, deleting, error, onClose, onConfirm }: BranchDeleteDialogProps) {
-    if (!open) return null;
+    if (!open) {
+return null;
+}
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

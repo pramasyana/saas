@@ -1,6 +1,6 @@
 export interface EmailLog {
     id: string;
-    user_id: number;
+    user_id: string;
     channel: string;
     subject: string;
     status: 'sent' | 'failed';
@@ -9,7 +9,7 @@ export interface EmailLog {
     metadata: Record<string, unknown> | null;
     created_at: string;
     user: {
-        id: number;
+        id: string;
         name: string;
         email: string;
     } | null;

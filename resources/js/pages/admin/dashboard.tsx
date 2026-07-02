@@ -1,8 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { type ReactNode } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
+import type {ReactNode} from 'react';
 import Badge from '@/atoms/Badge';
+import AdminLayout from '@/layouts/AdminLayout';
 import { cn } from '@/lib/utils';
 
 interface Stat {
@@ -126,9 +126,19 @@ export default function AdminDashboard({ stats, recent_users, weekly_signups }: 
 
     const greeting = (() => {
         const h = new Date().getHours();
-        if (h < 12) return 'Selamat Pagi';
-        if (h < 15) return 'Selamat Siang';
-        if (h < 18) return 'Selamat Sore';
+
+        if (h < 12) {
+return 'Selamat Pagi';
+}
+
+        if (h < 15) {
+return 'Selamat Siang';
+}
+
+        if (h < 18) {
+return 'Selamat Sore';
+}
+
         return 'Selamat Malam';
     })();
 
@@ -222,6 +232,7 @@ export default function AdminDashboard({ stats, recent_users, weekly_signups }: 
                 <motion.div variants={item} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {statCards.map((s) => {
                         const c = colorMap[s.color];
+
                         return (
                             <div
                                 key={s.label}

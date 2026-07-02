@@ -14,19 +14,19 @@ class CommissionRepository implements CommissionRepositoryInterface
     {
         $query = Commission::where('tenant_id', $tenantId)->with('staff');
 
-        if (!empty($filters['staff_id'])) {
+        if (! empty($filters['staff_id'])) {
             $query->where('staff_id', $filters['staff_id']);
         }
 
-        if (!empty($filters['type'])) {
+        if (! empty($filters['type'])) {
             $query->where('type', $filters['type']);
         }
 
-        if (!empty($filters['date_from'])) {
+        if (! empty($filters['date_from'])) {
             $query->where('date', '>=', $filters['date_from']);
         }
 
-        if (!empty($filters['date_to'])) {
+        if (! empty($filters['date_to'])) {
             $query->where('date', '<=', $filters['date_to']);
         }
 
@@ -46,6 +46,7 @@ class CommissionRepository implements CommissionRepositoryInterface
     public function update(Commission $commission, array $data): Commission
     {
         $commission->update($data);
+
         return $commission;
     }
 

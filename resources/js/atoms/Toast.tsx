@@ -1,6 +1,7 @@
-import { cn } from '@/lib/utils';
-import { useToastStore, type Toast } from '@/stores/toast';
 import type { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
+import { useToastStore  } from '@/stores/toast';
+import type {Toast} from '@/stores/toast';
 
 const typeStyles: Record<Toast['type'], string> = {
     success: 'bg-success text-white',

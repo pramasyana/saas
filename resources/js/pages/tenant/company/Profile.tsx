@@ -1,25 +1,29 @@
 import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
-import { useEffect, useState, type FormEvent } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
+import { useEffect, useState  } from 'react';
+import type {FormEvent} from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
-import { useCompanyProfile, useUpdateCompanyProfile } from '@/features/company/hooks/useCompanyProfile';
 import { useCompanyBranding } from '@/features/company/hooks/useCompanyBranding';
-import { useToastStore } from '@/stores/toast';
-import { cn } from '@/lib/utils';
+import { useCompanyProfile, useUpdateCompanyProfile } from '@/features/company/hooks/useCompanyProfile';
 import type { CompanyProfile as CompanyProfileType } from '@/features/company/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import { cn } from '@/lib/utils';
+import { useToastStore } from '@/stores/toast';
 
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
+
         if (data.errors && typeof data.errors === 'object') {
             return data.errors as Record<string, string[]>;
         }
+
         if (data.message && typeof data.message === 'string') {
             return { _general: [data.message] };
         }
     }
+
     return {};
 }
 
@@ -34,9 +38,11 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
@@ -84,7 +90,10 @@ export default function CompanyProfilePage() {
         const payload = { ...form };
         Object.keys(payload).forEach((k) => {
             const key = k as keyof CompanyProfileType;
-            if (!payload[key]) payload[key] = null;
+
+            if (!payload[key]) {
+payload[key] = null;
+}
         });
         mutation.mutate(payload, {
             onSuccess: () => {
@@ -113,6 +122,7 @@ export default function CompanyProfilePage() {
         children: React.ReactNode,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">{label}</label>

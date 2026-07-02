@@ -14,23 +14,23 @@ class AttendanceRepository implements AttendanceRepositoryInterface
     {
         $query = Attendance::where('tenant_id', $tenantId);
 
-        if (!empty($filters['staff_id'])) {
+        if (! empty($filters['staff_id'])) {
             $query->where('staff_id', $filters['staff_id']);
         }
 
-        if (!empty($filters['date'])) {
+        if (! empty($filters['date'])) {
             $query->where('date', $filters['date']);
         }
 
-        if (!empty($filters['date_from'])) {
+        if (! empty($filters['date_from'])) {
             $query->where('date', '>=', $filters['date_from']);
         }
 
-        if (!empty($filters['date_to'])) {
+        if (! empty($filters['date_to'])) {
             $query->where('date', '<=', $filters['date_to']);
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
@@ -58,6 +58,7 @@ class AttendanceRepository implements AttendanceRepositoryInterface
     public function update(Attendance $attendance, array $data): Attendance
     {
         $attendance->update($data);
+
         return $attendance;
     }
 

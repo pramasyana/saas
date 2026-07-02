@@ -1,4 +1,5 @@
-import { type FormEvent, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
+import type {FormEvent} from 'react';
 import Button from '@/atoms/Button';
 import type { Branch, BranchFormData } from '@/features/company/types';
 import { cn } from '@/lib/utils';
@@ -51,10 +52,23 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         const payload = { ...form };
-        if (!payload.address) delete payload.address;
-        if (!payload.phone) delete payload.phone;
-        if (!payload.email) delete payload.email;
-        if (!payload.manager_name) delete payload.manager_name;
+
+        if (!payload.address) {
+delete payload.address;
+}
+
+        if (!payload.phone) {
+delete payload.phone;
+}
+
+        if (!payload.email) {
+delete payload.email;
+}
+
+        if (!payload.manager_name) {
+delete payload.manager_name;
+}
+
         onSave(payload);
     }
 
@@ -88,6 +102,7 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
         hint?: string,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">
@@ -117,6 +132,7 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
         hint?: string,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">{label}</label>

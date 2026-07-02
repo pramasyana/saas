@@ -47,7 +47,7 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(string $id): JsonResponse
     {
         $user = $this->userService->findById($id);
 
@@ -58,7 +58,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(UpdateUserRequest $request, int $id): JsonResponse
+    public function update(UpdateUserRequest $request, string $id): JsonResponse
     {
         $user = $this->userService->update($id, $request->validated());
 
@@ -69,7 +69,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function toggleActive(int $id): JsonResponse
+    public function toggleActive(string $id): JsonResponse
     {
         $user = $this->userService->toggleActive($id);
 
@@ -80,7 +80,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function resendVerification(int $id): JsonResponse
+    public function resendVerification(string $id): JsonResponse
     {
         try {
             $this->userService->resendVerification($id);
@@ -97,7 +97,7 @@ class UserController extends Controller
         }
     }
 
-    public function emailLogs(int $id): JsonResponse
+    public function emailLogs(string $id): JsonResponse
     {
         $logs = $this->userService->getEmailLogs($id);
 
@@ -108,7 +108,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         try {
             $this->userService->delete($id);

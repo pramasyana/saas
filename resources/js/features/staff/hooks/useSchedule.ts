@@ -25,6 +25,7 @@ export function useSchedules(staffId: string | null) {
 
 export function useUpdateSchedules() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: updateSchedules,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'schedules'] }),

@@ -21,7 +21,7 @@ class UserService
         return $this->userRepository->paginate($filters, $perPage);
     }
 
-    public function findById(int $id): User
+    public function findById(string $id): User
     {
         return $this->userRepository->findById($id) ?? throw new \RuntimeException('User not found.');
     }
@@ -45,7 +45,7 @@ class UserService
         });
     }
 
-    public function update(int $id, array $data): User
+    public function update(string $id, array $data): User
     {
         return DB::transaction(function () use ($id, $data) {
             $user = $this->findById($id);
@@ -67,7 +67,7 @@ class UserService
         });
     }
 
-    public function toggleActive(int $id): User
+    public function toggleActive(string $id): User
     {
         return DB::transaction(function () use ($id) {
             $user = $this->findById($id);
@@ -86,7 +86,7 @@ class UserService
         });
     }
 
-    public function resendVerification(int $id): void
+    public function resendVerification(string $id): void
     {
         $user = $this->findById($id);
 
@@ -103,7 +103,7 @@ class UserService
     }
 
     /** @return EmailLog[] */
-    public function getEmailLogs(int $userId): array
+    public function getEmailLogs(string $userId): array
     {
         return EmailLog::where('user_id', $userId)
             ->latest()
@@ -112,9 +112,9 @@ class UserService
             ->toArray();
     }
 
-    public function delete(int $id): void
+    public function delete(string $id): void
     {
-        if ($id === (int) auth()->id()) {
+        if ($id === auth()->id()) {
             throw new \RuntimeException('Tidak dapat menghapus akun sendiri.');
         }
 

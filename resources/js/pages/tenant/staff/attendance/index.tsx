@@ -1,17 +1,17 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
+import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Badge from '@/atoms/Badge';
-import Pagination from '@/molecules/Pagination';
+import AttendanceDeleteDialog from '@/features/staff/components/AttendanceDeleteDialog';
 import { useAttendance, useDeleteAttendance } from '@/features/staff/hooks/useAttendance';
 import { useAllStaff } from '@/features/staff/hooks/useStaff';
-import { useToastStore } from '@/stores/toast';
 import type { Attendance } from '@/features/staff/types';
-import AttendanceDeleteDialog from '@/features/staff/components/AttendanceDeleteDialog';
+import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface Filters {
     staff_id?: string;
@@ -22,13 +22,24 @@ interface Filters {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -75,7 +86,9 @@ export default function AttendancePage() {
     const lateCount = todayRecords.filter((r: Attendance) => r.status === 'late').length;
     const absentCount = todayRecords.filter((r: Attendance) => r.status === 'absent').length;
 
-    function handlePage(page: number) { setFilters((prev) => ({ ...prev, page })); }
+    function handlePage(page: number) {
+ setFilters((prev) => ({ ...prev, page })); 
+}
 
     function openDelete(record: Attendance) {
         setAttendanceToDelete(record);
@@ -84,7 +97,10 @@ export default function AttendancePage() {
     }
 
     function handleDelete() {
-        if (!attendanceToDelete) return;
+        if (!attendanceToDelete) {
+return;
+}
+
         deleteMutation.mutate(attendanceToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);
@@ -110,7 +126,10 @@ export default function AttendancePage() {
     ];
 
     function formatTime(t: string | null) {
-        if (!t) return '-';
+        if (!t) {
+return '-';
+}
+
         return t.slice(0, 5);
     }
 
@@ -380,7 +399,9 @@ export default function AttendancePage() {
                 attendance={attendanceToDelete!}
                 deleting={deleteMutation.isPending}
                 error={deleteError}
-                onClose={() => { setDeleteOpen(false); setAttendanceToDelete(null); deleteMutation.reset(); }}
+                onClose={() => {
+ setDeleteOpen(false); setAttendanceToDelete(null); deleteMutation.reset(); 
+}}
                 onConfirm={handleDelete}
             />
         </TenantLayout>

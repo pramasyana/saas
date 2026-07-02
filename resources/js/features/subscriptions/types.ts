@@ -2,7 +2,7 @@ import type { Plan } from '@/features/pricing/types';
 
 export interface Subscription {
     id: string;
-    user_id: number;
+    user_id: string;
     plan_id: string;
     price_amount: number;
     billing_interval: 'monthly' | 'yearly';
@@ -14,7 +14,7 @@ export interface Subscription {
     cancelled_at: string | null;
     created_at: string | null;
     user?: {
-        id: number;
+        id: string;
         name: string;
         email: string;
     };

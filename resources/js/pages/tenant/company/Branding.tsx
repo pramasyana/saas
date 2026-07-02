@@ -1,23 +1,27 @@
 import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
-import { useEffect, useState, useRef, type FormEvent } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
+import { useEffect, useState, useRef  } from 'react';
+import type {FormEvent} from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import { useCompanyBranding, useUpdateCompanyBranding } from '@/features/company/hooks/useCompanyBranding';
-import { useToastStore } from '@/stores/toast';
+import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
+import { useToastStore } from '@/stores/toast';
 
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
+
         if (data.errors && typeof data.errors === 'object') {
             return data.errors as Record<string, string[]>;
         }
+
         if (data.message && typeof data.message === 'string') {
             return { _general: [data.message] };
         }
     }
+
     return {};
 }
 
@@ -32,9 +36,11 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
@@ -61,6 +67,7 @@ export default function CompanyBrandingPage() {
             setPrimaryColor(branding.primary_color ?? '#2563eb');
             setSecondaryColor(branding.secondary_color ?? '#7c3aed');
             setCustomCss(branding.custom_css ?? '');
+
             if (branding.favicon_url) {
                 setFaviconPreview(branding.favicon_url);
             }
@@ -69,7 +76,11 @@ export default function CompanyBrandingPage() {
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
-        if (!file) return;
+
+        if (!file) {
+return;
+}
+
         setFaviconFile(file);
         const reader = new FileReader();
         reader.onload = () => setFaviconPreview(reader.result as string);
@@ -79,7 +90,10 @@ export default function CompanyBrandingPage() {
     function handleRemoveFavicon() {
         setFaviconFile(null);
         setFaviconPreview(null);
-        if (fileInputRef.current) fileInputRef.current.value = '';
+
+        if (fileInputRef.current) {
+fileInputRef.current.value = '';
+}
     }
 
     function handleSubmit(e: FormEvent) {
@@ -88,7 +102,11 @@ export default function CompanyBrandingPage() {
         const fd = new FormData();
         fd.append('primary_color', primaryColor);
         fd.append('secondary_color', secondaryColor);
-        if (customCss) fd.append('custom_css', customCss);
+
+        if (customCss) {
+fd.append('custom_css', customCss);
+}
+
         if (faviconFile) {
             fd.append('favicon', faviconFile);
         } else if (faviconPreview === null && branding?.favicon_url) {

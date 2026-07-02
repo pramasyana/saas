@@ -1,4 +1,5 @@
-import { FormEvent, useState } from 'react';
+import type { FormEvent} from 'react';
+import { useState } from 'react';
 import Button from '@/atoms/Button';
 import Select from '@/atoms/Select';
 import type { LeaveFormData } from '@/features/staff/types';
@@ -50,6 +51,7 @@ export default function LeaveForm({ staff, saving, errors = {}, onSave, onCancel
         required?: boolean,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">

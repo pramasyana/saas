@@ -1,8 +1,8 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
 import ToastContainer from '@/atoms/Toast';
-import { useSidebarStore } from '@/stores/sidebar';
 import { cn } from '@/lib/utils';
+import { useSidebarStore } from '@/stores/sidebar';
 
 interface TenantLayoutProps {
     children: ReactNode;
@@ -193,6 +193,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                     <nav className="space-y-0.5">
                         {staffNavItems.map((item) => {
                             const active = isActive(item.href);
+
                             return (
                                 <Link
                                     key={item.href}
@@ -220,6 +221,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                     <nav className="space-y-0.5">
                         {companyNavItems.map((item) => {
                             const active = isActive(item.href);
+
                             return (
                                 <Link
                                     key={item.href}

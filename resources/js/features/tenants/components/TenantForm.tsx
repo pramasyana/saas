@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { type FormEvent, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
+import type {FormEvent} from 'react';
 import Button from '@/atoms/Button';
 import type { TenantFormData } from '@/features/tenants/types';
 import { cn } from '@/lib/utils';
@@ -68,9 +69,19 @@ export default function TenantForm({ tenant, saving, errors = {}, onSave }: Tena
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         const payload = { ...form };
-        if (!payload.email) delete payload.email;
-        if (!payload.phone) delete payload.phone;
-        if (!payload.domain) delete payload.domain;
+
+        if (!payload.email) {
+delete payload.email;
+}
+
+        if (!payload.phone) {
+delete payload.phone;
+}
+
+        if (!payload.domain) {
+delete payload.domain;
+}
+
         onSave(payload);
     }
 
@@ -96,6 +107,7 @@ export default function TenantForm({ tenant, saving, errors = {}, onSave }: Tena
         hint?: string,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">

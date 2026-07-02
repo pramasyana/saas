@@ -2,24 +2,27 @@ import { Head, Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
 import FadeIn from '@/atoms/FadeIn';
+import { useAllBranches } from '@/features/company/hooks/useBranches';
 import StaffForm from '@/features/staff/components/StaffForm';
 import { useCreateStaff } from '@/features/staff/hooks/useStaff';
-import { useAllBranches } from '@/features/company/hooks/useBranches';
-import { useToastStore } from '@/stores/toast';
 import type { StaffFormData } from '@/features/staff/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import { useToastStore } from '@/stores/toast';
 
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
+
         if (data.errors && typeof data.errors === 'object') {
             return data.errors as Record<string, string[]>;
         }
+
         if (data.message && typeof data.message === 'string') {
             return { _general: [data.message] };
         }
     }
+
     return {};
 }
 

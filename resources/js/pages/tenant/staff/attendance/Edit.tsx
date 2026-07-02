@@ -2,14 +2,14 @@ import { Head, Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
 import FadeIn from '@/atoms/FadeIn';
 import AttendanceForm from '@/features/staff/components/AttendanceForm';
 import { useUpdateAttendance } from '@/features/staff/hooks/useAttendance';
 import { useAllStaff } from '@/features/staff/hooks/useStaff';
-import { useToastStore } from '@/stores/toast';
-import { cn } from '@/lib/utils';
 import type { Attendance, AttendanceFormData } from '@/features/staff/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import { cn } from '@/lib/utils';
+import { useToastStore } from '@/stores/toast';
 
 interface EditPageProps {
     title: string;
@@ -19,13 +19,16 @@ interface EditPageProps {
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
+
         if (data.errors && typeof data.errors === 'object') {
             return data.errors as Record<string, string[]>;
         }
+
         if (data.message && typeof data.message === 'string') {
             return { _general: [data.message] };
         }
     }
+
     return {};
 }
 
@@ -68,7 +71,10 @@ export default function Edit({ title, attendance }: EditPageProps) {
     }
 
     function formatTime(t: string | null) {
-        if (!t) return '-';
+        if (!t) {
+return '-';
+}
+
         return t.slice(0, 5);
     }
 

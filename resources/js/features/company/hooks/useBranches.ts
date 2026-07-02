@@ -51,6 +51,7 @@ export function useAllBranches() {
 
 export function useCreateBranch() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: (data: BranchFormData) => createBranch(data),
         onSuccess: () => {
@@ -61,6 +62,7 @@ export function useCreateBranch() {
 
 export function useUpdateBranch() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: BranchFormData }) => updateBranch(id, data),
         onSuccess: () => {
@@ -71,6 +73,7 @@ export function useUpdateBranch() {
 
 export function useDeleteBranch() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: (id: string) => deleteBranch(id),
         onSuccess: () => {

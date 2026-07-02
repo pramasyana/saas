@@ -1,17 +1,17 @@
 import { Head, Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
+import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Badge from '@/atoms/Badge';
-import Pagination from '@/molecules/Pagination';
 import HolidayForm from '@/features/company/components/HolidayForm';
-import { useHolidays, useCreateHoliday, useUpdateHoliday, useDeleteHoliday } from '@/features/company/hooks/useHolidays';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
-import { useToastStore } from '@/stores/toast';
+import { useHolidays, useCreateHoliday, useUpdateHoliday, useDeleteHoliday } from '@/features/company/hooks/useHolidays';
 import type { Holiday, HolidayFormData } from '@/features/company/types';
+import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface HolidaysFilters {
     search?: string;
@@ -21,25 +21,46 @@ interface HolidaysFilters {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
 function extractErrors(error: unknown): Record<string, string[]> {
-    if (!error) return {};
+    if (!error) {
+return {};
+}
+
     try {
         const axiosError = error as { response?: { data?: { errors?: Record<string, string[]>; message?: string } } };
-        if (axiosError.response?.data?.errors) return axiosError.response.data.errors;
-        if (axiosError.response?.data?.message) return { _general: [axiosError.response.data.message] };
+
+        if (axiosError.response?.data?.errors) {
+return axiosError.response.data.errors;
+}
+
+        if (axiosError.response?.data?.message) {
+return { _general: [axiosError.response.data.message] };
+}
     } catch {
         //
     }
+
     return { _general: ['Terjadi kesalahan.'] };
 }
 
@@ -94,12 +115,18 @@ export default function CompanyHolidaysPage() {
     const branches = branchesData?.data ?? [];
 
     useEffect(() => {
-        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
+
         searchTimeout.current = setTimeout(() => {
             setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
         }, 400);
+
         return () => {
-            if (searchTimeout.current) clearTimeout(searchTimeout.current);
+            if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
         };
     }, [searchInput]);
 
@@ -108,6 +135,7 @@ export default function CompanyHolidaysPage() {
     const thisYear = new Date().getFullYear();
     const upcoming = (() => {
         const today = new Date().toISOString().slice(0, 10);
+
         return allHolidays.find((h) => h.date_start >= today) ?? null;
     })();
 

@@ -14,23 +14,23 @@ class LeaveRepository implements LeaveRepositoryInterface
     {
         $query = Leave::where('tenant_id', $tenantId)->with('staff');
 
-        if (!empty($filters['staff_id'])) {
+        if (! empty($filters['staff_id'])) {
             $query->where('staff_id', $filters['staff_id']);
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['type'])) {
+        if (! empty($filters['type'])) {
             $query->where('type', $filters['type']);
         }
 
-        if (!empty($filters['date_from'])) {
+        if (! empty($filters['date_from'])) {
             $query->where('date_start', '>=', $filters['date_from']);
         }
 
-        if (!empty($filters['date_to'])) {
+        if (! empty($filters['date_to'])) {
             $query->where('date_end', '<=', $filters['date_to']);
         }
 
@@ -55,6 +55,7 @@ class LeaveRepository implements LeaveRepositoryInterface
     public function update(Leave $leave, array $data): Leave
     {
         $leave->update($data);
+
         return $leave;
     }
 

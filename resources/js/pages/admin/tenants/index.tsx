@@ -1,15 +1,16 @@
 import { Head, Link } from '@inertiajs/react';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
+import { useEffect, useRef, useState  } from 'react';
+import type {ReactNode} from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Pagination from '@/molecules/Pagination';
-import { useTenants, useDeleteTenant } from '@/features/tenants/hooks/useTenants';
-import TenantTable from '@/features/tenants/components/TenantTable';
 import TenantDeleteDialog from '@/features/tenants/components/TenantDeleteDialog';
-import { useToastStore } from '@/stores/toast';
+import TenantTable from '@/features/tenants/components/TenantTable';
+import { useTenants, useDeleteTenant } from '@/features/tenants/hooks/useTenants';
 import type { Tenant, TenantFilters } from '@/features/tenants/types';
+import AdminLayout from '@/layouts/AdminLayout';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface TenantsPageProps {
     title: string;
@@ -28,13 +29,24 @@ interface StatCard {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -91,12 +103,18 @@ export default function Tenants({ title, stats }: TenantsPageProps) {
     const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null);
 
     useEffect(() => {
-        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
+
         searchTimeout.current = setTimeout(() => {
             setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
         }, 400);
+
         return () => {
-            if (searchTimeout.current) clearTimeout(searchTimeout.current);
+            if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
         };
     }, [searchInput]);
 
@@ -121,7 +139,10 @@ export default function Tenants({ title, stats }: TenantsPageProps) {
     }
 
     function handleDelete() {
-        if (!tenantToDelete) return;
+        if (!tenantToDelete) {
+return;
+}
+
         deleteMutation.mutate(tenantToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);

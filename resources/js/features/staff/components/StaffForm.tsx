@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from 'react';
+import type { FormEvent} from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@/atoms/Button';
 import Select from '@/atoms/Select';
 import type { Staff, StaffFormData } from '@/features/staff/types';
@@ -64,6 +65,7 @@ export default function StaffForm({ staff, branches, saving, errors = {}, onSave
         required?: boolean,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">

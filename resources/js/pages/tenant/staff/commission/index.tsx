@@ -1,17 +1,18 @@
 import { Head, Link } from '@inertiajs/react';
-import { useState, type ReactNode } from 'react';
-import TenantLayout from '@/layouts/TenantLayout';
+import { useState  } from 'react';
+import type {ReactNode} from 'react';
+import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import Badge from '@/atoms/Badge';
-import Pagination from '@/molecules/Pagination';
-import DateRangePicker from '@/molecules/DateRangePicker';
+import CommissionDeleteDialog from '@/features/staff/components/CommissionDeleteDialog';
 import { useCommissions, useDeleteCommission } from '@/features/staff/hooks/useCommission';
 import { useAllStaff } from '@/features/staff/hooks/useStaff';
-import { useToastStore } from '@/stores/toast';
 import type { Commission } from '@/features/staff/types';
-import CommissionDeleteDialog from '@/features/staff/components/CommissionDeleteDialog';
+import TenantLayout from '@/layouts/TenantLayout';
+import DateRangePicker from '@/molecules/DateRangePicker';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 interface Stats {
     total_month: number;
@@ -46,13 +47,24 @@ interface StatCard {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -106,7 +118,9 @@ export default function CommissionPage({ title, stats }: CommissionPageProps) {
     const trend = prevTotalMonth > 0 ? ((totalMonth - prevTotalMonth) / prevTotalMonth) * 100 : 0;
     const trendUp = trend >= 0;
 
-    function handlePage(page: number) { setFilters((prev) => ({ ...prev, page })); }
+    function handlePage(page: number) {
+ setFilters((prev) => ({ ...prev, page })); 
+}
 
     function openDelete(commission: Commission) {
         setCommissionToDelete(commission);
@@ -115,7 +129,10 @@ export default function CommissionPage({ title, stats }: CommissionPageProps) {
     }
 
     function handleDelete() {
-        if (!commissionToDelete) return;
+        if (!commissionToDelete) {
+return;
+}
+
         deleteMutation.mutate(commissionToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);
@@ -252,6 +269,7 @@ export default function CommissionPage({ title, stats }: CommissionPageProps) {
 
     function renderMobileCard(c: Commission) {
         const tc = typeColors[c.type] ?? typeColors.bonus;
+
         return (
             <div key={c.id} className="border-b border-neutral-100 px-4 py-4 transition-colors last:border-b-0 hover:bg-neutral-50">
                 <div className="flex items-start justify-between gap-2">
@@ -286,6 +304,7 @@ export default function CommissionPage({ title, stats }: CommissionPageProps) {
 
     function renderDesktopRow(c: Commission) {
         const tc = typeColors[c.type] ?? typeColors.bonus;
+
         return (
             <tr key={c.id} className="transition-colors hover:bg-neutral-50">
                 <td className="whitespace-nowrap px-6 py-4">
@@ -445,7 +464,9 @@ export default function CommissionPage({ title, stats }: CommissionPageProps) {
                 commission={commissionToDelete!}
                 deleting={deleteMutation.isPending}
                 error={deleteError}
-                onClose={() => { setDeleteOpen(false); setCommissionToDelete(null); deleteMutation.reset(); }}
+                onClose={() => {
+ setDeleteOpen(false); setCommissionToDelete(null); deleteMutation.reset(); 
+}}
                 onConfirm={handleDelete}
             />
         </TenantLayout>
