@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Booking\Contracts;
+
+use App\Modules\Booking\Models\Booking;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+
+interface BookingRepositoryInterface
+{
+    public function paginate(string $tenantId, array $filters = [], ?string $branchId = null, int $perPage = 15): LengthAwarePaginator;
+
+    public function findById(string $id): ?Booking;
+
+    public function findOrFail(string $id): Booking;
+
+    public function create(array $data): Booking;
+
+    public function update(Booking $booking, array $data): Booking;
+
+    public function delete(Booking $booking): bool;
+
+    public function countByTenant(string $tenantId): int;
+
+    public function getCalendarEvents(string $tenantId, string $startDate, string $endDate, ?string $branchId = null, ?string $staffId = null): Collection;
+
+    public function getOverlappingBookings(string $tenantId, string $staffId, string $startTime, string $endTime, ?string $excludeId = null): Collection;
+
+    public function countByStatus(string $tenantId, string $status): int;
+}

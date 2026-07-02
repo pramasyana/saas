@@ -20,6 +20,36 @@ const navItems = [
     },
 ];
 
+const bookingNavItems = [
+    {
+        label: 'Kalender',
+        href: '/booking',
+        icon: (
+            <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+        ),
+    },
+    {
+        label: 'Walk In',
+        href: '/booking/walk-in',
+        icon: (
+            <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12" />
+            </svg>
+        ),
+    },
+    {
+        label: 'Waiting List',
+        href: '/booking/waiting-list',
+        icon: (
+            <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+            </svg>
+        ),
+    },
+];
+
 const crmNavItems = [
     {
         label: 'Pelanggan',
@@ -253,6 +283,34 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                     </p>
                     <nav className="space-y-0.5">
                         {navItems.map((item) => {
+                            const active = isActive(item.href);
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={cn(
+                                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                                        active
+                                            ? 'bg-primary-50 text-primary shadow-sm'
+                                            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                                    )}
+                                >
+                                    <span className={cn('shrink-0', active ? 'text-primary' : 'text-neutral-400')}>
+                                        {item.icon}
+                                    </span>
+                                    <span>{item.label}</span>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    {/* Booking */}
+                    <p className="mb-2 mt-6 px-3 text-xs font-semibold tracking-wider text-neutral-400">
+                        Booking
+                    </p>
+                    <nav className="space-y-0.5">
+                        {bookingNavItems.map((item) => {
                             const active = isActive(item.href);
 
                             return (

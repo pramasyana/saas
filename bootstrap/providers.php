@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Admin\Providers\AdminServiceProvider;
+use App\Modules\Booking\Providers\BookingServiceProvider;
 use App\Modules\Auth\Providers\AuthServiceProvider;
 use App\Modules\Company\Providers\CompanyServiceProvider;
 use App\Modules\Crm\Providers\CrmServiceProvider;
@@ -13,6 +14,7 @@ use App\Modules\Tenant\Providers\TenantServiceProvider;
 use App\Providers\AppServiceProvider;
 
 return [
+    BookingServiceProvider::class,
     AuthServiceProvider::class,
     AppServiceProvider::class,
     CrmServiceProvider::class,

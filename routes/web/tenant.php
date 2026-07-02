@@ -23,6 +23,7 @@ use App\Modules\Service\Http\Controllers\Tenant\PackageController as ServicePack
 use App\Modules\Service\Http\Controllers\Tenant\AddonController as ServiceAddonController;
 use App\Modules\Service\Http\Controllers\Tenant\PricingRuleController as ServicePricingRuleController;
 use App\Modules\Service\Http\Controllers\Tenant\PromotionController as ServicePromotionController;
+use App\Modules\Booking\Http\Controllers\Tenant\BookingController as TenantBookingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -53,6 +54,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/customers/{id}/edit', [CrmCustomerController::class, 'edit'])->name('customers.edit');
         Route::get('/tags', [CrmTagController::class, 'index'])->name('tags');
         Route::get('/membership-tiers', [CrmMembershipTierController::class, 'index'])->name('membership-tiers');
+    });
+
+    // Booking pages
+    Route::prefix('booking')->name('tenant.booking.')->group(function () {
+        Route::get('/', [TenantBookingController::class, 'index'])->name('index');
+        Route::get('/walk-in', [TenantBookingController::class, 'walkIn'])->name('walk-in');
+        Route::get('/waiting-list', [TenantBookingController::class, 'waitingList'])->name('waiting-list');
     });
 
     // Service pages
