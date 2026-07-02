@@ -99,6 +99,10 @@ class CompanyService
         DB::transaction(function () use ($tenantId, $id) {
             $branch = $this->findBranchOrFail($id);
 
+            if ($branch->is_default) {
+                throw new RuntimeException('Cabang utama tidak dapat dihapus.');
+            }
+
             $this->branchRepository->delete($branch);
 
             BranchDeleted::dispatch($tenantId, $branch);

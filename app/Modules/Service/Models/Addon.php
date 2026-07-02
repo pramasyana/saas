@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Service\Models;
 
+use App\Modules\Company\Models\Branch;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
@@ -19,6 +21,7 @@ class Addon extends Model
 
     protected $fillable = [
         'tenant_id',
+        'branch_id',
         'name',
         'description',
         'price',
@@ -43,5 +46,10 @@ class Addon extends Model
             'duration' => 'integer',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }

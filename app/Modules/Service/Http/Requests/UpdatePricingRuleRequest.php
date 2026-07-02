@@ -11,6 +11,7 @@ class UpdatePricingRuleRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'sometimes|string|exists:branches,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string|max:2000',
             'action_type' => 'sometimes|string|in:percentage_discount,fixed_discount,percentage_surcharge,fixed_surcharge,price_override',

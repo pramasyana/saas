@@ -20,6 +20,7 @@ const promotionTypes = [
 
 export default function PromotionForm({ promotion, saving, errors = {}, onSave }: PromotionFormProps) {
     const [form, setForm] = useState<PromotionFormData>({
+        branch_id: promotion?.branch_id ?? '',
         name: '',
         description: '',
         code: '',
@@ -36,6 +37,7 @@ export default function PromotionForm({ promotion, saving, errors = {}, onSave }
     useEffect(() => {
         if (promotion) {
             setForm({
+                branch_id: promotion.branch_id,
                 name: promotion.name,
                 description: promotion.description ?? '',
                 code: promotion.code ?? '',
@@ -50,6 +52,7 @@ export default function PromotionForm({ promotion, saving, errors = {}, onSave }
             });
         } else {
             setForm({
+                branch_id: '',
                 name: '',
                 description: '',
                 code: '',

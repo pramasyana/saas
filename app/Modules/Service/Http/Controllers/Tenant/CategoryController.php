@@ -6,6 +6,7 @@ namespace App\Modules\Service\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Service\Services\CategoryService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,11 +16,16 @@ class CategoryController extends Controller
         private readonly CategoryService $categoryService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $filters = $request->only(['search', 'is_active']);
+        $perPage = (int) ($request->input('per_page', 15));
+        $branchId = $request->input('branch_id');
+
         return Inertia::render('tenant/service/categories/Index', [
             'title' => 'Kategori Layanan',
             'stats' => $this->categoryService->getStats(),
+            'data' => $this->categoryService->paginate($filters, $branchId, $perPage),
         ]);
     }
 

@@ -11,6 +11,7 @@ class UpdateServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'sometimes|string|exists:branches,id',
             'category_id' => 'nullable|string|exists:service_categories,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string|max:1000',

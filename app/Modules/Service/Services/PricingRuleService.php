@@ -20,9 +20,9 @@ class PricingRuleService
         return auth()->user()->tenant_id;
     }
 
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function paginate(array $filters = [], ?string $branchId = null, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->pricingRuleRepository->paginate($this->getTenantId(), $filters, $perPage);
+        return $this->pricingRuleRepository->paginate($this->getTenantId(), $filters, $branchId, $perPage);
     }
 
     public function findById(string $id): PricingRule

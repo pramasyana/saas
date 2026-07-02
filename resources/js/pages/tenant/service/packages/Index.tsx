@@ -4,10 +4,12 @@ import type { ReactNode } from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
+import { useAllBranches } from '@/features/company/hooks/useBranches';
 import PackageDeleteDialog from '@/features/service/components/PackageDeleteDialog';
 import PackageTable from '@/features/service/components/PackageTable';
 import { usePackages, useDeletePackage, useUpdatePackage } from '@/features/service/hooks/usePackages';
 import type { Package, PackageFormData } from '@/features/service/types';
+import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
@@ -53,10 +55,13 @@ function TableSkeleton() {
 
 export default function PackagesIndex({ title, stats }: PackagesIndexPageProps) {
     const addToast = useToastStore((s) => s.addToast);
-    const [filters, setFilters] = useState<{ page: number; per_page: number; search: string; is_active?: boolean }>({
+    const { data: branchesData } = useAllBranches();
+    const branches = (branchesData?.data ?? []) as Branch[];
+    const [filters, setFilters] = useState<{ page: number; per_page: number; search: string; branch_id: string; is_active?: boolean }>({
         page: 1,
         per_page: 15,
         search: '',
+        branch_id: '',
     });
     const [searchInput, setSearchInput] = useState('');
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -211,6 +216,17 @@ export default function PackagesIndex({ title, stats }: PackagesIndexPageProps) 
                         />
                     </div>
                     <div className="flex gap-3">
+                        <Select
+                            value={filters.branch_id ?? ''}
+                            onChange={(v) => setFilters((prev) => ({ ...prev, branch_id: v, page: 1 }))}
+                            options={[
+                                { value: '', label: 'Semua Cabang' },
+                                ...branches
+                                    .filter((b) => b.is_active)
+                                    .map((b) => ({ value: b.id, label: b.name })),
+                            ]}
+                            placeholder="Semua Cabang"
+                        />
                         <Select
                             value={filters.is_active === undefined ? '' : String(filters.is_active)}
                             onChange={(v) => setFilters((prev) => ({ ...prev, is_active: v === '' ? undefined : v === 'true', page: 1 }))}

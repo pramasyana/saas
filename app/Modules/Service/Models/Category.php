@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Service\Models;
 
+use App\Modules\Company\Models\Branch;
 use App\Modules\Service\Models\Service;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -23,6 +25,7 @@ class Category extends Model
 
     protected $fillable = [
         'tenant_id',
+        'branch_id',
         'name',
         'slug',
         'description',
@@ -50,6 +53,11 @@ class Category extends Model
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 
     public function services(): HasMany

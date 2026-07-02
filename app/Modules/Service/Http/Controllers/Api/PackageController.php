@@ -20,8 +20,11 @@ class PackageController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $branchId = $request->input('branch_id');
+
         $packages = $this->packageService->paginate(
             $request->only(['search', 'is_active', 'sort', 'direction']),
+            $branchId,
             (int) $request->input('per_page', 15),
         );
 

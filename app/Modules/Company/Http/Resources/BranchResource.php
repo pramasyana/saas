@@ -24,6 +24,7 @@ class BranchResource extends JsonResource
             'email' => $this->email,
             'manager_name' => $this->manager_name,
             'is_active' => $this->is_active,
+            'is_default' => $this->is_default,
             'sort_order' => $this->sort_order,
             'created_at' => $this->created_at?->diffForHumans(),
             'updated_at' => $this->updated_at?->diffForHumans(),

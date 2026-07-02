@@ -1,5 +1,5 @@
 export interface TenantUser {
-    id: number;
+    id: string;
     name: string;
     email: string;
     is_active: boolean;

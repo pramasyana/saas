@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('manager_name')->nullable();
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
+            $table->boolean('is_default')->default(false);
             $table->timestamps();
             $table->softDeletes();
             $table->unique(['tenant_id', 'slug']);

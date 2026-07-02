@@ -3,9 +3,12 @@ import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
+import Select from '@/atoms/Select';
 import PackageForm from '@/features/service/components/PackageForm';
+import { useAllBranches } from '@/features/company/hooks/useBranches';
 import { useUpdatePackage } from '@/features/service/hooks/usePackages';
 import type { Package, PackageFormData } from '@/features/service/types';
+import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import { useToastStore } from '@/stores/toast';
 
@@ -34,12 +37,15 @@ export default function Edit({ title, package: pkg }: EditPageProps) {
     const addToast = useToastStore((s) => s.addToast);
     const updateMutation = useUpdatePackage();
     const [saving, setSaving] = useState(false);
+    const [branchId, setBranchId] = useState(pkg.branch_id);
     const errors = extractErrors(updateMutation.error);
+    const { data: branchesData } = useAllBranches();
+    const branches = (branchesData?.data ?? []) as Branch[];
 
     function handleSave(data: PackageFormData) {
         setSaving(true);
         updateMutation.mutate(
-            { id: pkg.id, data },
+            { id: pkg.id, data: { ...data, branch_id: branchId } },
             {
                 onSuccess: () => {
                     addToast('success', 'Paket berhasil diperbarui.');
@@ -116,6 +122,18 @@ export default function Edit({ title, package: pkg }: EditPageProps) {
             {/* Form */}
             <FadeIn delay={0.06}>
                 <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm lg:p-8">
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Cabang</label>
+                        <Select
+                            value={branchId}
+                            onChange={(v) => setBranchId(v)}
+                            options={branches
+                                .filter((b) => b.is_active)
+                                .map((b) => ({ value: b.id, label: b.name }))}
+                            placeholder="Pilih cabang"
+                        />
+                        {errors.branch_id && <p className="mt-1 text-xs text-danger">{errors.branch_id}</p>}
+                    </div>
                     <PackageForm
                         packageData={pkg}
                         saving={saving}

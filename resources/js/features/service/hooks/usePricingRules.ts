@@ -3,6 +3,7 @@ import api from '@/lib/axios';
 import type { PricingRule, PricingRuleFormData, PaginatedResponse } from '../types';
 
 interface Filters {
+    branch_id?: string;
     search?: string;
     action_type?: string;
     is_active?: boolean;

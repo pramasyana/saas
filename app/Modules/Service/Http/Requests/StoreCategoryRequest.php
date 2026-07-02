@@ -11,6 +11,7 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'required|string|exists:branches,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'color' => 'nullable|string|max:20',

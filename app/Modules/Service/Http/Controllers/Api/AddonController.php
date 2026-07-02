@@ -20,8 +20,11 @@ class AddonController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $branchId = $request->input('branch_id');
+
         $addons = $this->addonService->paginate(
             $request->only(['search', 'is_active', 'sort', 'direction']),
+            $branchId,
             (int) $request->input('per_page', 15),
         );
 

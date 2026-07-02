@@ -10,9 +10,9 @@ use Illuminate\Support\Collection;
 
 interface AddonRepositoryInterface
 {
-    public function paginate(string $tenantId, array $filters = [], int $perPage = 15): LengthAwarePaginator;
+    public function paginate(string $tenantId, array $filters = [], ?string $branchId = null, int $perPage = 15): LengthAwarePaginator;
 
-    public function findAllByTenant(string $tenantId): Collection;
+    public function findAllByTenant(string $tenantId, ?string $branchId = null): Collection;
 
     public function findById(string $id): ?Addon;
 

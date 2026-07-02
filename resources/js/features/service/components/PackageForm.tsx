@@ -24,6 +24,7 @@ export default function PackageForm({ packageData, saving, errors = {}, onSave }
     })) || [];
 
     const [form, setForm] = useState<PackageFormData>({
+        branch_id: packageData?.branch_id ?? '',
         name: packageData?.name || '',
         description: packageData?.description || '',
         price: packageData?.price || 0,
@@ -35,6 +36,7 @@ export default function PackageForm({ packageData, saving, errors = {}, onSave }
     useEffect(() => {
         if (packageData) {
             setForm({
+                branch_id: packageData.branch_id,
                 name: packageData.name,
                 description: packageData.description || '',
                 price: packageData.price,
@@ -48,6 +50,7 @@ export default function PackageForm({ packageData, saving, errors = {}, onSave }
             });
         } else {
             setForm({
+                branch_id: '',
                 name: '',
                 description: '',
                 price: 0,

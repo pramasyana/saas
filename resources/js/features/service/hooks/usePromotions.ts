@@ -3,6 +3,7 @@ import api from '@/lib/axios';
 import type { Promotion, PromotionFormData, PaginatedResponse } from '../types';
 
 interface Filters {
+    branch_id?: string;
     search?: string;
     promotion_type?: string;
     is_active?: boolean;

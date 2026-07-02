@@ -3,6 +3,7 @@ import api from '@/lib/axios';
 import type { ServiceItem, ServiceFormData, PaginatedResponse } from '../types';
 
 interface Filters {
+    branch_id?: string;
     search?: string;
     category_id?: string;
     is_active?: boolean;

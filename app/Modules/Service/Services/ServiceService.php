@@ -21,14 +21,14 @@ class ServiceService
         return auth()->user()->tenant_id;
     }
 
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function paginate(array $filters = [], ?string $branchId = null, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->serviceRepository->paginate($this->getTenantId(), $filters, $perPage);
+        return $this->serviceRepository->paginate($this->getTenantId(), $filters, $branchId, $perPage);
     }
 
-    public function findAll(): Collection
+    public function findAll(?string $branchId = null): Collection
     {
-        return $this->serviceRepository->findAllByTenant($this->getTenantId());
+        return $this->serviceRepository->findAllByTenant($this->getTenantId(), $branchId);
     }
 
     public function findById(string $id): Service

@@ -11,6 +11,7 @@ class UpdatePromotionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'sometimes|string|exists:branches,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string|max:2000',
             'code' => 'nullable|string|max:50',

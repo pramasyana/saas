@@ -111,13 +111,23 @@ class StaffUserController extends Controller
 
     public function destroy(string $id): JsonResponse
     {
-        $tenantId = auth()->user()->tenant_id;
+        /** @var User $authUser */
+        $authUser = auth()->user();
+
+        $tenantId = $authUser->tenant_id;
         $user = User::where('tenant_id', $tenantId)->findOrFail($id);
 
-        if ($user->id === auth()->id()) {
+        if ($user->id === $authUser->id) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Tidak dapat menghapus diri sendiri.',
+            ], 422);
+        }
+
+        if ($user->id === $authUser->tenant?->user_id) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tidak dapat menghapus akun utama.',
             ], 422);
         }
 

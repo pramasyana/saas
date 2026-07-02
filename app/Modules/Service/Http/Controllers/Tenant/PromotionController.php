@@ -6,6 +6,7 @@ namespace App\Modules\Service\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Service\Services\PromotionService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,11 +16,16 @@ class PromotionController extends Controller
         private readonly PromotionService $promotionService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $filters = $request->only(['search', 'promotion_type', 'is_active']);
+        $perPage = (int) ($request->input('per_page', 15));
+        $branchId = $request->input('branch_id');
+
         return Inertia::render('tenant/service/promotions/Index', [
             'title' => 'Promosi',
             'stats' => $this->promotionService->getStats(),
+            'data' => $this->promotionService->paginate($filters, $branchId, $perPage),
         ]);
     }
 

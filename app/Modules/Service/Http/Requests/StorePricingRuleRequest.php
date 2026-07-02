@@ -11,6 +11,7 @@ class StorePricingRuleRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'required|string|exists:branches,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
             'action_type' => 'required|string|in:percentage_discount,fixed_discount,percentage_surcharge,fixed_surcharge,price_override',

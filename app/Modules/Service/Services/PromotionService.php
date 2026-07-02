@@ -20,9 +20,9 @@ class PromotionService
         return auth()->user()->tenant_id;
     }
 
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function paginate(array $filters = [], ?string $branchId = null, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->promotionRepository->paginate($this->getTenantId(), $filters, $perPage);
+        return $this->promotionRepository->paginate($this->getTenantId(), $filters, $branchId, $perPage);
     }
 
     public function findById(string $id): Promotion

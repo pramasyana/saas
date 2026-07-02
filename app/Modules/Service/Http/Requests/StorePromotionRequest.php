@@ -11,6 +11,7 @@ class StorePromotionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'required|string|exists:branches,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
             'code' => 'nullable|string|max:50',

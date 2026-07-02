@@ -14,7 +14,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('tenant_id');
             $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
-            $table->uuid('branch_id')->nullable();
+            $table->uuid('branch_id');
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
             $table->string('name');
             $table->date('date_start');

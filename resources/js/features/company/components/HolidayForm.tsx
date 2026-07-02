@@ -34,7 +34,7 @@ export default function HolidayForm({ holiday, saving, errors = {}, onSave }: Ho
                 date_end: holiday.date_end,
                 is_recurring_yearly: holiday.is_recurring_yearly,
                 description: holiday.description ?? '',
-                branch_id: holiday.branch_id ?? '__default__',
+                branch_id: holiday.branch_id ?? '',
             });
         } else {
             setForm({
@@ -54,10 +54,6 @@ export default function HolidayForm({ holiday, saving, errors = {}, onSave }: Ho
 
         if (!payload.description) {
 delete payload.description;
-}
-
-        if (payload.branch_id === '__default__') {
-payload.branch_id = '';
 }
 
         if (!payload.branch_id) {
@@ -144,7 +140,7 @@ payload.is_recurring_yearly = false;
     }
 
     const branchOptions = [
-        { value: '__default__', label: 'Utama' },
+        { value: '', label: 'Semua Cabang' },
         ...branches.map((b) => ({ value: b.id, label: b.name })),
     ];
 

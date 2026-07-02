@@ -16,11 +16,11 @@ function createUser(data: TenantUserFormData): Promise<TenantUser> {
     return api.post('/api/v1/staff/users', data).then((r) => r.data);
 }
 
-function updateUser(id: number, data: Partial<TenantUserFormData>): Promise<TenantUser> {
+function updateUser(id: string, data: Partial<TenantUserFormData>): Promise<TenantUser> {
     return api.put(`/api/v1/staff/users/${id}`, data).then((r) => r.data);
 }
 
-function deleteUser(id: number): Promise<void> {
+function deleteUser(id: string): Promise<void> {
     return api.delete(`/api/v1/staff/users/${id}`).then((r) => r.data);
 }
 
@@ -44,7 +44,7 @@ export function useUpdateTenantUser() {
     const qc = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: number; data: Partial<TenantUserFormData> }) => updateUser(id, data),
+        mutationFn: ({ id, data }: { id: string; data: Partial<TenantUserFormData> }) => updateUser(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['staff', 'users'] }),
     });
 }

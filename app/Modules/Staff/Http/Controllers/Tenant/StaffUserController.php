@@ -13,12 +13,16 @@ class StaffUserController extends Controller
 {
     public function index(): Response
     {
-        $tenantId = auth()->user()->tenant_id;
+        /** @var User $authUser */
+        $authUser = auth()->user();
+        $tenantId = $authUser->tenant_id;
 
         $query = User::where('tenant_id', $tenantId);
 
         return Inertia::render('tenant/staff/users/index', [
             'title' => 'Kelola User',
+            'currentUserId' => $authUser->id,
+            'tenantOwnerId' => $authUser->tenant?->user_id,
             'stats' => [
                 'total' => (clone $query)->count(),
                 'active' => (clone $query)->where('is_active', true)->count(),
@@ -37,9 +41,14 @@ class StaffUserController extends Controller
 
     public function edit(string $id): Response
     {
+        $user = User::findOrFail($id);
+
         return Inertia::render('tenant/staff/users/Edit', [
             'title' => 'Edit User',
-            'user' => User::findOrFail($id),
+            'user' => array_merge($user->toArray(), [
+                'is_verified' => $user->hasVerifiedEmail(),
+                'joined_at' => $user->created_at?->format('d M Y'),
+            ]),
         ]);
     }
 }

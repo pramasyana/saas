@@ -16,8 +16,6 @@ class WorkingHourRepository implements WorkingHourRepositoryInterface
 
         if ($branchId !== null) {
             $query->where('branch_id', $branchId);
-        } else {
-            $query->whereNull('branch_id');
         }
 
         return $query->orderBy('day_of_week')->get();

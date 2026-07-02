@@ -21,14 +21,7 @@ class HolidayRepository implements HolidayRepositoryInterface
         }
 
         if (! empty($filters['branch_id'])) {
-            if ($filters['branch_id'] === '__default__') {
-                $query->whereNull('branch_id');
-            } else {
-                $query->where(function ($q) use ($filters): void {
-                    $q->where('branch_id', $filters['branch_id'])
-                        ->orWhereNull('branch_id');
-                });
-            }
+            $query->where('branch_id', $filters['branch_id']);
         }
 
         if (! empty($filters['year'])) {

@@ -3,9 +3,12 @@ import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
+import Select from '@/atoms/Select';
 import PricingRuleForm from '@/features/service/components/PricingRuleForm';
+import { useAllBranches } from '@/features/company/hooks/useBranches';
 import { useUpdatePricingRule } from '@/features/service/hooks/usePricingRules';
 import type { PricingRule, PricingRuleFormData } from '@/features/service/types';
+import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
 import { useToastStore } from '@/stores/toast';
@@ -43,13 +46,16 @@ export default function Edit({ title, pricingRule }: EditPageProps) {
     const addToast = useToastStore((s) => s.addToast);
     const updateMutation = useUpdatePricingRule();
     const [saving, setSaving] = useState(false);
+    const [branchId, setBranchId] = useState(pricingRule.branch_id);
     const errors = extractErrors(updateMutation.error);
+    const { data: branchesData } = useAllBranches();
+    const branches = (branchesData?.data ?? []) as Branch[];
     const typeInfo = typeBadgeConfig[pricingRule.action_type] || { label: pricingRule.action_type, color: 'text-neutral-500', bg: 'bg-neutral-100' };
 
     function handleSave(data: PricingRuleFormData) {
         setSaving(true);
         updateMutation.mutate(
-            { id: pricingRule.id, data },
+            { id: pricingRule.id, data: { ...data, branch_id: branchId } },
             {
                 onSuccess: () => {
                     addToast('success', 'Aturan harga berhasil diperbarui.');
@@ -132,6 +138,18 @@ export default function Edit({ title, pricingRule }: EditPageProps) {
             {/* Form */}
             <FadeIn delay={0.06}>
                 <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm lg:p-8">
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Cabang</label>
+                        <Select
+                            value={branchId}
+                            onChange={(v) => setBranchId(v)}
+                            options={branches
+                                .filter((b) => b.is_active)
+                                .map((b) => ({ value: b.id, label: b.name }))}
+                            placeholder="Pilih cabang"
+                        />
+                        {errors.branch_id && <p className="mt-1 text-xs text-danger">{errors.branch_id}</p>}
+                    </div>
                     <PricingRuleForm
                         pricingRule={pricingRule}
                         saving={saving}

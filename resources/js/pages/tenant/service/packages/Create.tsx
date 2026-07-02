@@ -1,11 +1,14 @@
 import { Head, Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
+import Select from '@/atoms/Select';
 import PackageForm from '@/features/service/components/PackageForm';
+import { useAllBranches } from '@/features/company/hooks/useBranches';
 import { useCreatePackage } from '@/features/service/hooks/usePackages';
 import type { PackageFormData } from '@/features/service/types';
+import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import { useToastStore } from '@/stores/toast';
 
@@ -33,11 +36,23 @@ export default function Create({ title }: CreatePageProps) {
     const addToast = useToastStore((s) => s.addToast);
     const createMutation = useCreatePackage();
     const [saving, setSaving] = useState(false);
+    const [branchId, setBranchId] = useState('');
     const errors = extractErrors(createMutation.error);
+    const { data: branchesData } = useAllBranches();
+    const branches = (branchesData?.data ?? []) as Branch[];
+
+    useEffect(() => {
+        if (!branchId && branches.length > 0) {
+            const defaultBranch = branches.find((b) => b.is_default) ?? branches[0];
+            if (defaultBranch) {
+                setBranchId(defaultBranch.id);
+            }
+        }
+    }, [branches]);
 
     function handleSave(data: PackageFormData) {
         setSaving(true);
-        createMutation.mutate(data, {
+        createMutation.mutate({ ...data, branch_id: branchId }, {
             onSuccess: () => {
                 addToast('success', 'Paket berhasil ditambahkan.');
                 router.get('/service/packages');
@@ -77,6 +92,18 @@ export default function Create({ title }: CreatePageProps) {
                 {/* Form */}
                 <FadeIn className="lg:col-span-2" delay={0.05}>
                     <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm lg:p-8">
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-neutral-700 mb-1">Cabang</label>
+                            <Select
+                                value={branchId}
+                                onChange={(v) => setBranchId(v)}
+                                options={branches
+                                    .filter((b) => b.is_active)
+                                    .map((b) => ({ value: b.id, label: b.name }))}
+                                placeholder="Pilih cabang"
+                            />
+                            {errors.branch_id && <p className="mt-1 text-xs text-danger">{errors.branch_id}</p>}
+                        </div>
                         <PackageForm
                             packageData={null}
                             saving={saving}

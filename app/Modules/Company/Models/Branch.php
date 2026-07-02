@@ -27,6 +27,7 @@ class Branch extends Model
         'manager_name',
         'is_active',
         'sort_order',
+        'is_default',
     ];
 
     protected static function booted(): void
@@ -45,6 +46,7 @@ class Branch extends Model
             'id' => 'string',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
+            'is_default' => 'boolean',
         ];
     }
 }

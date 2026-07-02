@@ -3,9 +3,12 @@ import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
+import Select from '@/atoms/Select';
 import PromotionForm from '@/features/service/components/PromotionForm';
+import { useAllBranches } from '@/features/company/hooks/useBranches';
 import { useUpdatePromotion } from '@/features/service/hooks/usePromotions';
 import type { Promotion, PromotionFormData } from '@/features/service/types';
+import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
 import { useToastStore } from '@/stores/toast';
@@ -80,12 +83,15 @@ export default function Edit({ title, promotion }: EditPageProps) {
     const addToast = useToastStore((s) => s.addToast);
     const updateMutation = useUpdatePromotion();
     const [saving, setSaving] = useState(false);
+    const [branchId, setBranchId] = useState(promotion.branch_id);
     const errors = extractErrors(updateMutation.error);
+    const { data: branchesData } = useAllBranches();
+    const branches = (branchesData?.data ?? []) as Branch[];
 
     function handleSave(data: PromotionFormData) {
         setSaving(true);
         updateMutation.mutate(
-            { id: promotion.id, data },
+            { id: promotion.id, data: { ...data, branch_id: branchId } },
             {
                 onSuccess: () => {
                     addToast('success', 'Promosi berhasil diperbarui.');
@@ -165,6 +171,18 @@ export default function Edit({ title, promotion }: EditPageProps) {
             {/* Form */}
             <FadeIn delay={0.06}>
                 <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm lg:p-8">
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Cabang</label>
+                        <Select
+                            value={branchId}
+                            onChange={(v) => setBranchId(v)}
+                            options={branches
+                                .filter((b) => b.is_active)
+                                .map((b) => ({ value: b.id, label: b.name }))}
+                            placeholder="Pilih cabang"
+                        />
+                        {errors.branch_id && <p className="mt-1 text-xs text-danger">{errors.branch_id}</p>}
+                    </div>
                     <PromotionForm
                         promotion={promotion}
                         saving={saving}

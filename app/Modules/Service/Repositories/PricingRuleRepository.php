@@ -11,9 +11,13 @@ use Illuminate\Support\Collection;
 
 class PricingRuleRepository implements PricingRuleRepositoryInterface
 {
-    public function paginate(string $tenantId, array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function paginate(string $tenantId, array $filters = [], ?string $branchId = null, int $perPage = 15): LengthAwarePaginator
     {
         $query = PricingRule::where('tenant_id', $tenantId);
+
+        if ($branchId !== null) {
+            $query->where('branch_id', $branchId);
+        }
 
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters): void {
@@ -32,10 +36,16 @@ class PricingRuleRepository implements PricingRuleRepositoryInterface
         return $query->orderBy('priority')->orderBy('name')->paginate($perPage);
     }
 
-    public function findAllByTenant(string $tenantId): Collection
+    public function findAllByTenant(string $tenantId, ?string $branchId = null): Collection
     {
-        return PricingRule::where('tenant_id', $tenantId)
-            ->where('is_active', true)
+        $query = PricingRule::where('tenant_id', $tenantId)
+            ->where('is_active', true);
+
+        if ($branchId !== null) {
+            $query->where('branch_id', $branchId);
+        }
+
+        return $query
             ->orderBy('priority')
             ->get();
     }

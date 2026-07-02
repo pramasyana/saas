@@ -6,6 +6,7 @@ namespace App\Modules\Service\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Service\Services\PricingRuleService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,11 +16,16 @@ class PricingRuleController extends Controller
         private readonly PricingRuleService $pricingRuleService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $filters = $request->only(['search', 'action_type', 'is_active']);
+        $perPage = (int) ($request->input('per_page', 15));
+        $branchId = $request->input('branch_id');
+
         return Inertia::render('tenant/service/pricing-rules/Index', [
             'title' => 'Aturan Harga',
             'stats' => $this->pricingRuleService->getStats(),
+            'data' => $this->pricingRuleService->paginate($filters, $branchId, $perPage),
         ]);
     }
 

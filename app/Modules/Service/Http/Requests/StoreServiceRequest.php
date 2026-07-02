@@ -11,6 +11,7 @@ class StoreServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'required|string|exists:branches,id',
             'category_id' => 'nullable|string|exists:service_categories,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',

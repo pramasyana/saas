@@ -67,7 +67,7 @@ export default function Edit({ title, staff }: EditPageProps) {
     const errors = extractErrors(updateMutation.error);
     const { data: branchesData } = useAllBranches();
     const branches = [
-        { value: '__default__', label: 'Utama' },
+        { value: '', label: 'Semua Cabang' },
         ...(branchesData?.data ?? []).map((b) => ({ value: b.id, label: b.name })),
     ];
 

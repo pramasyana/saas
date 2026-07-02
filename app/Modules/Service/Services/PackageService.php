@@ -21,14 +21,14 @@ class PackageService
         return auth()->user()->tenant_id;
     }
 
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function paginate(array $filters = [], ?string $branchId = null, int $perPage = 15): LengthAwarePaginator
     {
-        return $this->packageRepository->paginate($this->getTenantId(), $filters, $perPage);
+        return $this->packageRepository->paginate($this->getTenantId(), $filters, $branchId, $perPage);
     }
 
-    public function findAll(): Collection
+    public function findAll(?string $branchId = null): Collection
     {
-        return $this->packageRepository->findAllByTenant($this->getTenantId());
+        return $this->packageRepository->findAllByTenant($this->getTenantId(), $branchId);
     }
 
     public function findById(string $id): Package
@@ -41,6 +41,7 @@ class PackageService
         return DB::transaction(function () use ($data) {
             $package = $this->packageRepository->create([
                 'tenant_id' => $this->getTenantId(),
+                'branch_id' => $data['branch_id'],
                 'name' => $data['name'],
                 'description' => $data['description'] ?? null,
                 'price' => $data['price'],

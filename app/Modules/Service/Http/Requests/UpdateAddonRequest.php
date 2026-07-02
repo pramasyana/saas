@@ -11,6 +11,7 @@ class UpdateAddonRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'sometimes|string|exists:branches,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string|max:1000',
             'price' => 'sometimes|numeric|min:0|max:999999999.99',

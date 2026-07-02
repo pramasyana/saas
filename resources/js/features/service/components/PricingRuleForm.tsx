@@ -39,6 +39,7 @@ export default function PricingRuleForm({ pricingRule, saving, errors = {}, onSa
     };
 
     const [form, setForm] = useState<PricingRuleFormData>({
+        branch_id: pricingRule?.branch_id ?? '',
         name: '',
         description: '',
         action_type: 'percentage_discount',
@@ -53,6 +54,7 @@ export default function PricingRuleForm({ pricingRule, saving, errors = {}, onSa
     useEffect(() => {
         if (pricingRule) {
             setForm({
+                branch_id: pricingRule.branch_id,
                 name: pricingRule.name,
                 description: pricingRule.description || '',
                 action_type: pricingRule.action_type,
@@ -65,6 +67,7 @@ export default function PricingRuleForm({ pricingRule, saving, errors = {}, onSa
             });
         } else {
             setForm({
+                branch_id: '',
                 name: '',
                 description: '',
                 action_type: 'percentage_discount',

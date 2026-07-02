@@ -54,15 +54,16 @@ export default function CompanyWorkingHoursPage() {
     const branches = branchesData?.data ?? [];
     const showBranchSelector = branches.length > 0;
 
-    // Auto-select "Utama" sebagai default
+    const defaultBranch = branches.find((b) => b.is_default);
+
     useEffect(() => {
-        if (!selectedBranch && !hasAutoSelected.current) {
-            setSelectedBranch('__default__');
+        if (!selectedBranch && !hasAutoSelected.current && defaultBranch) {
+            setSelectedBranch(defaultBranch.id);
             hasAutoSelected.current = true;
         }
-    }, [selectedBranch]);
+    }, [selectedBranch, defaultBranch]);
 
-    const branchId = selectedBranch === '__default__' ? null : selectedBranch;
+    const branchId = selectedBranch || undefined;
     const { data: hours = [], isLoading } = useWorkingHours(branchId);
     const mutation = useUpdateWorkingHours();
 
@@ -78,10 +79,7 @@ export default function CompanyWorkingHoursPage() {
         );
     }
 
-    const branchOptions = [
-        { value: '__default__', label: 'Utama' },
-        ...branches.map((b) => ({ value: b.id, label: b.name })),
-    ];
+    const branchOptions = branches.map((b) => ({ value: b.id, label: b.name }));
     // Use same fallback defaults as WorkingHourEditor for consistent summary
     const resolvedHours: WorkingHour[] = !isLoading && hours.length === 0 ? defaultHours() : hours;
     const summary = isLoading ? '' : getSummary(resolvedHours);
@@ -151,11 +149,9 @@ export default function CompanyWorkingHoursPage() {
                                 <div className="px-5 py-4">
                                     <p className="text-xs font-medium text-neutral-400">Cabang</p>
                                     <p className="mt-1 text-sm font-semibold text-neutral-900 truncate">
-                                        {selectedBranch === '__default__'
-                                            ? 'Utama'
-                                            : selectedBranch
-                                                ? branches.find((b) => b.id === selectedBranch)?.name ?? '-'
-                                                : '-'}
+                                        {selectedBranch
+                                            ? branches.find((b) => b.id === selectedBranch)?.name ?? '-'
+                                            : '-'}
                                     </p>
                                 </div>
                             </>
@@ -197,11 +193,9 @@ export default function CompanyWorkingHoursPage() {
                         </div>
                         <div>
                             <h3 className="text-sm font-semibold text-neutral-900">
-                                {selectedBranch === '__default__'
-                                    ? 'Jam Kerja - Utama'
-                                    : selectedBranch
-                                        ? `Jam Kerja - ${branches.find((b) => b.id === selectedBranch)?.name ?? ''}`
-                                        : 'Jam Kerja'}
+                                {selectedBranch
+                                    ? `Jam Kerja - ${branches.find((b) => b.id === selectedBranch)?.name ?? ''}`
+                                    : 'Jam Kerja'}
                             </h3>
                             <p className="text-xs text-neutral-500">Atur jam buka dan tutup untuk setiap hari.</p>
                         </div>

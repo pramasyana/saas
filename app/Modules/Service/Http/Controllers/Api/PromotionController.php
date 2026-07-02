@@ -20,8 +20,11 @@ class PromotionController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $branchId = $request->input('branch_id');
+
         $promotions = $this->promotionService->paginate(
             $request->only(['search', 'promotion_type', 'is_active', 'sort', 'direction']),
+            $branchId,
             (int) $request->input('per_page', 15),
         );
 

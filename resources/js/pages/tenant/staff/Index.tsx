@@ -169,7 +169,6 @@ return;
 
     const branchOptions = [
         { value: '', label: 'Semua Cabang' },
-        { value: '__default__', label: 'Utama' },
         ...branches.map((b) => ({ value: b.id, label: b.name })),
     ];
 

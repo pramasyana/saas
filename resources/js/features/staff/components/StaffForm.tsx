@@ -32,7 +32,7 @@ export default function StaffForm({ staff, branches, saving, errors = {}, onSave
                 email: staff.email || '',
                 phone: staff.phone || '',
                 position: staff.position || '',
-                branch_id: staff.branch_id || '__default__',
+                branch_id: staff.branch_id || '',
                 hire_date: staff.hire_date || '',
                 is_active: staff.is_active,
             });
@@ -43,7 +43,13 @@ export default function StaffForm({ staff, branches, saving, errors = {}, onSave
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
-        onSave({ ...form, branch_id: form.branch_id === '__default__' ? '' : form.branch_id });
+        const payload = { ...form };
+
+        if (!payload.branch_id) {
+            delete payload.branch_id;
+        }
+
+        onSave(payload);
     }
 
     function inputClass(field: string, extra?: string) {

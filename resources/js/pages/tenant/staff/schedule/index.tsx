@@ -86,15 +86,17 @@ export default function StaffSchedulePage() {
     const branches = branchesData?.data ?? [];
     const showBranchSelector = branches.length > 0;
 
-    const branchId = selectedBranch === '__default__' ? null : selectedBranch || null;
-    const { data: workingHours = [], isLoading: whLoading } = useWorkingHours(branchId);
+    const defaultBranch = branches.find((b) => b.is_default);
 
     useEffect(() => {
-        if (!selectedBranch && !hasAutoSelected.current) {
-            setSelectedBranch('__default__');
+        if (!selectedBranch && !hasAutoSelected.current && defaultBranch) {
+            setSelectedBranch(defaultBranch.id);
             hasAutoSelected.current = true;
         }
-    }, [selectedBranch]);
+    }, [selectedBranch, defaultBranch]);
+
+    const branchId = selectedBranch || null;
+    const { data: workingHours = [], isLoading: whLoading } = useWorkingHours(branchId);
 
     useEffect(() => {
         if (selectedBranch) {
@@ -102,11 +104,9 @@ export default function StaffSchedulePage() {
         }
     }, [selectedBranch, branchId, queryClient]);
 
-    const filteredStaff = selectedBranch === '__default__'
-        ? allStaff.filter((s) => !s.branch_id)
-        : selectedBranch
-            ? allStaff.filter((s) => s.branch_id === selectedBranch)
-            : allStaff;
+    const filteredStaff = selectedBranch
+        ? allStaff.filter((s) => s.branch_id === selectedBranch)
+        : allStaff;
 
     const { openCount, summary: branchSummary } = workingHours.length > 0
         ? getBranchSummary(workingHours)
@@ -165,18 +165,13 @@ return;
     const summary = selectedStaff ? getSummary(localSchedules) : '';
     const staffName = selectedStaff ? allStaff.find((s) => s.id === selectedStaff)?.name ?? '-' : '-';
 
-    const branchOptions = [
-        { value: '__default__', label: 'Utama' },
-        ...branches.map((b) => ({ value: b.id, label: b.name })),
-    ];
+    const branchOptions = branches.map((b) => ({ value: b.id, label: b.name }));
 
     const staffOptions = filteredStaff.map((s) => ({ value: s.id, label: s.name }));
 
-    const branchName = selectedBranch === '__default__'
-        ? 'Utama'
-        : selectedBranch
-            ? branches.find((b) => b.id === selectedBranch)?.name ?? '-'
-            : '-';
+    const branchName = selectedBranch
+        ? branches.find((b) => b.id === selectedBranch)?.name ?? '-'
+        : '-';
 
     return (
         <TenantLayout>

@@ -26,6 +26,7 @@ const colorOptions = [
 export default function CategoryForm({ category, saving, errors = {}, onSave }: CategoryFormProps) {
     const { auth } = usePage().props as { auth: { user: { is_admin: boolean } } };
     const [form, setForm] = useState<CategoryFormData>({
+        branch_id: category?.branch_id ?? '',
         name: '',
         description: '',
         color: '#6366F1',
@@ -36,6 +37,7 @@ export default function CategoryForm({ category, saving, errors = {}, onSave }: 
     useEffect(() => {
         if (category) {
             setForm({
+                branch_id: category.branch_id,
                 name: category.name,
                 description: category.description ?? '',
                 color: category.color ?? '#6366F1',
@@ -43,7 +45,7 @@ export default function CategoryForm({ category, saving, errors = {}, onSave }: 
                 is_active: category.is_active,
             });
         } else {
-            setForm({ name: '', description: '', color: '#6366F1', sort_order: 0, is_active: true });
+            setForm({ branch_id: '', name: '', description: '', color: '#6366F1', sort_order: 0, is_active: true });
         }
     }, [category]);
 

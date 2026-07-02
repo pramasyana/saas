@@ -20,8 +20,11 @@ class ServiceController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $branchId = $request->input('branch_id');
+
         $services = $this->serviceService->paginate(
             $request->only(['search', 'category_id', 'is_active', 'sort', 'direction']),
+            $branchId,
             (int) $request->input('per_page', 15),
         );
 

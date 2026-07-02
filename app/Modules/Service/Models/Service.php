@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Service\Models;
 
+use App\Modules\Company\Models\Branch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,6 +22,7 @@ class Service extends Model
 
     protected $fillable = [
         'tenant_id',
+        'branch_id',
         'category_id',
         'name',
         'description',
@@ -47,6 +49,16 @@ class Service extends Model
             'price' => 'decimal:2',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 
     public function category(): BelongsTo

@@ -31,6 +31,7 @@ export default function ServiceForm({ service, saving, errors = {}, onSave }: Se
     const categories = categoriesData?.data ?? [];
 
     const [form, setForm] = useState<ServiceFormData>({
+        branch_id: service?.branch_id ?? '',
         category_id: service?.category_id ?? '',
         name: service?.name ?? '',
         description: service?.description ?? '',

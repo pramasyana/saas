@@ -19,6 +19,7 @@ export interface Branch {
     id: string;
     name: string;
     slug: string;
+    is_default: boolean;
     address: string | null;
     phone: string | null;
     email: string | null;

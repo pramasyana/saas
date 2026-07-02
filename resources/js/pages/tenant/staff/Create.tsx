@@ -33,7 +33,7 @@ export default function Create() {
     const errors = extractErrors(createMutation.error);
     const { data: branchesData } = useAllBranches();
     const branches = [
-        { value: '__default__', label: 'Utama' },
+        { value: '', label: 'Semua Cabang' },
         ...(branchesData?.data ?? []).map((b) => ({ value: b.id, label: b.name })),
     ];
 

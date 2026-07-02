@@ -11,6 +11,7 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'branch_id' => 'sometimes|string|exists:branches,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string|max:1000',
             'color' => 'nullable|string|max:20',

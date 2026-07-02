@@ -1,5 +1,6 @@
 export interface Category {
     id: string;
+    branch_id: string;
     name: string;
     slug: string;
     description: string | null;
@@ -11,6 +12,7 @@ export interface Category {
 }
 
 export interface CategoryFormData {
+    branch_id: string;
     name: string;
     description?: string;
     color?: string;
@@ -20,6 +22,7 @@ export interface CategoryFormData {
 
 export interface ServiceItem {
     id: string;
+    branch_id: string;
     category_id: string | null;
     category_name: string | null;
     name: string;
@@ -32,6 +35,7 @@ export interface ServiceItem {
 }
 
 export interface ServiceFormData {
+    branch_id: string;
     category_id?: string;
     name: string;
     description?: string;
@@ -43,6 +47,7 @@ export interface ServiceFormData {
 
 export interface Package {
     id: string;
+    branch_id: string;
     name: string;
     description: string | null;
     price: number;
@@ -64,6 +69,7 @@ export interface PackageService {
 }
 
 export interface PackageFormData {
+    branch_id: string;
     name: string;
     description?: string;
     price: number;
@@ -74,6 +80,7 @@ export interface PackageFormData {
 
 export interface Addon {
     id: string;
+    branch_id: string;
     name: string;
     description: string | null;
     price: number;
@@ -83,6 +90,7 @@ export interface Addon {
 }
 
 export interface AddonFormData {
+    branch_id: string;
     name: string;
     description?: string;
     price: number;
@@ -92,6 +100,7 @@ export interface AddonFormData {
 
 export interface PricingRule {
     id: string;
+    branch_id: string;
     name: string;
     description: string | null;
     action_type: 'percentage_discount' | 'fixed_discount' | 'percentage_surcharge' | 'fixed_surcharge' | 'price_override';
@@ -122,6 +131,7 @@ export interface PricingRuleConditions {
 }
 
 export interface PricingRuleFormData {
+    branch_id: string;
     name: string;
     description?: string;
     action_type: string;
@@ -135,6 +145,7 @@ export interface PricingRuleFormData {
 
 export interface Promotion {
     id: string;
+    branch_id: string;
     name: string;
     description: string | null;
     code: string | null;
@@ -153,6 +164,7 @@ export interface Promotion {
 }
 
 export interface PromotionFormData {
+    branch_id: string;
     name: string;
     description?: string;
     code?: string;

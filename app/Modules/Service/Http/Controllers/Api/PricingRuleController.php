@@ -22,8 +22,11 @@ class PricingRuleController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $branchId = $request->input('branch_id');
+
         $rules = $this->pricingRuleService->paginate(
             $request->only(['search', 'action_type', 'is_active', 'sort', 'direction']),
+            $branchId,
             (int) $request->input('per_page', 15),
         );
 

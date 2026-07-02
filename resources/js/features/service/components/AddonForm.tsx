@@ -14,6 +14,7 @@ interface AddonFormProps {
 
 export default function AddonForm({ addon, saving, errors = {}, onSave }: AddonFormProps) {
     const [form, setForm] = useState<AddonFormData>({
+        branch_id: addon?.branch_id ?? '',
         name: '',
         description: '',
         price: 0,
@@ -24,6 +25,7 @@ export default function AddonForm({ addon, saving, errors = {}, onSave }: AddonF
     useEffect(() => {
         if (addon) {
             setForm({
+                branch_id: addon.branch_id,
                 name: addon.name,
                 description: addon.description || '',
                 price: addon.price,
@@ -31,7 +33,7 @@ export default function AddonForm({ addon, saving, errors = {}, onSave }: AddonF
                 is_active: addon.is_active,
             });
         } else {
-            setForm({ name: '', description: '', price: 0, duration: undefined, is_active: true });
+            setForm({ branch_id: '', name: '', description: '', price: 0, duration: undefined, is_active: true });
         }
     }, [addon]);
 
