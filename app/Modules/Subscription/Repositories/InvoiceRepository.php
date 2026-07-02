@@ -20,6 +20,10 @@ class InvoiceRepository implements InvoiceRepositoryInterface
             $query->where('subscription_id', $filters['subscription_id']);
         }
 
+        if (! empty($filters['tenant_id'])) {
+            $query->whereHas('subscription', fn ($q) => $q->where('tenant_id', $filters['tenant_id']));
+        }
+
         $sort = $filters['sort'] ?? 'created_at';
         $direction = $filters['direction'] ?? 'desc';
         $query->orderBy($sort, $direction);

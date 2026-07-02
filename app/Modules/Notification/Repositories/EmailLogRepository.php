@@ -36,6 +36,10 @@ class EmailLogRepository implements EmailLogRepositoryInterface
             $query->where('user_id', $filters['user_id']);
         }
 
+        if (! empty($filters['tenant_id'])) {
+            $query->where('tenant_id', $filters['tenant_id']);
+        }
+
         return $query->paginate($perPage);
     }
 
@@ -56,5 +60,19 @@ class EmailLogRepository implements EmailLogRepositoryInterface
             'total_failed' => EmailLog::where('status', 'failed')->count(),
             'total_logs' => EmailLog::count(),
         ];
+    }
+
+    public function create(array $data): EmailLog
+    {
+        return EmailLog::create($data);
+    }
+
+    public function getLastAttempt(int $userId, string $subject, string $channel): ?EmailLog
+    {
+        return EmailLog::where('user_id', $userId)
+            ->where('subject', $subject)
+            ->where('channel', $channel)
+            ->latest()
+            ->first();
     }
 }

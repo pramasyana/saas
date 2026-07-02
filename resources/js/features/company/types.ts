@@ -11,6 +11,7 @@ export interface CompanyBranding {
     primary_color: string | null;
     secondary_color: string | null;
     favicon_url: string | null;
+    favicon_path: string | null;
     custom_css: string | null;
 }
 

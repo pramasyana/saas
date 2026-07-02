@@ -15,23 +15,23 @@ interface BranchesResponse {
 }
 
 function getBranches(params: BranchesFilters): Promise<BranchesResponse> {
-    return api.get('/company/branches', { params }).then((res) => res.data);
+    return api.get('/api/v1/company/branches', { params }).then((res) => res.data);
 }
 
 function getAllBranches(): Promise<{ status: string; data: Branch[] }> {
-    return api.get('/company/branches', { params: { all: true } }).then((res) => res.data);
+    return api.get('/api/v1/company/branches', { params: { all: true } }).then((res) => res.data);
 }
 
 function createBranch(data: BranchFormData): Promise<{ status: string; data: Branch }> {
-    return api.post('/company/branches', data).then((res) => res.data);
+    return api.post('/api/v1/company/branches', data).then((res) => res.data);
 }
 
 function updateBranch(id: string, data: BranchFormData): Promise<{ status: string; data: Branch }> {
-    return api.put(`/company/branches/${id}`, data).then((res) => res.data);
+    return api.put(`/api/v1/company/branches/${id}`, data).then((res) => res.data);
 }
 
 function deleteBranch(id: string): Promise<void> {
-    return api.delete(`/company/branches/${id}`).then((res) => res.data);
+    return api.delete(`/api/v1/company/branches/${id}`).then((res) => res.data);
 }
 
 export function useBranches(filters: BranchesFilters = {}) {

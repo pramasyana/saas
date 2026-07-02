@@ -2,19 +2,24 @@
 
 namespace App\Modules\Notification\Models;
 
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class EmailLog extends Model
 {
+    use BelongsToTenant;
+
     protected $keyType = 'string';
 
     public $incrementing = false;
 
     protected $fillable = [
         'id',
+        'tenant_id',
         'user_id',
         'channel',
         'subject',

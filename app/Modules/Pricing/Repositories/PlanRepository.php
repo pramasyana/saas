@@ -37,6 +37,11 @@ class PlanRepository implements PlanRepositoryInterface
         return Plan::with('features.definition')->find($id);
     }
 
+    public function findActiveById(string $id): ?Plan
+    {
+        return Plan::where('id', $id)->where('is_active', true)->first();
+    }
+
     public function create(array $data): Plan
     {
         return Plan::create($data);
@@ -60,6 +65,28 @@ class PlanRepository implements PlanRepositoryInterface
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
+    }
+
+    public function unsetPopularExcept(string $planId): void
+    {
+        Plan::where('id', '!=', $planId)->update(['is_popular' => false]);
+    }
+
+    public function unsetAllPopular(): void
+    {
+        Plan::where('is_popular', true)->update(['is_popular' => false]);
+    }
+
+    public function syncFeatures(Plan $plan, array $features): void
+    {
+        $plan->features()->delete();
+
+        foreach ($features as $feature) {
+            $plan->features()->create([
+                'feature_definition_id' => $feature['feature_definition_id'],
+                'value' => $feature['value'] ?? null,
+            ]);
+        }
     }
 
     public function getStats(): array

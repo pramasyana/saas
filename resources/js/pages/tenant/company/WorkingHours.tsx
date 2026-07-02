@@ -55,9 +55,7 @@ export default function CompanyWorkingHoursPage() {
     const { data: hours = [], isLoading } = useWorkingHours(branchId);
     const mutation = useUpdateWorkingHours();
 
-    function handleSave(
-        items: Partial<{ day_of_week: number; is_open: boolean; open_time: string | null; close_time: string | null }[]>,
-    ) {
+    function handleSave(items: Partial<WorkingHour>[]) {
         mutation.mutate(
             { branch_id: branchId ?? undefined, hours: items },
             {

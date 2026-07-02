@@ -41,6 +41,8 @@ class WorkingHour extends Model
             'id' => 'string',
             'is_open' => 'boolean',
             'day_of_week' => 'integer',
+            'open_time' => 'datetime:H:i',
+            'close_time' => 'datetime:H:i',
         ];
     }
 }

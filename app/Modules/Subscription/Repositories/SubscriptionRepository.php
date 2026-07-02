@@ -24,6 +24,10 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             $query->where('status', $filters['status']);
         }
 
+        if (! empty($filters['tenant_id'])) {
+            $query->where('tenant_id', $filters['tenant_id']);
+        }
+
         $sort = $filters['sort'] ?? 'created_at';
         $direction = $filters['direction'] ?? 'desc';
         $query->orderBy($sort, $direction);
@@ -59,6 +63,15 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             'active' => Subscription::where('status', 'active')->count(),
             'cancelled' => Subscription::where('status', 'cancelled')->count(),
             'total_revenue' => (float) Subscription::where('status', 'active')->sum('price_amount'),
+        ];
+    }
+
+    public function getStatsByTenant(string $tenantId): array
+    {
+        return [
+            'active' => Subscription::where('tenant_id', $tenantId)->where('status', 'active')->count(),
+            'cancelled' => Subscription::where('tenant_id', $tenantId)->where('status', 'cancelled')->count(),
+            'total_revenue' => (float) Subscription::where('tenant_id', $tenantId)->where('status', 'active')->sum('price_amount'),
         ];
     }
 }

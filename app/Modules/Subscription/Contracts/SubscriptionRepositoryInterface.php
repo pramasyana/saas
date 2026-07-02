@@ -19,4 +19,7 @@ interface SubscriptionRepositoryInterface
 
     /** @return array{active: int, cancelled: int, total_revenue: float} */
     public function getStats(): array;
+
+    /** @return array{active: int, cancelled: int, total_revenue: float} */
+    public function getStatsByTenant(string $tenantId): array;
 }

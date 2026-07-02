@@ -6,7 +6,7 @@ export function useCompanyBranding() {
     return useQuery<CompanyBranding>({
         queryKey: ['company', 'branding'],
         queryFn: async () => {
-            const { data } = await api.get('/company/branding');
+            const { data } = await api.get('/api/v1/company/branding');
             return data.data ?? data;
         },
     });
@@ -17,7 +17,7 @@ export function useUpdateCompanyBranding() {
     return useMutation({
         mutationFn: async (formData: FormData) => {
             formData.append('_method', 'PUT');
-            const { data } = await api.post('/company/branding', formData, {
+            const { data } = await api.post('/api/v1/company/branding', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             return data;

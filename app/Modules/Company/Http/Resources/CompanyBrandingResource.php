@@ -7,6 +7,7 @@ namespace App\Modules\Company\Http\Resources;
 use App\Modules\Company\Models\CompanyBranding;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /** @mixin CompanyBranding */
 class CompanyBrandingResource extends JsonResource
@@ -19,7 +20,7 @@ class CompanyBrandingResource extends JsonResource
             'tenant_id' => $this->tenant_id,
             'primary_color' => $this->primary_color,
             'secondary_color' => $this->secondary_color,
-            'favicon_path' => $this->favicon_path,
+            'favicon_url' => $this->favicon_path ? Storage::url($this->favicon_path) : null,
             'custom_css' => $this->custom_css,
             'created_at' => $this->created_at?->diffForHumans(),
             'updated_at' => $this->updated_at?->diffForHumans(),

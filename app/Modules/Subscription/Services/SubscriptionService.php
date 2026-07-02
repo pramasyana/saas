@@ -5,6 +5,7 @@ namespace App\Modules\Subscription\Services;
 use App\Modules\Pricing\Models\Plan;
 use App\Modules\Subscription\Contracts\SubscriptionRepositoryInterface;
 use App\Modules\Subscription\Models\Subscription;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
@@ -18,6 +19,12 @@ class SubscriptionService
 
     public function paginate(array $filters = [], int $perPage = 15): mixed
     {
+        $user = Auth::user();
+
+        if ($user && ! $user->is_admin) {
+            $filters['tenant_id'] = $filters['tenant_id'] ?? $user->tenant_id;
+        }
+
         return $this->subscriptionRepository->paginate($filters, $perPage);
     }
 
@@ -51,9 +58,11 @@ class SubscriptionService
                 ? $plan->price_yearly
                 : $plan->price_monthly;
 
+            $tenantId = $data['tenant_id'] ?? auth()->user()?->tenant_id ?? null;
+
             $subscription = $this->subscriptionRepository->create([
                 'user_id' => $data['user_id'],
-                'tenant_id' => $data['tenant_id'] ?? null,
+                'tenant_id' => $tenantId,
                 'plan_id' => $plan->id,
                 'price_amount' => $priceAmount,
                 'billing_interval' => $interval,

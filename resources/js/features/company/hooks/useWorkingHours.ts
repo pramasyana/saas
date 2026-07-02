@@ -7,7 +7,7 @@ export function useWorkingHours(branchId?: string | null) {
         queryKey: ['company', 'working-hours', branchId],
         queryFn: async () => {
             const params = branchId ? { branch_id: branchId } : {};
-            const { data } = await api.get('/company/working-hours', { params });
+            const { data } = await api.get('/api/v1/company/working-hours', { params });
             return data.data ?? data;
         },
     });
@@ -17,7 +17,7 @@ export function useUpdateWorkingHours() {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: async (payload: { branch_id?: string; hours: Partial<WorkingHour>[] }) => {
-            const { data } = await api.put('/company/working-hours', payload);
+            const { data } = await api.put('/api/v1/company/working-hours', payload);
             return data;
         },
         onSuccess: () => {

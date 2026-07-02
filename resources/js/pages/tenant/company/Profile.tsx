@@ -1,5 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState, type FormEvent } from 'react';
 import TenantLayout from '@/layouts/TenantLayout';
@@ -90,7 +89,6 @@ export default function CompanyProfilePage() {
         mutation.mutate(payload, {
             onSuccess: () => {
                 addToast('success', 'Profil perusahaan berhasil diperbarui.');
-                router.get('/company/profile');
             },
             onSettled: () => {
                 setSaving(false);

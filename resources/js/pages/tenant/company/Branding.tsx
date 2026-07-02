@@ -1,5 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState, useRef, type FormEvent } from 'react';
 import TenantLayout from '@/layouts/TenantLayout';
@@ -99,7 +98,6 @@ export default function CompanyBrandingPage() {
         mutation.mutate(fd, {
             onSuccess: () => {
                 addToast('success', 'Branding berhasil diperbarui.');
-                router.get('/company/branding');
             },
             onSettled: () => {
                 setSaving(false);

@@ -5,14 +5,18 @@ namespace App\Modules\Subscription\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Invoice extends Model
 {
+    use BelongsToTenant;
+
     protected $keyType = 'string';
 
     public $incrementing = false;
 
     protected $fillable = [
+        'tenant_id',
         'subscription_id',
         'number',
         'amount',

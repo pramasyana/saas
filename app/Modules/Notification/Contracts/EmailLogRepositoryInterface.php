@@ -2,6 +2,7 @@
 
 namespace App\Modules\Notification\Contracts;
 
+use App\Modules\Notification\Models\EmailLog;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface EmailLogRepositoryInterface
@@ -14,4 +15,8 @@ interface EmailLogRepositoryInterface
 
     /** @return array{total_sent: int, total_failed: int, total_logs: int} */
     public function getStats(): array;
+
+    public function create(array $data): EmailLog;
+
+    public function getLastAttempt(int $userId, string $subject, string $channel): ?EmailLog;
 }

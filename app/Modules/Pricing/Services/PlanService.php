@@ -2,9 +2,8 @@
 
 namespace App\Modules\Pricing\Services;
 
+use App\Modules\Pricing\Contracts\FeatureDefinitionRepositoryInterface;
 use App\Modules\Pricing\Contracts\PlanRepositoryInterface;
-use App\Modules\Pricing\Models\FeatureDefinition;
-use App\Modules\Pricing\Models\Plan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -14,6 +13,7 @@ class PlanService
 {
     public function __construct(
         private readonly PlanRepositoryInterface $planRepository,
+        private readonly FeatureDefinitionRepositoryInterface $featureDefinitionRepository,
     ) {}
 
     public function paginate(array $filters = [], int $perPage = 15): mixed
@@ -48,11 +48,11 @@ class PlanService
             $plan = $this->planRepository->create($planData);
 
             if (! empty($data['is_popular'])) {
-                Plan::where('id', '!=', $plan->id)->update(['is_popular' => false]);
+                $this->planRepository->unsetPopularExcept($plan->id);
             }
 
             if (! empty($data['features'])) {
-                $this->syncFeatures($plan, $data['features']);
+                $this->planRepository->syncFeatures($plan, $data['features']);
             }
 
             Log::info('Plan created', [
@@ -97,13 +97,13 @@ class PlanService
             }
 
             if (! empty($data['is_popular'])) {
-                Plan::where('id', '!=', $plan->id)->update(['is_popular' => false]);
+                $this->planRepository->unsetPopularExcept($plan->id);
             }
 
             $plan = $this->planRepository->update($plan, $planData);
 
             if (isset($data['features'])) {
-                $this->syncFeatures($plan, $data['features']);
+                $this->planRepository->syncFeatures($plan, $data['features']);
             }
 
             Log::info('Plan updated', [
@@ -122,10 +122,10 @@ class PlanService
             $plan = $this->findById($id);
 
             if ($plan->is_popular) {
-                $plan->update(['is_popular' => false]);
+                $this->planRepository->update($plan, ['is_popular' => false]);
             } else {
-                Plan::where('is_popular', true)->update(['is_popular' => false]);
-                $plan->update(['is_popular' => true]);
+                $this->planRepository->unsetAllPopular();
+                $this->planRepository->update($plan, ['is_popular' => true]);
             }
 
             Log::info('Plan toggled popular', [
@@ -153,18 +153,6 @@ class PlanService
 
     public function getAllFeatureDefinitions(): mixed
     {
-        return FeatureDefinition::orderBy('sort_order')->get();
-    }
-
-    private function syncFeatures(Plan $plan, array $features): void
-    {
-        $plan->features()->delete();
-
-        foreach ($features as $feature) {
-            $plan->features()->create([
-                'feature_definition_id' => $feature['feature_definition_id'],
-                'value' => $feature['value'] ?? null,
-            ]);
-        }
+        return $this->featureDefinitionRepository->getAllOrdered();
     }
 }

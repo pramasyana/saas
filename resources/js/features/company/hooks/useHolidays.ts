@@ -16,19 +16,19 @@ interface HolidaysResponse {
 }
 
 function getHolidays(params: HolidaysFilters): Promise<HolidaysResponse> {
-    return api.get('/company/holidays', { params }).then((res) => res.data);
+    return api.get('/api/v1/company/holidays', { params }).then((res) => res.data);
 }
 
 function createHoliday(data: HolidayFormData): Promise<{ status: string; data: Holiday }> {
-    return api.post('/company/holidays', data).then((res) => res.data);
+    return api.post('/api/v1/company/holidays', data).then((res) => res.data);
 }
 
 function updateHoliday(id: string, data: HolidayFormData): Promise<{ status: string; data: Holiday }> {
-    return api.put(`/company/holidays/${id}`, data).then((res) => res.data);
+    return api.put(`/api/v1/company/holidays/${id}`, data).then((res) => res.data);
 }
 
 function deleteHoliday(id: string): Promise<void> {
-    return api.delete(`/company/holidays/${id}`).then((res) => res.data);
+    return api.delete(`/api/v1/company/holidays/${id}`).then((res) => res.data);
 }
 
 export function useHolidays(filters: HolidaysFilters = {}) {

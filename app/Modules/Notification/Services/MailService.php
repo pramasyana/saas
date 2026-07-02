@@ -2,8 +2,8 @@
 
 namespace App\Modules\Notification\Services;
 
+use App\Modules\Notification\Contracts\EmailLogRepositoryInterface;
 use App\Modules\Notification\Contracts\MailProvider;
-use App\Modules\Notification\Models\EmailLog;
 use Illuminate\Support\Facades\Log;
 
 class MailService
@@ -11,6 +11,7 @@ class MailService
     public function __construct(
         private readonly MailProvider $provider,
         private readonly string $channel,
+        private readonly EmailLogRepositoryInterface $emailLogRepository,
     ) {}
 
     public function send(string $toEmail, ?string $toName, string $subject, string $html, ?string $text = null, ?int $userId = null): void
@@ -42,7 +43,7 @@ class MailService
             return;
         }
 
-        EmailLog::create([
+        $this->emailLogRepository->create([
             'user_id' => $userId,
             'channel' => $this->channel,
             'subject' => $subject,
@@ -57,7 +58,7 @@ class MailService
             return;
         }
 
-        EmailLog::create([
+        $this->emailLogRepository->create([
             'user_id' => $userId,
             'channel' => $this->channel,
             'subject' => $subject,
@@ -73,11 +74,7 @@ class MailService
             return 1;
         }
 
-        $last = EmailLog::where('user_id', $userId)
-            ->where('subject', $subject)
-            ->where('channel', $this->channel)
-            ->latest()
-            ->first();
+        $last = $this->emailLogRepository->getLastAttempt($userId, $subject, $this->channel);
 
         return $last ? $last->attempt + 1 : 1;
     }

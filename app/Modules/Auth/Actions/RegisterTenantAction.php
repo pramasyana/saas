@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Modules\Auth\Actions;
 
-use App\Models\Tenant;
 use App\Models\User;
 use App\Modules\Auth\Contracts\AuthUserRepositoryInterface;
 use App\Modules\Auth\Events\TenantRegistered;
 use App\Modules\Auth\Http\Requests\RegisterRequest;
-use App\Modules\Pricing\Models\Plan;
+use App\Modules\Pricing\Contracts\PlanRepositoryInterface;
 use App\Modules\Subscription\Services\SubscriptionService;
+use App\Modules\Tenant\Contracts\TenantRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -21,14 +21,14 @@ class RegisterTenantAction
     public function __construct(
         private readonly SubscriptionService $subscriptionService,
         private readonly AuthUserRepositoryInterface $userRepository,
+        private readonly PlanRepositoryInterface $planRepository,
+        private readonly TenantRepositoryInterface $tenantRepository,
     ) {}
 
     public function execute(RegisterRequest $request): User
     {
         return DB::transaction(function () use ($request) {
-            $plan = Plan::where('id', $request->plan_id)
-                ->where('is_active', true)
-                ->first();
+            $plan = $this->planRepository->findActiveById($request->plan_id);
 
             if (! $plan) {
                 throw new RuntimeException('Paket yang dipilih tidak tersedia.');
@@ -44,7 +44,7 @@ class RegisterTenantAction
 
             $slug = Str::slug($request->company);
 
-            $tenant = Tenant::create([
+            $tenant = $this->tenantRepository->create([
                 'user_id' => $user->id,
             ]);
 
@@ -57,7 +57,7 @@ class RegisterTenantAction
                 'domain' => $slug.'.localhost',
             ]);
 
-            $user->update(['tenant_id' => $tenant->id]);
+            $this->userRepository->update($user, ['tenant_id' => $tenant->id]);
 
             $this->subscriptionService->subscribe([
                 'user_id' => $user->id,
