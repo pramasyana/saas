@@ -18,5 +18,5 @@ interface EmailLogRepositoryInterface
 
     public function create(array $data): EmailLog;
 
-    public function getLastAttempt(int $userId, string $subject, string $channel): ?EmailLog;
+    public function getLastAttempt(string $userId, string $subject, string $channel): ?EmailLog;
 }

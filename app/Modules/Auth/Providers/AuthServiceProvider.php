@@ -18,6 +18,8 @@ class AuthServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        parent::register();
+
         $this->app->bind(AuthUserRepositoryInterface::class, AuthUserRepository::class);
     }
 

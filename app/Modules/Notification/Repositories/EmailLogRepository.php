@@ -67,7 +67,7 @@ class EmailLogRepository implements EmailLogRepositoryInterface
         return EmailLog::create($data);
     }
 
-    public function getLastAttempt(int $userId, string $subject, string $channel): ?EmailLog
+    public function getLastAttempt(string $userId, string $subject, string $channel): ?EmailLog
     {
         return EmailLog::where('user_id', $userId)
             ->where('subject', $subject)

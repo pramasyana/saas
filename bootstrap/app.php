@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\InitializeTenancyByUser;
 use App\Modules\Admin\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,6 +23,21 @@ return Application::configure(basePath: dirname(__DIR__))
 
             Route::middleware('web')
                 ->group(base_path('routes/web/auth.php'));
+
+            Route::middleware(['web', 'auth', 'tenant'])
+                ->group(base_path('routes/web/tenant.php'));
+
+            Route::middleware(['web', 'auth', 'tenant'])
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/tenant/staff.php'));
+
+            Route::middleware(['web', 'auth', 'tenant'])
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/tenant/company.php'));
+
+            Route::middleware(['web', 'auth', 'tenant'])
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/tenant/crm.php'));
 
             Route::middleware('api')
                 ->prefix('api')
@@ -60,13 +76,14 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'tenant' => InitializeTenancyByUser::class,
         ]);
 
         $middleware->redirectGuestsTo(fn () => route('tenant.login'));
 
         $middleware->redirectUsersTo(fn (Request $request) => $request->user()?->is_admin
             ? route('admin.dashboard')
-            : route('tenant.dashboard')
+            : (Route::has('tenant.dashboard') ? route('tenant.dashboard') : '/')
         );
     })
     ->withExceptions(function (Exceptions $exceptions): void {

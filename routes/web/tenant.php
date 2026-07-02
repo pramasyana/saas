@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Modules\Auth\Http\Controllers\AuthController;
 use App\Modules\Auth\Http\Controllers\DashboardController;
-use App\Modules\Auth\Http\Controllers\RegisterController;
 use App\Modules\Company\Http\Controllers\Tenant\BranchController;
 use App\Modules\Company\Http\Controllers\Tenant\BrandingController;
 use App\Modules\Company\Http\Controllers\Tenant\HolidayController;
 use App\Modules\Company\Http\Controllers\Tenant\ProfileController;
 use App\Modules\Company\Http\Controllers\Tenant\WorkingHourController;
+use App\Modules\Crm\Http\Controllers\Tenant\CustomerController as CrmCustomerController;
+use App\Modules\Crm\Http\Controllers\Tenant\MembershipTierController as CrmMembershipTierController;
+use App\Modules\Crm\Http\Controllers\Tenant\TagController as CrmTagController;
 use App\Modules\Staff\Http\Controllers\Tenant\AttendanceController;
 use App\Modules\Staff\Http\Controllers\Tenant\CommissionController;
 use App\Modules\Staff\Http\Controllers\Tenant\LeaveController;
@@ -18,18 +19,8 @@ use App\Modules\Staff\Http\Controllers\Tenant\StaffController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffUserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
-    Route::get('/register', [RegisterController::class, 'create'])->name('tenant.register');
-    Route::post('/register', [RegisterController::class, 'store']);
-    Route::get('/login', [AuthController::class, 'createLogin'])->name('tenant.login');
-    Route::post('/login', [AuthController::class, 'storeLogin']);
-});
-
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('tenant.dashboard');
-    Route::post('/logout', [AuthController::class, 'destroy'])->name('tenant.logout');
-    Route::get('/email/verification-notice', [AuthController::class, 'verificationNotice'])
-        ->name('verification.notice');
 
     Route::prefix('company')->name('tenant.company.')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -49,6 +40,15 @@ Route::middleware('auth')->group(function () {
     });
 
     // Staff pages (Inertia shell)
+    Route::prefix('crm')->name('tenant.crm.')->group(function () {
+        Route::get('/customers', [CrmCustomerController::class, 'index'])->name('customers');
+        Route::get('/customers/create', [CrmCustomerController::class, 'create'])->name('customers.create');
+        Route::get('/customers/{id}', [CrmCustomerController::class, 'show'])->name('customers.show');
+        Route::get('/customers/{id}/edit', [CrmCustomerController::class, 'edit'])->name('customers.edit');
+        Route::get('/tags', [CrmTagController::class, 'index'])->name('tags');
+        Route::get('/membership-tiers', [CrmMembershipTierController::class, 'index'])->name('membership-tiers');
+    });
+
     Route::prefix('staff')->name('tenant.staff.')->group(function () {
         Route::get('/users', [StaffUserController::class, 'index'])->name('users');
         Route::get('/users/create', [StaffUserController::class, 'create'])->name('users.create');

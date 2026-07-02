@@ -1,12 +1,24 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import Button from '@/atoms/Button';
 
 export default function VerificationNotice() {
+    const flash = usePage().props.flash as { success?: string; error?: string };
+
     return (
         <>
             <Head title="Cek Email Anda" />
             <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
                 <div className="w-full max-w-md animate-[fade-up_0.6s_ease-out]">
+                    {flash.success && (
+                        <div className="mb-4 rounded-lg bg-success-50 border border-success/20 px-4 py-3 text-sm text-success text-center">
+                            {flash.success}
+                        </div>
+                    )}
+                    {flash.error && (
+                        <div className="mb-4 rounded-lg bg-danger-50 border border-danger/20 px-4 py-3 text-sm text-danger text-center">
+                            {flash.error}
+                        </div>
+                    )}
                     <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center shadow-sm">
                         <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary-50">
                             <svg className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

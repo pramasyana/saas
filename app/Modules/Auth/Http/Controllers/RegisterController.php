@@ -8,6 +8,7 @@ use App\Modules\Auth\Http\Requests\RegisterRequest;
 use App\Modules\Pricing\Contracts\PlanRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -55,8 +56,19 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request, RegisterTenantAction $action): RedirectResponse
     {
-        $action->execute($request);
+        try {
+            $action->execute($request);
 
-        return redirect()->route('verification.notice');
+            return redirect()->route('verification.notice')
+                ->with('success', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi.');
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        } catch (\Throwable $e) {
+            return redirect()->back()
+                ->with('error', 'Registrasi gagal: '.$e->getMessage())
+                ->withInput();
+        }
     }
 }

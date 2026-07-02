@@ -51,7 +51,7 @@ class VerifyEmail extends Notification implements ShouldQueue
             subject: $subject,
             html: $this->buildHtml($notifiable),
             text: $this->buildText($notifiable),
-            userId: (int) $notifiable->getKey(),
+            userId: $notifiable->getKey(),
         );
     }
 

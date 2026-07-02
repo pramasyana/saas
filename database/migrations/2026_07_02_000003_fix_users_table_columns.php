@@ -203,38 +203,47 @@ return new class extends Migration
 
     private function convertSingleColumnSqlite(string $table, string $column, string $tempColumn): void
     {
-        $oldName = $table.'_uuid_old';
-        Schema::rename($table, $oldName);
+        $newName = $table.'_new';
 
-        $createSql = DB::selectOne("SELECT sql FROM sqlite_master WHERE type='table' AND name='{$oldName}'")->sql;
-        $createSql = str_replace("\"{$oldName}\"", "\"{$table}\"", $createSql);
+        $createSql = DB::selectOne("SELECT sql FROM sqlite_master WHERE type='table' AND name='{$table}'")->sql;
         $createSql = $this->removeForeignKeyConstraints($createSql, $column);
+        $createSql = preg_replace(
+            '/,\s*"'.preg_quote($tempColumn, '/').'"\s+\w+(?:\([^)]*\))?(?:\s+(?:NOT\s+NULL|NULL|DEFAULT\s+[^\s,]+|PRIMARY\s+KEY|AUTOINCREMENT|UNIQUE|REFERENCES\s+[^)]+\))*)*(?=\s*(?:,|\)))/i',
+            '',
+            $createSql,
+        );
+        $createSql = str_replace("\"{$table}\"", "\"{$newName}\"", $createSql);
+        $createSql = preg_replace(
+            '/"'.preg_quote($column, '/').'"\s+\w+(?:\([^)]*\))?(?:\s+(?:NOT\s+NULL|NULL|DEFAULT\s+[^\s,]+|PRIMARY\s+KEY|AUTOINCREMENT|UNIQUE|REFERENCES\s+[^)]+\))*)*(?=\s*[,\)])/i',
+            '"'.$column.'" VARCHAR(36)',
+            $createSql,
+        );
+
         DB::statement($createSql);
 
-        $indexes = DB::select("SELECT name, sql FROM sqlite_master WHERE type='index' AND tbl_name='{$oldName}' AND sql IS NOT NULL");
-        foreach ($indexes as $idx) {
-            DB::statement("DROP INDEX IF EXISTS \"{$idx->name}\"");
-            $idxSql = str_replace("\"{$oldName}\"", "\"{$table}\"", $idx->sql);
-            DB::statement($idxSql);
-        }
-
-        $cols = DB::select("PRAGMA table_info('{$oldName}')");
+        $cols = DB::select("PRAGMA table_info('{$table}')");
         $selectCols = [];
         foreach ($cols as $col) {
-            if ($col->name === $column) {
+            if ($col->name === $tempColumn) {
                 $selectCols[] = "\"{$tempColumn}\" as \"{$column}\"";
+            } elseif ($col->name === $column) {
+                continue;
             } else {
                 $selectCols[] = "\"{$col->name}\"";
             }
         }
         $selectList = implode(', ', $selectCols);
-        DB::statement("INSERT INTO \"{$table}\" SELECT {$selectList} FROM \"{$oldName}\"");
+        DB::statement("INSERT INTO \"{$newName}\" SELECT {$selectList} FROM \"{$table}\"");
 
-        Schema::drop($oldName);
-
-        if (in_array($tempColumn, array_map(fn ($c) => $c->name, DB::select("PRAGMA table_info('{$table}')")), true)) {
-            DB::statement("ALTER TABLE \"{$table}\" DROP COLUMN \"{$tempColumn}\"");
+        $indexes = DB::select("SELECT name, sql FROM sqlite_master WHERE type='index' AND tbl_name='{$table}' AND sql IS NOT NULL");
+        foreach ($indexes as $idx) {
+            DB::statement("DROP INDEX IF EXISTS \"{$idx->name}\"");
+            $idxSql = str_replace("\"{$table}\"", "\"{$newName}\"", $idx->sql);
+            DB::statement($idxSql);
         }
+
+        Schema::drop($table);
+        Schema::rename($newName, $table);
     }
 
     private function removeForeignKeyConstraints(string $createSql, string $keepColumn): string

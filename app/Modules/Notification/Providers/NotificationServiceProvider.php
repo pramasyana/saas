@@ -22,6 +22,7 @@ class NotificationServiceProvider extends ServiceProvider
         $this->app->singleton(MailService::class, fn ($app) => new MailService(
             provider: $app->make(MailProvider::class),
             channel: config('mail-provider.default', 'log'),
+            emailLogRepository: $app->make(EmailLogRepositoryInterface::class),
         ));
     }
 

@@ -9,6 +9,12 @@ use App\Modules\Company\Models\CompanyBranding;
 use App\Modules\Company\Models\CompanyProfile;
 use App\Modules\Company\Models\Holiday;
 use App\Modules\Company\Models\WorkingHour;
+use App\Modules\Crm\Models\Customer;
+use App\Modules\Crm\Models\MembershipTier;
+use App\Modules\Crm\Models\Referral;
+use App\Modules\Crm\Models\Review;
+use App\Modules\Crm\Models\Reward;
+use App\Modules\Crm\Models\Tag;
 use App\Modules\Subscription\Models\Subscription;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -60,6 +66,36 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public function holidays(): HasMany
     {
         return $this->hasMany(Holiday::class, 'tenant_id', 'id');
+    }
+
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class, 'tenant_id', 'id');
+    }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class, 'tenant_id', 'id');
+    }
+
+    public function membershipTiers(): HasMany
+    {
+        return $this->hasMany(MembershipTier::class, 'tenant_id', 'id');
+    }
+
+    public function rewards(): HasMany
+    {
+        return $this->hasMany(Reward::class, 'tenant_id', 'id');
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'tenant_id', 'id');
+    }
+
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(Referral::class, 'tenant_id', 'id');
     }
 
     public function getCompanyNameAttribute(): ?string

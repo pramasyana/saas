@@ -14,7 +14,7 @@ class MailService
         private readonly EmailLogRepositoryInterface $emailLogRepository,
     ) {}
 
-    public function send(string $toEmail, ?string $toName, string $subject, string $html, ?string $text = null, ?int $userId = null): void
+    public function send(string $toEmail, ?string $toName, string $subject, string $html, ?string $text = null, ?string $userId = null): void
     {
         $attempt = $this->getNextAttempt($userId, $subject);
 
@@ -37,7 +37,7 @@ class MailService
         }
     }
 
-    private function logSuccess(?int $userId, string $subject, int $attempt): void
+    private function logSuccess(?string $userId, string $subject, int $attempt): void
     {
         if ($userId === null) {
             return;
@@ -52,7 +52,7 @@ class MailService
         ]);
     }
 
-    private function logFailure(?int $userId, string $subject, int $attempt, \Throwable $e): void
+    private function logFailure(?string $userId, string $subject, int $attempt, \Throwable $e): void
     {
         if ($userId === null) {
             return;
@@ -68,7 +68,7 @@ class MailService
         ]);
     }
 
-    private function getNextAttempt(?int $userId, string $subject): int
+    private function getNextAttempt(?string $userId, string $subject): int
     {
         if ($userId === null) {
             return 1;

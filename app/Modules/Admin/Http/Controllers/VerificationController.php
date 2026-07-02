@@ -3,16 +3,16 @@
 namespace App\Modules\Admin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Support\Facades\Auth;
 
 class VerificationController extends Controller
 {
-    public function verify(Request $request, string $id, string $hash): RedirectResponse|Response
+    public function verify(Request $request, string $id, string $hash): RedirectResponse
     {
         $user = User::findOrFail($id);
 
@@ -20,24 +20,26 @@ class VerificationController extends Controller
             abort(403, 'Link verifikasi tidak valid.');
         }
 
-        $loginUrl = $user->is_admin ? route('admin.login') : route('tenant.login');
-
-        if ($user->hasVerifiedEmail()) {
-            return Inertia::render('admin/verification-success', [
-                'title' => 'Email Terverifikasi',
-                'message' => 'Email Anda sudah diverifikasi sebelumnya.',
-                'loginUrl' => $loginUrl,
-            ]);
+        if (! $user->hasVerifiedEmail()) {
+            if ($user->markEmailAsVerified()) {
+                event(new Verified($user));
+            }
         }
 
-        if ($user->markEmailAsVerified()) {
-            event(new Verified($user));
+        Auth::login($user);
+
+        if ($user->is_admin) {
+            return redirect()->intended(route('admin.dashboard'));
         }
 
-        return Inertia::render('admin/verification-success', [
-            'title' => 'Email Terverifikasi',
-            'message' => 'Selamat! Email Anda berhasil diverifikasi. Anda sekarang dapat login.',
-            'loginUrl' => $loginUrl,
-        ]);
+        if ($user->tenant_id) {
+            $tenant = Tenant::find($user->tenant_id);
+
+            if ($tenant) {
+                tenancy()->initialize($tenant);
+            }
+        }
+
+        return redirect('/dashboard');
     }
 }

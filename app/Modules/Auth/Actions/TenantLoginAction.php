@@ -21,7 +21,9 @@ class TenantLoginAction
 
             $request->session()->regenerate();
 
-            if (Auth::user()->email_verified_at === null) {
+            $user = Auth::user();
+
+            if ($user->email_verified_at === null) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
@@ -31,7 +33,7 @@ class TenantLoginAction
                 ]);
             }
 
-            if (! Auth::user()->is_active) {
+            if (! $user->is_active) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
@@ -41,7 +43,7 @@ class TenantLoginAction
                 ]);
             }
 
-            if (Auth::user()->is_admin) {
+            if ($user->is_admin) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
@@ -51,7 +53,7 @@ class TenantLoginAction
                 ]);
             }
 
-            return redirect()->intended(route('tenant.dashboard'));
+            return redirect('/dashboard');
         });
     }
 }
