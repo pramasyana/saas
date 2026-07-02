@@ -47,6 +47,7 @@ export function useAllServices() {
 
 export function useCreateService() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createService,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-services'] }),
@@ -55,6 +56,7 @@ export function useCreateService() {
 
 export function useUpdateService() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: ServiceFormData }) => updateService(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-services'] }),
@@ -63,6 +65,7 @@ export function useUpdateService() {
 
 export function useDeleteService() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteService,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-services'] }),

@@ -11,7 +11,13 @@ interface BookingReminderRepositoryInterface
 {
     public function create(array $data): BookingReminder;
 
+    public function findById(string $id): ?BookingReminder;
+
+    public function update(BookingReminder $reminder, array $data): BookingReminder;
+
     public function findByBooking(string $bookingId): Collection;
+
+    public function findByTenant(string $tenantId): Collection;
 
     public function getPendingReminders(string $tenantId): Collection;
 }

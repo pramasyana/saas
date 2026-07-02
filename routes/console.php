@@ -8,6 +8,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+Schedule::command('bookings:send-reminders')
+    ->everyMinute()
+    ->description('Send pending booking reminders');
+
 Schedule::command('email-logs:clear-old')
     ->monthlyOn(1, '00:00')
     ->description('Hapus email logs yang lebih dari 3 bulan');

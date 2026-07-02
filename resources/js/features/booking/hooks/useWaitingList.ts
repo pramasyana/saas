@@ -39,6 +39,7 @@ export function useWaitingList(filters: Filters) {
 
 export function useCreateWaitingList() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createWaitingList,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['waiting-list'] }),
@@ -47,6 +48,7 @@ export function useCreateWaitingList() {
 
 export function useUpdateWaitingList() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: Partial<WaitingListFormData> }) => updateWaitingList(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['waiting-list'] }),
@@ -55,6 +57,7 @@ export function useUpdateWaitingList() {
 
 export function useDeleteWaitingList() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteWaitingList,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['waiting-list'] }),
@@ -63,6 +66,7 @@ export function useDeleteWaitingList() {
 
 export function useNotifyWaitingList() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: notifyWaitingList,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['waiting-list'] }),

@@ -5,11 +5,11 @@ import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
 import PricingRuleDeleteDialog from '@/features/service/components/PricingRuleDeleteDialog';
 import PricingRuleTable from '@/features/service/components/PricingRuleTable';
 import { usePricingRules, useDeletePricingRule, useUpdatePricingRule } from '@/features/service/hooks/usePricingRules';
 import type { PricingRule, PricingRuleFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
@@ -76,14 +76,18 @@ export default function PricingRulesIndex({ title, stats }: PricingRulesPageProp
     const [togglingId, setTogglingId] = useState<string | null>(null);
 
     useEffect(() => {
-        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
 
         searchTimeout.current = setTimeout(() => {
             setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
         }, 400);
 
         return () => {
-            if (searchTimeout.current) clearTimeout(searchTimeout.current);
+            if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
         };
     }, [searchInput]);
 
@@ -121,7 +125,9 @@ export default function PricingRulesIndex({ title, stats }: PricingRulesPageProp
     }
 
     function handleDelete() {
-        if (!ruleToDelete) return;
+        if (!ruleToDelete) {
+return;
+}
 
         deleteMutation.mutate(ruleToDelete.id, {
             onSuccess: () => {

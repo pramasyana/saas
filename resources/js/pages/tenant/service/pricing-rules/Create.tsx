@@ -4,11 +4,11 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import PricingRuleForm from '@/features/service/components/PricingRuleForm';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
+import PricingRuleForm from '@/features/service/components/PricingRuleForm';
 import { useCreatePricingRule } from '@/features/service/hooks/usePricingRules';
 import type { PricingRuleFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import { useToastStore } from '@/stores/toast';
 
@@ -44,6 +44,7 @@ export default function Create({ title }: CreatePageProps) {
     useEffect(() => {
         if (!branchId && branches.length > 0) {
             const defaultBranch = branches.find((b) => b.is_default) ?? branches[0];
+
             if (defaultBranch) {
                 setBranchId(defaultBranch.id);
             }

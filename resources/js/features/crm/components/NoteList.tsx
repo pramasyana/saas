@@ -14,12 +14,27 @@ function timeAgo(date: string): string {
     const then = new Date(date);
     const diffMs = now.getTime() - then.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 1) return 'baru saja';
-    if (diffMins < 60) return `${diffMins} menit lalu`;
+
+    if (diffMins < 1) {
+return 'baru saja';
+}
+
+    if (diffMins < 60) {
+return `${diffMins} menit lalu`;
+}
+
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours} jam lalu`;
+
+    if (diffHours < 24) {
+return `${diffHours} jam lalu`;
+}
+
     const diffDays = Math.floor(diffHours / 24);
-    if (diffDays < 7) return `${diffDays} hari lalu`;
+
+    if (diffDays < 7) {
+return `${diffDays} hari lalu`;
+}
+
     return new Date(date).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
@@ -39,10 +54,15 @@ export default function NoteList({ customerId }: NoteListProps) {
     const meta = data?.meta;
 
     function handleAdd() {
-        if (!content.trim()) return;
+        if (!content.trim()) {
+return;
+}
+
         createNote.mutate(
             { customerId, data: { customer_id: customerId, content: content.trim() } },
-            { onSuccess: () => { setContent(''); } },
+            { onSuccess: () => {
+ setContent(''); 
+} },
         );
     }
 
@@ -52,15 +72,23 @@ export default function NoteList({ customerId }: NoteListProps) {
     }
 
     function handleSaveEdit() {
-        if (!editingNote || !editContent.trim()) return;
+        if (!editingNote || !editContent.trim()) {
+return;
+}
+
         updateNote.mutate(
             { customerId, id: editingNote.id, data: { customer_id: customerId, content: editContent.trim() } },
-            { onSuccess: () => { setEditingNote(null); setEditContent(''); } },
+            { onSuccess: () => {
+ setEditingNote(null); setEditContent(''); 
+} },
         );
     }
 
     function handleDelete(note: CustomerNote) {
-        if (!confirm('Hapus catatan ini?')) return;
+        if (!confirm('Hapus catatan ini?')) {
+return;
+}
+
         deleteNote.mutate({ customerId, id: note.id });
     }
 

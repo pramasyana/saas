@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\InitializeTenancyByDomainPublic;
 use App\Http\Middleware\InitializeTenancyByUser;
 use App\Modules\Admin\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Application;
@@ -15,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         using: function (): void {
+            $centralDomains = config('tenancy.central_domains', []);
+            $isCentral = in_array(request()->getHost(), $centralDomains);
+
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
 
@@ -26,6 +30,18 @@ return Application::configure(basePath: dirname(__DIR__))
 
             Route::middleware(['web', 'auth', 'tenant'])
                 ->group(base_path('routes/web/tenant.php'));
+
+            // Public tenant routes — registered AFTER auth routes so they take
+            // priority on tenant domains. The public controller handles
+            // redirecting authenticated users to the admin booking page.
+            if (! $isCentral) {
+                Route::middleware(['web', 'tenant.domain.public'])
+                    ->group(base_path('routes/web/tenant_public.php'));
+
+                Route::middleware(['api', 'tenant.domain.public'])
+                    ->prefix('api/v1')
+                    ->group(base_path('routes/api/v1/tenant_public.php'));
+            }
 
             Route::middleware(['web', 'auth', 'tenant'])
                 ->prefix('api/v1')
@@ -71,6 +87,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/admin/tenants.php'));
 
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/settings.php'));
+
             Route::middleware('api')
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/public.php'));
@@ -85,6 +105,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'tenant' => InitializeTenancyByUser::class,
+            'tenant.domain.public' => InitializeTenancyByDomainPublic::class,
         ]);
 
         $middleware->redirectGuestsTo(fn () => route('tenant.login'));

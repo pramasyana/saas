@@ -36,6 +36,7 @@ export function usePricingRules(filters: Filters) {
 
 export function useCreatePricingRule() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createPricingRule,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-pricing-rules'] }),
@@ -44,6 +45,7 @@ export function useCreatePricingRule() {
 
 export function useUpdatePricingRule() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: PricingRuleFormData }) => updatePricingRule(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-pricing-rules'] }),
@@ -52,6 +54,7 @@ export function useUpdatePricingRule() {
 
 export function useDeletePricingRule() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deletePricingRule,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-pricing-rules'] }),

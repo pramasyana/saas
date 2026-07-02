@@ -4,11 +4,11 @@ import axios from 'axios';
 import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import PromotionForm from '@/features/service/components/PromotionForm';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
+import PromotionForm from '@/features/service/components/PromotionForm';
 import { useUpdatePromotion } from '@/features/service/hooks/usePromotions';
 import type { Promotion, PromotionFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
 import { useToastStore } from '@/stores/toast';
@@ -76,6 +76,7 @@ function getTypeLabel(type: string): string {
         fixed: 'Nominal Tetap',
         buy_x_get_y: 'Beli X Dapat Y',
     };
+
     return labels[type] ?? type;
 }
 

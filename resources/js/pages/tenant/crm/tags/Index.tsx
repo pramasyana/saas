@@ -28,13 +28,24 @@ function extractErrors(error: unknown): Record<string, string[]> {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -96,7 +107,10 @@ export default function TagsIndexPage() {
     }
 
     function handleDelete() {
-        if (!tagToDelete) return;
+        if (!tagToDelete) {
+return;
+}
+
         deleteMutation.mutate(tagToDelete.id, {
             onSuccess: () => {
                 setTagToDelete(null);

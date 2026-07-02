@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Services;
 
+use App\Modules\Booking\Actions\ConfirmBookingAction;
 use App\Modules\Booking\Actions\CreateBookingAction;
 use App\Modules\Booking\Actions\NoShowAction;
 use App\Modules\Booking\Actions\RescheduleBookingAction;
@@ -27,6 +28,7 @@ class BookingService
         private readonly RescheduleBookingAction $rescheduleBookingAction,
         private readonly NoShowAction $noShowAction,
         private readonly WalkInAction $walkInAction,
+        private readonly ConfirmBookingAction $confirmBookingAction,
     ) {}
 
     public function getTenantId(): string
@@ -131,6 +133,11 @@ class BookingService
 
             return $booking->fresh(['customer', 'staff']);
         });
+    }
+
+    public function confirm(string $id): Booking
+    {
+        return $this->confirmBookingAction->execute($id);
     }
 
     public function walkIn(array $data): Booking

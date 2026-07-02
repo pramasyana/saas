@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Auth\Actions;
 
+use App\Models\CentralSetting;
 use App\Models\User;
 use App\Modules\Auth\Contracts\AuthUserRepositoryInterface;
 use App\Modules\Auth\Events\TenantRegistered;
@@ -53,8 +54,10 @@ class RegisterTenantAction
             $tenant->setInternal('phone', $request->phone);
             $tenant->save();
 
+            $baseDomain = CentralSetting::get('base_domain', config('app.domain', 'localhost'));
+
             $tenant->domains()->create([
-                'domain' => $slug.'.localhost',
+                'domain' => $slug.'.'.$baseDomain,
             ]);
 
             $this->userRepository->update($user, ['tenant_id' => $tenant->id]);

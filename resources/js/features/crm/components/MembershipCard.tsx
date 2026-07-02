@@ -27,7 +27,10 @@ export default function MembershipCard({ customerId }: MembershipCardProps) {
     }));
 
     function handleSave() {
-        if (!selectedTierId) return;
+        if (!selectedTierId) {
+return;
+}
+
         updateMembership.mutate(
             { customerId, data: { membership_tier_id: selectedTierId } },
             {
@@ -66,7 +69,9 @@ export default function MembershipCard({ customerId }: MembershipCardProps) {
                         </div>
                     </div>
                     {!editing && (
-                        <Button type="button" variant="outline" size="sm" onClick={() => { setSelectedTierId(membership?.tier?.id ?? ''); setEditing(true); }}>
+                        <Button type="button" variant="outline" size="sm" onClick={() => {
+ setSelectedTierId(membership?.tier?.id ?? ''); setEditing(true); 
+}}>
                             Edit
                         </Button>
                     )}

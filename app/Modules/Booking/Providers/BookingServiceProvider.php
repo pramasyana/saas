@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Providers;
 
+use App\Modules\Booking\Console\SendBookingRemindersCommand;
 use App\Modules\Booking\Contracts\BookingReminderRepositoryInterface;
 use App\Modules\Booking\Contracts\BookingRepositoryInterface;
 use App\Modules\Booking\Contracts\BookingStatusLogRepositoryInterface;
@@ -11,9 +12,11 @@ use App\Modules\Booking\Contracts\WaitingListRepositoryInterface;
 use App\Modules\Booking\Events\BookingCancelled;
 use App\Modules\Booking\Events\BookingCheckedIn;
 use App\Modules\Booking\Events\BookingCompleted;
+use App\Modules\Booking\Events\BookingConfirmed;
 use App\Modules\Booking\Events\BookingCreated;
 use App\Modules\Booking\Events\BookingNoShow;
 use App\Modules\Booking\Events\BookingRescheduled;
+use App\Modules\Booking\Listeners\CreateBookingReminders;
 use App\Modules\Booking\Listeners\NotifyWaitingList;
 use App\Modules\Booking\Listeners\SendBookingConfirmation;
 use App\Modules\Booking\Listeners\UpdateDashboardStats;
@@ -32,12 +35,18 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->bind(WaitingListRepositoryInterface::class, WaitingListRepository::class);
         $this->app->bind(BookingStatusLogRepositoryInterface::class, BookingStatusLogRepository::class);
         $this->app->bind(BookingReminderRepositoryInterface::class, BookingReminderRepository::class);
+
+        $this->commands([
+            SendBookingRemindersCommand::class,
+        ]);
     }
 
     public function boot(): void
     {
         Event::listen(BookingCreated::class, SendBookingConfirmation::class);
+        Event::listen(BookingCreated::class, CreateBookingReminders::class);
         Event::listen(BookingCreated::class, UpdateDashboardStats::class);
+        Event::listen(BookingConfirmed::class, UpdateDashboardStats::class);
         Event::listen(BookingRescheduled::class, UpdateDashboardStats::class);
         Event::listen(BookingNoShow::class, UpdateDashboardStats::class);
         Event::listen(BookingCancelled::class, NotifyWaitingList::class);

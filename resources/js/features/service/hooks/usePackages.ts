@@ -46,6 +46,7 @@ export function useAllPackages() {
 
 export function useCreatePackage() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createPackage,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-packages'] }),
@@ -54,6 +55,7 @@ export function useCreatePackage() {
 
 export function useUpdatePackage() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: PackageFormData }) => updatePackage(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-packages'] }),
@@ -62,6 +64,7 @@ export function useUpdatePackage() {
 
 export function useDeletePackage() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deletePackage,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-packages'] }),

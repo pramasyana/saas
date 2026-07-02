@@ -46,6 +46,7 @@ export function useAllAddons() {
 
 export function useCreateAddon() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createAddon,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-addons'] }),
@@ -54,6 +55,7 @@ export function useCreateAddon() {
 
 export function useUpdateAddon() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: AddonFormData }) => updateAddon(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-addons'] }),
@@ -62,6 +64,7 @@ export function useUpdateAddon() {
 
 export function useDeleteAddon() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteAddon,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-addons'] }),

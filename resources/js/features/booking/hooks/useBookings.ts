@@ -74,6 +74,7 @@ export function useBooking(id: string) {
 
 export function useCreateBooking() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createBooking,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
@@ -82,6 +83,7 @@ export function useCreateBooking() {
 
 export function useUpdateBooking() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: Partial<BookingFormData> }) => updateBooking(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
@@ -90,6 +92,7 @@ export function useUpdateBooking() {
 
 export function useDeleteBooking() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteBooking,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
@@ -98,6 +101,7 @@ export function useDeleteBooking() {
 
 export function useRescheduleBooking() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: { start_time: string; end_time: string; staff_id?: string } }) => rescheduleBooking(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
@@ -106,6 +110,7 @@ export function useRescheduleBooking() {
 
 export function useMarkNoShow() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: markNoShow,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
@@ -114,6 +119,7 @@ export function useMarkNoShow() {
 
 export function useCheckIn() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: checkIn,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
@@ -122,14 +128,25 @@ export function useCheckIn() {
 
 export function useCompleteBooking() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: completeBooking,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
     });
 }
 
+export function useConfirmBooking() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => api.post(`/api/v1/booking/bookings/${id}/confirm`).then((r) => r.data),
+        onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
+    });
+}
+
 export function useCancelBooking() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: cancelBooking,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
@@ -138,8 +155,33 @@ export function useCancelBooking() {
 
 export function useWalkIn() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: walkIn,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['bookings'] }),
+    });
+}
+
+function getBookingSettings(): Promise<{ data: { enabled: boolean; show_prices: boolean; auto_confirm: boolean } }> {
+    return api.get('/api/v1/booking/settings').then((r) => r.data);
+}
+
+function updateBookingSettings(data: { enabled?: boolean; show_prices?: boolean; auto_confirm?: boolean }): Promise<{ data: Record<string, unknown> }> {
+    return api.put('/api/v1/booking/settings', data).then((r) => r.data);
+}
+
+export function useBookingSettings() {
+    return useQuery({
+        queryKey: ['booking-settings'],
+        queryFn: getBookingSettings,
+    });
+}
+
+export function useUpdateBookingSettings() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateBookingSettings,
+        onSuccess: () => qc.invalidateQueries({ queryKey: ['booking-settings'] }),
     });
 }

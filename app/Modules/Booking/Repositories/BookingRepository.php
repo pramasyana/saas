@@ -55,7 +55,7 @@ class BookingRepository implements BookingRepositoryInterface
 
     public function findOrFail(string $id): Booking
     {
-        return Booking::with(['customer', 'staff', 'branch', 'services.addons'])->findOrFail($id);
+        return Booking::with(['customer', 'staff', 'branch', 'services.addons', 'reminders', 'statusLogs'])->findOrFail($id);
     }
 
     public function create(array $data): Booking

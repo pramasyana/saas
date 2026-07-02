@@ -38,8 +38,15 @@ export default function RewardForm({ reward, saving, errors = {}, onSave, onCanc
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         const payload = { ...form };
-        if (!payload.description) delete payload.description;
-        if (payload.stock === undefined || payload.stock === null) delete payload.stock;
+
+        if (!payload.description) {
+delete payload.description;
+}
+
+        if (payload.stock === undefined || payload.stock === null) {
+delete payload.stock;
+}
+
         onSave(payload);
     }
 

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
-import Pagination from '@/molecules/Pagination';
 import { useCustomerReviews, useApproveReview, useDeleteReview } from '@/features/crm/hooks/useCustomerReviews';
+import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
 
 interface ReviewListProps {
@@ -40,8 +40,14 @@ export default function ReviewList({ customerId }: ReviewListProps) {
     const meta = data?.meta;
 
     const reviews = allReviews.filter((r) => {
-        if (filterStatus === 'approved') return r.is_approved;
-        if (filterStatus === 'pending') return !r.is_approved;
+        if (filterStatus === 'approved') {
+return r.is_approved;
+}
+
+        if (filterStatus === 'pending') {
+return !r.is_approved;
+}
+
         return true;
     });
 
@@ -52,7 +58,10 @@ export default function ReviewList({ customerId }: ReviewListProps) {
     }
 
     function handleDelete(id: string) {
-        if (!confirm('Hapus review ini?')) return;
+        if (!confirm('Hapus review ini?')) {
+return;
+}
+
         deleteReview.mutate(id, {
             onSuccess: () => addToast('success', 'Review berhasil dihapus'),
         });
@@ -90,7 +99,9 @@ export default function ReviewList({ customerId }: ReviewListProps) {
                         {(['all', 'approved', 'pending'] as const).map((status) => (
                             <button
                                 key={status}
-                                onClick={() => { setFilterStatus(status); setPage(1); }}
+                                onClick={() => {
+ setFilterStatus(status); setPage(1); 
+}}
                                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                                     filterStatus === status
                                         ? 'bg-primary text-white shadow-sm'

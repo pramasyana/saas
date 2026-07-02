@@ -2,8 +2,8 @@ import { useState } from 'react';
 import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
-import Pagination from '@/molecules/Pagination';
 import { useCustomerReferrals, useConvertReferral, useMarkRewardGiven } from '@/features/crm/hooks/useCustomerReferrals';
+import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
 
 interface ReferralListProps {

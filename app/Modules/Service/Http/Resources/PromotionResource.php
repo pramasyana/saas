@@ -37,7 +37,7 @@ class PromotionResource extends JsonResource
     {
         return match ($this->promotion_type) {
             'percentage' => "{$this->value}% Off",
-            'fixed' => 'Rp ' . number_format((float) $this->value, 0, ',', '.') . ' Off',
+            'fixed' => 'Rp '.number_format((float) $this->value, 0, ',', '.').' Off',
             'buy_x_get_y' => 'Buy X Get Y',
             default => $this->promotion_type,
         };

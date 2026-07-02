@@ -5,11 +5,11 @@ import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
 import PromotionDeleteDialog from '@/features/service/components/PromotionDeleteDialog';
 import PromotionTable from '@/features/service/components/PromotionTable';
 import { usePromotions, useDeletePromotion, useUpdatePromotion } from '@/features/service/hooks/usePromotions';
 import type { Promotion, PromotionFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
@@ -136,7 +136,10 @@ export default function PromotionsIndex({ title, stats }: PromotionsPageProps) {
     }
 
     function handleDelete() {
-        if (!promotionToDelete) return;
+        if (!promotionToDelete) {
+return;
+}
+
         deleteMutation.mutate(promotionToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);

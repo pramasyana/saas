@@ -33,13 +33,24 @@ function extractErrors(error: unknown): Record<string, string[]> {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -101,7 +112,10 @@ export default function MembershipTiersIndexPage() {
     }
 
     function handleDelete() {
-        if (!tierToDelete) return;
+        if (!tierToDelete) {
+return;
+}
+
         deleteMutation.mutate(tierToDelete.id, {
             onSuccess: () => {
                 setTierToDelete(null);
@@ -255,7 +269,9 @@ export default function MembershipTiersIndexPage() {
                     tier={tierToDelete}
                     deleting={deleteMutation.isPending}
                     error={deleteError}
-                    onClose={() => { setTierToDelete(null); deleteMutation.reset(); }}
+                    onClose={() => {
+ setTierToDelete(null); deleteMutation.reset(); 
+}}
                     onConfirm={handleDelete}
                 />
             )}

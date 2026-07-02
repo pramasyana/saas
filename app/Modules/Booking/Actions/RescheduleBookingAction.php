@@ -34,7 +34,7 @@ class RescheduleBookingAction
                 'from_status' => $booking->status,
                 'to_status' => $booking->status,
                 'changed_by' => auth()->id() ?? 'system',
-                'notes' => 'Rescheduled from ' . $oldData['start_time'] . ' to ' . ($newSchedule['start_time'] ?? ''),
+                'notes' => 'Rescheduled from '.$oldData['start_time'].' to '.($newSchedule['start_time'] ?? ''),
             ]);
 
             event(new BookingRescheduled($booking, $oldData));

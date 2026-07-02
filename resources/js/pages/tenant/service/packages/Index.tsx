@@ -5,11 +5,11 @@ import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
 import PackageDeleteDialog from '@/features/service/components/PackageDeleteDialog';
 import PackageTable from '@/features/service/components/PackageTable';
 import { usePackages, useDeletePackage, useUpdatePackage } from '@/features/service/hooks/usePackages';
 import type { Package, PackageFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
@@ -138,7 +138,10 @@ export default function PackagesIndex({ title, stats }: PackagesIndexPageProps) 
     }
 
     function handleDelete() {
-        if (!pkgToDelete) return;
+        if (!pkgToDelete) {
+return;
+}
+
         deleteMutation.mutate(pkgToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);

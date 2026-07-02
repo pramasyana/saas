@@ -36,6 +36,7 @@ export function usePromotions(filters: Filters) {
 
 export function useCreatePromotion() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createPromotion,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-promotions'] }),
@@ -44,6 +45,7 @@ export function useCreatePromotion() {
 
 export function useUpdatePromotion() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: PromotionFormData }) => updatePromotion(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-promotions'] }),
@@ -52,6 +54,7 @@ export function useUpdatePromotion() {
 
 export function useDeletePromotion() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deletePromotion,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['service-promotions'] }),

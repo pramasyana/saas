@@ -1,5 +1,6 @@
 export interface Booking {
     id: string;
+    booking_code: string;
     branch_id: string | null;
     branch_name: string | null;
     customer_id: string;
@@ -11,9 +12,29 @@ export interface Booking {
     end_time: string;
     duration_minutes: number;
     status: BookingStatus;
-    source: 'online' | 'walk_in';
+    source: 'online' | 'walk_in' | 'phone';
     notes: string | null;
     services: BookingServiceItem[];
+    reminders: ReminderItem[];
+    status_logs: StatusLogItem[];
+    created_at: string;
+}
+
+export interface ReminderItem {
+    id: string;
+    booking_id: string;
+    type: string;
+    status: 'pending' | 'sent' | 'failed' | 'cancelled';
+    scheduled_at: string | null;
+    sent_at: string | null;
+    error_message: string | null;
+}
+
+export interface StatusLogItem {
+    from_status: string | null;
+    to_status: string;
+    changed_by: string;
+    notes: string | null;
     created_at: string;
 }
 

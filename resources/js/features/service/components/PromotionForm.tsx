@@ -1,9 +1,9 @@
+import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link } from '@inertiajs/react';
 import Button from '@/atoms/Button';
-import type { Promotion, PromotionFormData } from '../types';
 import { cn } from '@/lib/utils';
+import type { Promotion, PromotionFormData } from '../types';
 
 interface PromotionFormProps {
     promotion: Promotion | null;

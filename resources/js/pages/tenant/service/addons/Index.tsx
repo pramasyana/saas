@@ -5,11 +5,11 @@ import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
 import AddonDeleteDialog from '@/features/service/components/AddonDeleteDialog';
 import AddonTable from '@/features/service/components/AddonTable';
 import { useAddons, useDeleteAddon, useUpdateAddon } from '@/features/service/hooks/useAddons';
 import type { Addon, AddonFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
@@ -137,7 +137,10 @@ export default function AddonsIndex({ title, stats }: AddonsPageProps) {
     }
 
     function handleDelete() {
-        if (!addonToDelete) return;
+        if (!addonToDelete) {
+return;
+}
+
         deleteMutation.mutate(addonToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);

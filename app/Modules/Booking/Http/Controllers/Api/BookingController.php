@@ -129,6 +129,17 @@ class BookingController extends Controller
         ]);
     }
 
+    public function confirm(string $id): JsonResponse
+    {
+        $booking = $this->bookingService->confirm($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Booking dikonfirmasi.',
+            'data' => new BookingResource($booking),
+        ]);
+    }
+
     public function cancel(string $id): JsonResponse
     {
         $booking = $this->bookingService->cancel($id);
@@ -146,6 +157,43 @@ class BookingController extends Controller
             'status' => 'success',
             'message' => 'OK',
             'data' => $this->bookingService->getStats(),
+        ]);
+    }
+
+    public function getSettings(): JsonResponse
+    {
+        $tenant = tenant();
+        $config = $tenant->getInternal('booking_config') ?? [];
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'OK',
+            'data' => [
+                'enabled' => $config['enabled'] ?? false,
+                'show_prices' => $config['show_prices'] ?? true,
+                'auto_confirm' => $config['auto_confirm'] ?? false,
+            ],
+        ]);
+    }
+
+    public function updateSettings(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'enabled' => 'boolean',
+            'show_prices' => 'boolean',
+            'auto_confirm' => 'boolean',
+        ]);
+
+        $tenant = tenant();
+        $config = $tenant->getInternal('booking_config') ?? [];
+        $config = array_merge($config, $validated);
+        $tenant->setInternal('booking_config', $config);
+        $tenant->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Pengaturan online booking berhasil disimpan.',
+            'data' => $config,
         ]);
     }
 }

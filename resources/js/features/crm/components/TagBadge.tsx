@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
 import type { Tag } from '@/features/crm/types';
+import { cn } from '@/lib/utils';
 
 interface TagBadgeProps {
     tag: Tag;
@@ -20,7 +20,9 @@ export default function TagBadge({ tag, onRemove, className }: TagBadgeProps) {
             {onRemove && (
                 <button
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); onRemove(tag); }}
+                    onClick={(e) => {
+ e.stopPropagation(); onRemove(tag); 
+}}
                     className="ml-0.5 inline-flex rounded-full p-0.5 transition-colors hover:bg-black/10"
                     title={`Hapus tag ${tag.name}`}
                 >

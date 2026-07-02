@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Auth\Http\Controllers\DashboardController;
+use App\Modules\Booking\Http\Controllers\Tenant\BookingController as TenantBookingController;
 use App\Modules\Company\Http\Controllers\Tenant\BranchController;
 use App\Modules\Company\Http\Controllers\Tenant\BrandingController;
 use App\Modules\Company\Http\Controllers\Tenant\HolidayController;
@@ -11,19 +12,18 @@ use App\Modules\Company\Http\Controllers\Tenant\WorkingHourController;
 use App\Modules\Crm\Http\Controllers\Tenant\CustomerController as CrmCustomerController;
 use App\Modules\Crm\Http\Controllers\Tenant\MembershipTierController as CrmMembershipTierController;
 use App\Modules\Crm\Http\Controllers\Tenant\TagController as CrmTagController;
+use App\Modules\Service\Http\Controllers\Tenant\AddonController as ServiceAddonController;
+use App\Modules\Service\Http\Controllers\Tenant\CategoryController as ServiceCategoryController;
+use App\Modules\Service\Http\Controllers\Tenant\PackageController as ServicePackageController;
+use App\Modules\Service\Http\Controllers\Tenant\PricingRuleController as ServicePricingRuleController;
+use App\Modules\Service\Http\Controllers\Tenant\PromotionController as ServicePromotionController;
+use App\Modules\Service\Http\Controllers\Tenant\ServiceController as TenantServiceController;
 use App\Modules\Staff\Http\Controllers\Tenant\AttendanceController;
 use App\Modules\Staff\Http\Controllers\Tenant\CommissionController;
 use App\Modules\Staff\Http\Controllers\Tenant\LeaveController;
 use App\Modules\Staff\Http\Controllers\Tenant\ScheduleController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffUserController;
-use App\Modules\Service\Http\Controllers\Tenant\CategoryController as ServiceCategoryController;
-use App\Modules\Service\Http\Controllers\Tenant\ServiceController as TenantServiceController;
-use App\Modules\Service\Http\Controllers\Tenant\PackageController as ServicePackageController;
-use App\Modules\Service\Http\Controllers\Tenant\AddonController as ServiceAddonController;
-use App\Modules\Service\Http\Controllers\Tenant\PricingRuleController as ServicePricingRuleController;
-use App\Modules\Service\Http\Controllers\Tenant\PromotionController as ServicePromotionController;
-use App\Modules\Booking\Http\Controllers\Tenant\BookingController as TenantBookingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [TenantBookingController::class, 'index'])->name('index');
         Route::get('/walk-in', [TenantBookingController::class, 'walkIn'])->name('walk-in');
         Route::get('/waiting-list', [TenantBookingController::class, 'waitingList'])->name('waiting-list');
+        Route::get('/online', [TenantBookingController::class, 'online'])->name('online');
+        Route::get('/reminders', [TenantBookingController::class, 'reminders'])->name('reminders');
     });
 
     // Service pages

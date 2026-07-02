@@ -1,18 +1,15 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import type { ReactNode } from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
 import { useCalendar } from '@/features/booking/hooks/useCalendar';
-import { useBookings } from '@/features/booking/hooks/useBookings';
-import type { Booking, BookingStatus, CalendarEvent } from '@/features/booking/types';
+import type { BookingStatus, CalendarEvent } from '@/features/booking/types';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
 import type { Branch } from '@/features/company/types';
-import { useAllStaff } from '@/features/staff/hooks/useStaff';
 import TenantLayout from '@/layouts/TenantLayout';
-import Pagination from '@/molecules/Pagination';
 import { cn } from '@/lib/utils';
+import BookingDetailModal from '@/organisms/BookingDetailModal';
 
 interface BookingPageProps {
     title: string;
@@ -46,13 +43,38 @@ const statusLabels: Record<BookingStatus, string> = {
 
 function formatDate(dateStr: string): string {
     const d = new Date(dateStr);
+
     return d.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function formatTime(dateStr: string): string {
     const d = new Date(dateStr);
+
     return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 }
+
+const statIcons = {
+    confirmed: (
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+    ),
+    progress: (
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+        </svg>
+    ),
+    completed: (
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+        </svg>
+    ),
+    no_show: (
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+    ),
+};
 
 export default function BookingIndex({ title, stats }: BookingPageProps) {
     const today = new Date();
@@ -60,32 +82,21 @@ export default function BookingIndex({ title, stats }: BookingPageProps) {
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     const [branchId, setBranchId] = useState('');
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
-    const [page, setPage] = useState(1);
+    const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
 
     const { data: branchesData } = useAllBranches();
     const branches = (branchesData?.data ?? []) as Branch[];
-    const { data: staffData } = useAllStaff();
 
     const startOfMonth = new Date(currentYear, currentMonth, 1);
     const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
 
-    const { data: calendarData } = useCalendar({
+    const { data: calendarData, isLoading: calendarLoading } = useCalendar({
         start: startOfMonth.toISOString(),
         end: endOfMonth.toISOString(),
         branch_id: branchId || undefined,
     });
 
     const events = calendarData?.data ?? [];
-
-    const { data: bookingsData } = useBookings({
-        page,
-        branch_id: branchId || undefined,
-        date: selectedDate || undefined,
-        per_page: 10,
-    });
-
-    const bookings = bookingsData?.data ?? [];
-    const meta = bookingsData?.meta;
 
     function prevMonth() {
         if (currentMonth === 0) {
@@ -94,6 +105,7 @@ export default function BookingIndex({ title, stats }: BookingPageProps) {
         } else {
             setCurrentMonth(currentMonth - 1);
         }
+
         setSelectedDate(null);
     }
 
@@ -104,6 +116,7 @@ export default function BookingIndex({ title, stats }: BookingPageProps) {
         } else {
             setCurrentMonth(currentMonth + 1);
         }
+
         setSelectedDate(null);
     }
 
@@ -140,19 +153,23 @@ export default function BookingIndex({ title, stats }: BookingPageProps) {
     const monthName = startOfMonth.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
 
     const statCards = [
-        { label: 'Dikonfirmasi', value: stats.confirmed, color: 'text-primary', bg: 'bg-primary-50' },
-        { label: 'Berlangsung', value: stats.in_progress, color: 'text-success', bg: 'bg-success-light' },
-        { label: 'Selesai', value: stats.completed, color: 'text-neutral-500', bg: 'bg-neutral-100' },
-        { label: 'No Show', value: stats.no_show, color: 'text-pink-500', bg: 'bg-pink-50' },
+        { label: 'Dikonfirmasi', value: stats.confirmed, icon: statIcons.confirmed, color: 'text-primary', bg: 'bg-primary-50' },
+        { label: 'Berlangsung', value: stats.in_progress, icon: statIcons.progress, color: 'text-success', bg: 'bg-success-light' },
+        { label: 'Selesai', value: stats.completed, icon: statIcons.completed, color: 'text-neutral-500', bg: 'bg-neutral-100' },
+        { label: 'No Show', value: stats.no_show, icon: statIcons.no_show, color: 'text-pink-500', bg: 'bg-pink-50' },
     ];
 
     return (
         <TenantLayout>
             <Head title={title} />
 
+            <nav className="mb-5 flex items-center gap-2 text-sm text-neutral-500">
+                <span className="font-medium text-neutral-900">Booking</span>
+            </nav>
+
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-neutral-900">Booking</h1>
+                    <h1 className="text-2xl font-bold tracking-tight text-neutral-900">{title}</h1>
                     <p className="mt-1 text-sm text-neutral-500">Kelola semua janji temu pelanggan.</p>
                 </div>
                 <div className="flex gap-2">
@@ -169,31 +186,79 @@ export default function BookingIndex({ title, stats }: BookingPageProps) {
                 </div>
             </div>
 
-            <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {statCards.map((s) => (
-                    <div key={s.label} className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
-                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg} ${s.color}`}>
-                            <span className="text-lg font-bold">{s.value}</span>
+            <FadeIn delay={0.03}>
+                <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                    {statCards.map((s) => (
+                        <div
+                            key={s.label}
+                            className="flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md"
+                        >
+                            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${s.bg} ${s.color}`}>
+                                {s.icon}
+                            </div>
+                            <div className="min-w-0">
+                                <p className="text-2xl font-bold tracking-tight text-neutral-900">{s.value.toLocaleString('id-ID')}</p>
+                                <p className="text-sm text-neutral-500">{s.label}</p>
+                            </div>
                         </div>
-                        <div className="min-w-0">
-                            <p className="text-xs font-medium text-neutral-500">{s.label}</p>
+                    ))}
+                </div>
+            </FadeIn>
+
+            <FadeIn delay={0.06}>
+                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <div className="flex flex-wrap gap-3">
+                        <Select
+                            value={branchId}
+                            onChange={(v) => {
+                                 setBranchId(v); setSelectedDate(null);
+                            }}
+                            options={[
+                                { value: '', label: 'Semua Cabang' },
+                                ...branches.filter((b) => b.is_active).map((b) => ({ value: b.id, label: b.name })),
+                            ]}
+                            placeholder="Filter cabang"
+                        />
+                    </div>
+                </div>
+            </FadeIn>
+
+            {calendarLoading ? (
+                <div className="grid gap-6 lg:grid-cols-3">
+                    <div className="lg:col-span-2">
+                        <div className="animate-pulse rounded-2xl border border-neutral-200 bg-white shadow-sm">
+                            <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
+                                <div className="h-4 w-20 rounded bg-neutral-200" />
+                                <div className="h-4 w-32 rounded bg-neutral-200" />
+                                <div className="h-4 w-20 rounded bg-neutral-200" />
+                            </div>
+                            <div className="grid grid-cols-7 gap-1 p-4">
+                                {Array.from({ length: 35 }).map((_, i) => (
+                                    <div key={i} className="aspect-square rounded-lg bg-neutral-100" />
+                                ))}
+                            </div>
                         </div>
                     </div>
-                ))}
-            </div>
-
-            <div className="mb-4">
-                <Select
-                    value={branchId}
-                    onChange={(v) => { setBranchId(v); setSelectedDate(null); }}
-                    options={[
-                        { value: '', label: 'Semua Cabang' },
-                        ...branches.filter((b) => b.is_active).map((b) => ({ value: b.id, label: b.name })),
-                    ]}
-                    placeholder="Filter cabang"
-                />
-            </div>
-
+                    <div>
+                        <div className="animate-pulse rounded-2xl border border-neutral-200 bg-white shadow-sm">
+                            <div className="border-b border-neutral-200 px-5 py-4">
+                                <div className="h-4 w-40 rounded bg-neutral-200" />
+                            </div>
+                            <div className="space-y-4 p-5">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="flex items-start gap-3">
+                                        <div className="h-2.5 w-2.5 rounded-full bg-neutral-200" />
+                                        <div className="flex-1 space-y-2">
+                                            <div className="h-4 w-2/3 rounded bg-neutral-200" />
+                                            <div className="h-3 w-1/2 rounded bg-neutral-100" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : (
             <div className="grid gap-6 lg:grid-cols-3">
                 <FadeIn className="lg:col-span-2" delay={0.05}>
                     <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm">
@@ -278,7 +343,11 @@ export default function BookingIndex({ title, stats }: BookingPageProps) {
                                 </div>
                             )}
                             {selectedDate && getEventsForDate(selectedDate).map((ev) => (
-                                <div key={ev.id} className="px-5 py-3">
+                                <div
+                                    key={ev.id}
+                                    className="cursor-pointer px-5 py-3 transition-colors hover:bg-neutral-50"
+                                    onClick={() => setSelectedBookingId(ev.id)}
+                                >
                                     <div className="flex items-start gap-3">
                                         <div
                                             className="mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full"
@@ -306,6 +375,12 @@ export default function BookingIndex({ title, stats }: BookingPageProps) {
                     </div>
                 </FadeIn>
             </div>
+            )}
+
+            <BookingDetailModal
+                bookingId={selectedBookingId}
+                onClose={() => setSelectedBookingId(null)}
+            />
         </TenantLayout>
     );
 }

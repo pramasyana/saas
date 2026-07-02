@@ -6,6 +6,7 @@ namespace App\Modules\Booking\Contracts;
 
 use App\Modules\Booking\Models\WaitingList;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface WaitingListRepositoryInterface
 {
@@ -25,5 +26,5 @@ interface WaitingListRepositoryInterface
 
     public function getNextPosition(string $tenantId, string $date): int;
 
-    public function getWaitingByDate(string $tenantId, string $date): \Illuminate\Support\Collection;
+    public function getWaitingByDate(string $tenantId, string $date): Collection;
 }

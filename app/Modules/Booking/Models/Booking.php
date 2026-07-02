@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Models;
 
-use App\Modules\Crm\Models\Customer;
 use App\Modules\Company\Models\Branch;
+use App\Modules\Crm\Models\Customer;
 use App\Modules\Staff\Models\Staff;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,6 +33,7 @@ class Booking extends Model
         'status',
         'source',
         'notes',
+        'booking_code',
     ];
 
     protected static function booted(): void
@@ -40,6 +41,15 @@ class Booking extends Model
         static::creating(function (Booking $model) {
             if (empty($model->id)) {
                 $model->id = (string) Str::uuid();
+            }
+            if (empty($model->booking_code)) {
+                $today = now()->format('Ymd');
+                $last = static::whereDate('created_at', today())
+                    ->where('booking_code', 'like', "BK-{$today}-%")
+                    ->orderBy('booking_code', 'desc')
+                    ->first();
+                $seq = $last ? (int) substr($last->booking_code, -3) + 1 : 1;
+                $model->booking_code = sprintf('BK-%s-%03d', $today, $seq);
             }
         });
     }
@@ -52,6 +62,11 @@ class Booking extends Model
             'end_time' => 'datetime',
             'duration_minutes' => 'integer',
         ];
+    }
+
+    public function findByBookingCode(string $code): ?self
+    {
+        return static::where('booking_code', $code)->first();
     }
 
     public function branch(): BelongsTo

@@ -1,8 +1,8 @@
 <?php
 
 use App\Modules\Admin\Providers\AdminServiceProvider;
-use App\Modules\Booking\Providers\BookingServiceProvider;
 use App\Modules\Auth\Providers\AuthServiceProvider;
+use App\Modules\Booking\Providers\BookingServiceProvider;
 use App\Modules\Company\Providers\CompanyServiceProvider;
 use App\Modules\Crm\Providers\CrmServiceProvider;
 use App\Modules\Notification\Providers\NotificationServiceProvider;

@@ -42,11 +42,27 @@ export default function CustomerForm({ customer, saving, errors = {}, onSave, on
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
         const payload = { ...form };
-        if (!payload.email) delete payload.email;
-        if (!payload.phone) delete payload.phone;
-        if (!payload.company) delete payload.company;
-        if (!payload.address) delete payload.address;
-        if (!payload.birthday) delete payload.birthday;
+
+        if (!payload.email) {
+delete payload.email;
+}
+
+        if (!payload.phone) {
+delete payload.phone;
+}
+
+        if (!payload.company) {
+delete payload.company;
+}
+
+        if (!payload.address) {
+delete payload.address;
+}
+
+        if (!payload.birthday) {
+delete payload.birthday;
+}
+
         onSave(payload);
     }
 

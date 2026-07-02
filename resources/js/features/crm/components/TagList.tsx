@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Select from '@/atoms/Select';
-import TagBadge from './TagBadge';
 import { useTags } from '@/features/crm/hooks/useTags';
 import type { Tag } from '@/features/crm/types';
+import TagBadge from './TagBadge';
 
 interface TagListProps {
     tags: Tag[];

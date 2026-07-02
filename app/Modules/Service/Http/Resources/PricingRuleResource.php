@@ -33,10 +33,10 @@ class PricingRuleResource extends JsonResource
     {
         return match ($this->action_type) {
             'percentage_discount' => "{$this->value}% Discount",
-            'fixed_discount' => 'Rp ' . number_format((float) $this->value, 0, ',', '.') . ' Discount',
+            'fixed_discount' => 'Rp '.number_format((float) $this->value, 0, ',', '.').' Discount',
             'percentage_surcharge' => "{$this->value}% Surcharge",
-            'fixed_surcharge' => 'Rp ' . number_format((float) $this->value, 0, ',', '.') . ' Surcharge',
-            'price_override' => 'Rp ' . number_format((float) $this->value, 0, ',', '.'),
+            'fixed_surcharge' => 'Rp '.number_format((float) $this->value, 0, ',', '.').' Surcharge',
+            'price_override' => 'Rp '.number_format((float) $this->value, 0, ',', '.'),
             default => $this->action_type,
         };
     }

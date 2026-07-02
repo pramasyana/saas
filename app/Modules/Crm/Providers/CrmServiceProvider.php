@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Crm\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Modules\Crm\Contracts\CustomerRepositoryInterface;
 use App\Modules\Crm\Contracts\CustomerNoteRepositoryInterface;
+use App\Modules\Crm\Contracts\CustomerRepositoryInterface;
 use App\Modules\Crm\Contracts\LoyaltyTransactionRepositoryInterface;
 use App\Modules\Crm\Contracts\MembershipRepositoryInterface;
 use App\Modules\Crm\Contracts\MembershipTierRepositoryInterface;
@@ -27,6 +26,7 @@ use App\Modules\Crm\Repositories\RewardRedemptionRepository;
 use App\Modules\Crm\Repositories\RewardRepository;
 use App\Modules\Crm\Repositories\TagRepository;
 use App\Modules\Crm\Repositories\TimelineEventRepository;
+use Illuminate\Support\ServiceProvider;
 
 class CrmServiceProvider extends ServiceProvider
 {

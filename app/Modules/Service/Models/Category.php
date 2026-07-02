@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Service\Models;
 
 use App\Modules\Company\Models\Branch;
-use App\Modules\Service\Models\Service;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

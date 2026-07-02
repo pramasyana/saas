@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Modules\Tenant\Services;
 
+use App\Models\CentralSetting;
 use App\Models\Tenant;
 use App\Modules\Tenant\Contracts\TenantRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use RuntimeException;
 
 class TenantService
@@ -47,6 +49,13 @@ class TenantService
             if (! empty($data['domain'])) {
                 $tenant->domains()->create([
                     'domain' => $data['domain'],
+                ]);
+            } else {
+                $slug = Str::slug($data['name']);
+                $baseDomain = CentralSetting::get('base_domain', config('app.domain', 'localhost'));
+
+                $tenant->domains()->create([
+                    'domain' => $slug.'.'.$baseDomain,
                 ]);
             }
 

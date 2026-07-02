@@ -4,11 +4,11 @@ import axios from 'axios';
 import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import CategoryForm from '@/features/service/components/CategoryForm';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
+import CategoryForm from '@/features/service/components/CategoryForm';
 import { useUpdateCategory } from '@/features/service/hooks/useCategories';
 import type { Category, CategoryFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import { useToastStore } from '@/stores/toast';
 

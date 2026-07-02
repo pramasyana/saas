@@ -2,8 +2,8 @@ import { useState } from 'react';
 import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
-import Pagination from '@/molecules/Pagination';
 import { useLoyaltyBalance, useLoyaltyTransactions, useEarnPoints, useSpendPoints } from '@/features/crm/hooks/useLoyalty';
+import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
 
 interface LoyaltyCardProps {
@@ -28,7 +28,11 @@ export default function LoyaltyCard({ customerId }: LoyaltyCardProps) {
 
     function handleSubmit(type: 'earn' | 'spend') {
         const pts = parseInt(points, 10);
-        if (!pts || pts <= 0) return;
+
+        if (!pts || pts <= 0) {
+return;
+}
+
         const mutation = type === 'earn' ? earnPoints : spendPoints;
         mutation.mutate(
             { customerId, data: { points: pts, description: description.trim() || undefined } },

@@ -2,8 +2,8 @@ import { Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import Button from '@/atoms/Button';
-import type { Category, CategoryFormData } from '../types';
 import { cn } from '@/lib/utils';
+import type { Category, CategoryFormData } from '../types';
 
 interface CategoryFormProps {
     category: Category | null;

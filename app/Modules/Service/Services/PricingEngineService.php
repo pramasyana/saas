@@ -6,7 +6,6 @@ namespace App\Modules\Service\Services;
 
 use App\Modules\Service\Contracts\PricingRuleRepositoryInterface;
 use App\Modules\Service\Models\PricingRule;
-use Illuminate\Support\Collection;
 
 class PricingEngineService
 {

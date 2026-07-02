@@ -2,8 +2,8 @@ import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import Button from '@/atoms/Button';
-import type { PricingRule, PricingRuleFormData, PricingRuleConditions } from '../types';
 import { cn } from '@/lib/utils';
+import type { PricingRule, PricingRuleFormData, PricingRuleConditions } from '../types';
 
 interface PricingRuleFormProps {
     pricingRule: PricingRule | null;
@@ -332,6 +332,7 @@ export default function PricingRuleForm({ pricingRule, saving, errors = {}, onSa
                             {dayNames.map((name, i) => {
                                 const dayNum = i + 1;
                                 const active = (form.conditions.days_of_week || []).includes(dayNum);
+
                                 return (
                                     <button
                                         key={dayNum}

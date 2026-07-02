@@ -4,11 +4,11 @@ import axios from 'axios';
 import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
-import PricingRuleForm from '@/features/service/components/PricingRuleForm';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
+import PricingRuleForm from '@/features/service/components/PricingRuleForm';
 import { useUpdatePricingRule } from '@/features/service/hooks/usePricingRules';
 import type { PricingRule, PricingRuleFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
 import { useToastStore } from '@/stores/toast';
@@ -69,7 +69,10 @@ export default function Edit({ title, pricingRule }: EditPageProps) {
     }
 
     function formatValue(value: number, type: string): string {
-        if (type.includes('percentage')) return `${value}%`;
+        if (type.includes('percentage')) {
+return `${value}%`;
+}
+
         return `Rp${value.toLocaleString('id-ID')}`;
     }
 

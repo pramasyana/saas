@@ -44,6 +44,7 @@ function extractMessage(error: unknown): string | undefined {
 
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
 
@@ -304,7 +305,9 @@ export default function CustomersIndexPage({ title, stats }: CustomersIndexPageP
                 customer={customerToDelete!}
                 deleting={deleteMutation.isPending}
                 error={deleteError}
-                onClose={() => { setCustomerToDelete(null); deleteMutation.reset(); }}
+                onClose={() => {
+ setCustomerToDelete(null); deleteMutation.reset(); 
+}}
                 onConfirm={handleDelete}
             />
         </TenantLayout>

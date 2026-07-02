@@ -5,11 +5,11 @@ import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
+import type { Branch } from '@/features/company/types';
 import CategoryDeleteDialog from '@/features/service/components/CategoryDeleteDialog';
 import CategoryTable from '@/features/service/components/CategoryTable';
 import { useCategories, useDeleteCategory, useUpdateCategory } from '@/features/service/hooks/useCategories';
 import type { Category, CategoryFormData } from '@/features/service/types';
-import type { Branch } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
 import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
@@ -138,7 +138,10 @@ export default function CategoriesIndex({ title, stats }: CategoriesPageProps) {
     }
 
     function handleDelete() {
-        if (!categoryToDelete) return;
+        if (!categoryToDelete) {
+return;
+}
+
         deleteMutation.mutate(categoryToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);
