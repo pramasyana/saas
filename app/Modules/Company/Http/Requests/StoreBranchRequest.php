@@ -23,6 +23,7 @@ class StoreBranchRequest extends FormRequest
             'address' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
+            'whatsapp' => 'nullable|string|max:20',
             'manager_name' => 'nullable|string|max:255',
             'is_active' => 'nullable|boolean',
         ];

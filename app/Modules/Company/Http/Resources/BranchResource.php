@@ -22,6 +22,7 @@ class BranchResource extends JsonResource
             'address' => $this->address,
             'phone' => $this->phone,
             'email' => $this->email,
+            'whatsapp' => $this->whatsapp,
             'manager_name' => $this->manager_name,
             'is_active' => $this->is_active,
             'is_default' => $this->is_default,

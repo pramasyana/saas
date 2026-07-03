@@ -8,6 +8,10 @@ class SendVerificationNotification
 {
     public function handle(TenantRegistered $event): void
     {
+        if ($event->user->hasVerifiedEmail()) {
+            return;
+        }
+
         $event->user->sendEmailVerificationNotification('new_account');
     }
 }

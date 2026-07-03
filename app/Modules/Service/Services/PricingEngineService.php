@@ -13,9 +13,8 @@ class PricingEngineService
         private readonly PricingRuleRepositoryInterface $pricingRuleRepository,
     ) {}
 
-    public function calculate(array $input): array
+    public function calculate(string $tenantId, array $input): array
     {
-        $tenantId = auth()->user()->tenant_id;
         $rules = $this->pricingRuleRepository->getActiveRules($tenantId);
 
         $results = [];

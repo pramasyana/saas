@@ -2,88 +2,41 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Booking\Http\Controllers\Tenant;
+namespace App\Modules\Booking\Http\Controllers\Public;
 
-use App\Http\Controllers\Controller;
-use App\Modules\Booking\Contracts\BookingReminderRepositoryInterface;
-use App\Modules\Booking\Services\BookingService;
 use App\Modules\Company\Models\Branch;
 use App\Modules\Service\Contracts\PackageRepositoryInterface;
 use App\Modules\Service\Models\Category;
 use App\Modules\Service\Models\Service;
 use App\Modules\Service\Services\PricingEngineService;
+use App\Modules\Staff\Models\Staff;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class BookingController extends Controller
+class LandingController
 {
-    public function __construct(
-        private readonly BookingService $bookingService,
-        private readonly BookingReminderRepositoryInterface $reminderRepository,
-    ) {}
-
-    public function index(Request $request): Response
+    public function index(Request $request): Response|RedirectResponse
     {
-        $stats = $this->bookingService->getStats();
+        if ($request->user()) {
+            return redirect()->route('tenant.dashboard');
+        }
 
-        return Inertia::render('tenant/booking/Index', [
-            'title' => 'Booking',
-            'stats' => $stats,
-        ]);
-    }
-
-    public function walkIn(): Response
-    {
-        return Inertia::render('tenant/booking/WalkIn', [
-            'title' => 'Walk In Booking',
-        ]);
-    }
-
-    public function waitingList(): Response
-    {
-        return Inertia::render('tenant/booking/WaitingList', [
-            'title' => 'Waiting List',
-        ]);
-    }
-
-    public function online(): Response
-    {
         $tenant = tenant();
-        $config = $tenant->getInternal('booking_config') ?? [];
-        $domain = $tenant->domains()->first()?->domain ?? '';
 
-        return Inertia::render('tenant/booking/Online', [
-            'title' => 'Online Booking',
-            'settings' => [
-                'enabled' => $config['enabled'] ?? false,
-                'show_prices' => $config['show_prices'] ?? true,
-                'auto_confirm' => $config['auto_confirm'] ?? false,
-            ],
-            'publicUrl' => 'https://'.$domain.'/booking',
-        ]);
-    }
+        if (! $tenant) {
+            abort(404);
+        }
 
-    public function reminders(): Response
-    {
-        $tenantId = tenant()->getTenantKey();
-        $reminders = $this->reminderRepository->findByTenant($tenantId);
+        $config = $tenant->getInternal('landing_config') ?? [];
+        $bookingConfig = $tenant->getInternal('booking_config') ?? [];
 
-        return Inertia::render('tenant/booking/Reminders', [
-            'title' => 'Monitoring Reminder',
-            'stats' => [
-                'total' => $reminders->count(),
-                'pending' => $reminders->where('status', 'pending')->count(),
-                'sent' => $reminders->where('status', 'sent')->count(),
-                'failed' => $reminders->where('status', 'failed')->count(),
-            ],
-        ]);
-    }
+        if (! ($config['enabled'] ?? false)) {
+            return redirect('/booking');
+        }
 
-    public function landing(): Response
-    {
-        $tenant = tenant();
-        $domain = $tenant->domains()->first()?->domain ?? '';
+        $tenantId = $tenant->getTenantKey();
 
         $categories = Category::where('is_active', true)
             ->orderBy('sort_order')
@@ -106,7 +59,10 @@ class BookingController extends Controller
                 'category_color' => $s->category?->color,
             ]);
 
-        $tenantId = $tenant->getTenantKey();
+        $team = Staff::where('tenant_id', $tenantId)
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'position', 'email']);
 
         $packages = app(PackageRepositoryInterface::class)
             ->findAllByTenant($tenantId)
@@ -165,7 +121,7 @@ class BookingController extends Controller
                     'adjusted_price' => $p['adjusted_price'],
                     'discount' => $p['discount'],
                     'discount_label' => $p['discount'] > 0 && ! empty($p['applied_rules'])
-                        ? self::formatDiscountLabel($p['applied_rules'][0])
+                        ? static::formatDiscountLabel($p['applied_rules'][0])
                         : null,
                 ] : null;
             }
@@ -183,7 +139,7 @@ class BookingController extends Controller
                     'adjusted_price' => $pr['adjusted_price'],
                     'discount' => $pr['discount'],
                     'discount_label' => $pr['discount'] > 0 && ! empty($pr['applied_rules'])
-                        ? self::formatDiscountLabel($pr['applied_rules'][0])
+                        ? static::formatDiscountLabel($pr['applied_rules'][0])
                         : null,
                 ] : null;
             }
@@ -191,13 +147,20 @@ class BookingController extends Controller
             return array_merge($p, ['pricing_by_branch' => $prices]);
         });
 
-        return Inertia::render('tenant/booking/LandingSettings', [
-            'title' => 'Landing Page',
-            'publicUrl' => 'https://'.$domain,
+        return Inertia::render('public/landing/index', [
+            'landing' => $config,
             'categories' => $categories,
             'services' => $services,
+            'team' => $team,
             'packages' => $packages,
             'branches' => $branches,
+            'settings' => [
+                'show_prices' => $bookingConfig['show_prices'] ?? true,
+            ],
+            'tenant' => [
+                'name' => $tenant->company_name ?? $tenant->getInternal('name') ?? 'Booking',
+                'logo' => $config['logo'] ?? null,
+            ],
         ]);
     }
 

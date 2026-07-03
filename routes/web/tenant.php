@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Modules\Auth\Http\Controllers\DashboardController;
 use App\Modules\Booking\Http\Controllers\Tenant\BookingController as TenantBookingController;
 use App\Modules\Company\Http\Controllers\Tenant\BranchController;
-use App\Modules\Company\Http\Controllers\Tenant\BrandingController;
 use App\Modules\Company\Http\Controllers\Tenant\HolidayController;
 use App\Modules\Company\Http\Controllers\Tenant\ProfileController;
 use App\Modules\Company\Http\Controllers\Tenant\WorkingHourController;
@@ -32,8 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('company')->name('tenant.company.')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::get('/branding', [BrandingController::class, 'edit'])->name('branding.edit');
-        Route::put('/branding', [BrandingController::class, 'update'])->name('branding.update');
+
         Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
         Route::post('/branches', [BranchController::class, 'store'])->name('branches.store');
         Route::put('/branches/{id}', [BranchController::class, 'update'])->name('branches.update');
@@ -63,6 +61,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/waiting-list', [TenantBookingController::class, 'waitingList'])->name('waiting-list');
         Route::get('/online', [TenantBookingController::class, 'online'])->name('online');
         Route::get('/reminders', [TenantBookingController::class, 'reminders'])->name('reminders');
+        Route::get('/landing', [TenantBookingController::class, 'landing'])->name('landing');
     });
 
     // Service pages

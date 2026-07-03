@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Modules\Booking\Http\Controllers\Api\AvailabilityController;
 use App\Modules\Booking\Http\Controllers\Api\BookingController;
 use App\Modules\Booking\Http\Controllers\Api\CalendarController;
+use App\Modules\Booking\Http\Controllers\Api\LandingSettingsController;
 use App\Modules\Booking\Http\Controllers\Api\ReminderController;
 use App\Modules\Booking\Http\Controllers\Api\WaitingListController;
 use App\Modules\Booking\Http\Controllers\Api\WalkInController;
@@ -40,4 +41,11 @@ Route::middleware('auth')->group(function () {
 
     // Reminders
     Route::get('/booking/reminders', [ReminderController::class, 'index']);
+
+    // Landing Page Settings
+    Route::get('/booking/landing', [LandingSettingsController::class, 'index']);
+    Route::put('/booking/landing', [LandingSettingsController::class, 'update']);
+    Route::post('/booking/landing/logo', [LandingSettingsController::class, 'uploadLogo']);
+    Route::delete('/booking/landing/logo', [LandingSettingsController::class, 'deleteLogo']);
+    Route::post('/booking/landing/image', [LandingSettingsController::class, 'uploadImage']);
 });

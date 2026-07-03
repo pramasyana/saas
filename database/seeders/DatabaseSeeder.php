@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Modules\Auth\Events\TenantRegistered;
+use App\Modules\Company\Models\Branch;
 use App\Modules\Pricing\Database\Seeders\FeatureDefinitionSeeder;
 use App\Modules\Pricing\Database\Seeders\PlanSeeder;
 use App\Modules\Pricing\Models\Plan;
@@ -63,6 +64,17 @@ class DatabaseSeeder extends Seeder
             }
 
             event(new TenantRegistered($user, $tenant));
+
+            $branch = Branch::where('tenant_id', $tenant->id)->where('is_default', true)->first();
+
+            tenancy()->initialize($tenant);
+
+            if ($branch) {
+                $this->call(ServiceSeeder::class, parameters: [
+                    'tenantId' => $tenant->id,
+                    'branchId' => $branch->id,
+                ]);
+            }
         });
     }
 }

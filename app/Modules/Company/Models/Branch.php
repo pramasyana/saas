@@ -24,6 +24,7 @@ class Branch extends Model
         'address',
         'phone',
         'email',
+        'whatsapp',
         'manager_name',
         'is_active',
         'sort_order',

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Service\Providers;
 
+use App\Modules\Service\Console\SeedServicesCommand;
 use App\Modules\Service\Contracts\AddonRepositoryInterface;
 use App\Modules\Service\Contracts\CategoryRepositoryInterface;
 use App\Modules\Service\Contracts\PackageRepositoryInterface;
@@ -28,5 +29,9 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(AddonRepositoryInterface::class, AddonRepository::class);
         $this->app->bind(PricingRuleRepositoryInterface::class, PricingRuleRepository::class);
         $this->app->bind(PromotionRepositoryInterface::class, PromotionRepository::class);
+
+        $this->commands([
+            SeedServicesCommand::class,
+        ]);
     }
 }

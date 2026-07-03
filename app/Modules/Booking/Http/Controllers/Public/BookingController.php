@@ -23,6 +23,11 @@ class BookingController
         }
 
         $tenant = tenant();
+
+        if (! $tenant) {
+            abort(404);
+        }
+
         $config = $tenant->getInternal('booking_config') ?? [];
 
         if (! ($config['enabled'] ?? false)) {
@@ -57,6 +62,11 @@ class BookingController
     public function confirmation(string $code): Response|RedirectResponse
     {
         $tenant = tenant();
+
+        if (! $tenant) {
+            abort(404);
+        }
+
         $config = $tenant->getInternal('booking_config') ?? [];
 
         if (! ($config['enabled'] ?? false)) {

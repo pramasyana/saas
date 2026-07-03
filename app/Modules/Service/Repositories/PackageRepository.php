@@ -6,6 +6,7 @@ namespace App\Modules\Service\Repositories;
 
 use App\Modules\Service\Contracts\PackageRepositoryInterface;
 use App\Modules\Service\Models\Package;
+use App\Modules\Service\Models\PackageService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -77,14 +78,18 @@ class PackageRepository implements PackageRepositoryInterface
 
     public function syncServices(Package $package, array $services): void
     {
-        $package->services()->sync(
-            collect($services)->mapWithKeys(fn (array $item, int $index) => [
-                $item['service_id'] => [
-                    'quantity' => $item['quantity'] ?? 1,
-                    'sort_order' => $item['sort_order'] ?? $index,
-                ],
-            ])->toArray()
-        );
+        $serviceIds = collect($services)->pluck('service_id')->toArray();
+
+        $package->services()->detach();
+
+        foreach ($services as $index => $item) {
+            PackageService::create([
+                'package_id' => $package->id,
+                'service_id' => $item['service_id'],
+                'quantity' => $item['quantity'] ?? 1,
+                'sort_order' => $item['sort_order'] ?? $index,
+            ]);
+        }
     }
 
     public function countByTenant(string $tenantId): int

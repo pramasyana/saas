@@ -23,6 +23,7 @@ export interface Branch {
     address: string | null;
     phone: string | null;
     email: string | null;
+    whatsapp: string | null;
     manager_name: string | null;
     is_active: boolean;
     sort_order: number;
@@ -35,6 +36,7 @@ export interface BranchFormData {
     address?: string;
     phone?: string;
     email?: string;
+    whatsapp?: string;
     manager_name?: string;
     is_active?: boolean;
     sort_order?: number;

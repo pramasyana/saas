@@ -69,6 +69,11 @@ export default function BranchTable({ branches, onEdit, onDelete }: BranchTableP
                                     {branch.phone}
                                 </span>
                             )}
+                            {branch.whatsapp && (
+                                <span className="inline-flex items-center rounded-full bg-[#e8f5e9] px-2 py-0.5 text-xs font-medium text-[#1b5e20]">
+                                    WA
+                                </span>
+                            )}
                             <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                                 branch.is_active
                                     ? 'bg-success-light text-success ring-1 ring-inset ring-success/20'
@@ -113,7 +118,12 @@ export default function BranchTable({ branches, onEdit, onDelete }: BranchTableP
                                     {branch.phone && (
                                         <p className="text-sm text-neutral-500">{branch.phone}</p>
                                     )}
-                                    {!branch.email && !branch.phone && (
+                                    {branch.whatsapp && (
+                                        <p className="text-sm text-neutral-500">
+                                            <span className="text-[#1b5e20]">WA</span> {branch.whatsapp}
+                                        </p>
+                                    )}
+                                    {!branch.email && !branch.phone && !branch.whatsapp && (
                                         <span className="text-sm text-neutral-400">-</span>
                                     )}
                                 </div>

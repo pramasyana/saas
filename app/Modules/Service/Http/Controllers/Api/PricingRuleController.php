@@ -98,7 +98,7 @@ class PricingRuleController extends Controller
             'staff_id' => 'nullable|string',
         ]);
 
-        $result = $this->pricingEngineService->calculate($request->all());
+        $result = $this->pricingEngineService->calculate(auth()->user()->tenant_id, $request->all());
 
         return response()->json([
             'status' => 'success',
