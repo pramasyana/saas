@@ -27,6 +27,9 @@ class BranchResource extends JsonResource
             'is_active' => $this->is_active,
             'is_default' => $this->is_default,
             'sort_order' => $this->sort_order,
+            'map_embed_url' => $this->map_embed_url,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
             'created_at' => $this->created_at?->diffForHumans(),
             'updated_at' => $this->updated_at?->diffForHumans(),
         ];

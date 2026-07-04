@@ -84,7 +84,7 @@ class LandingController
         $branches = Branch::where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')
-            ->get(['id', 'name', 'address', 'phone', 'email', 'whatsapp', 'is_default']);
+            ->get(['id', 'name', 'address', 'phone', 'email', 'whatsapp', 'map_embed_url', 'latitude', 'longitude', 'is_default']);
 
         $pricingEngine = app(PricingEngineService::class);
         $pricingByBranch = [];

@@ -26,6 +26,9 @@ class StoreBranchRequest extends FormRequest
             'whatsapp' => 'nullable|string|max:20',
             'manager_name' => 'nullable|string|max:255',
             'is_active' => 'nullable|boolean',
+            'map_embed_url' => 'nullable|string|max:2048',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ];
     }
 }

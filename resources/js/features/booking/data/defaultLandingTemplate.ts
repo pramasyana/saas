@@ -206,7 +206,6 @@ export const defaultLandingTemplate: LandingConfig = {
         enabled: true,
         title: 'Hubungi Kami',
         subtitle: 'Senang mendengar dari Anda. Hubungi kami melalui kontak di bawah atau datang langsung ke cabang terdekat.',
-        map_embed_url: '',
     },
     footer: {
         copyright_text: '© 2026 Glow Studio. All rights reserved.',

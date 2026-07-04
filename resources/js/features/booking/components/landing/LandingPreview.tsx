@@ -21,7 +21,7 @@ import {
 } from './sections';
 
 interface BranchItem {
-    id: string; name: string; address: string | null; phone: string | null; email: string | null; whatsapp: string | null; is_default: boolean;
+    id: string; name: string; address: string | null; phone: string | null; email: string | null; whatsapp: string | null; map_embed_url: string | null; latitude: number | null; longitude: number | null; is_default: boolean;
 }
 
 interface ServiceItem {

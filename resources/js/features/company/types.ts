@@ -25,6 +25,9 @@ export interface Branch {
     email: string | null;
     whatsapp: string | null;
     manager_name: string | null;
+    map_embed_url: string | null;
+    latitude: number | null;
+    longitude: number | null;
     is_active: boolean;
     sort_order: number;
     created_at: string;
@@ -40,6 +43,9 @@ export interface BranchFormData {
     manager_name?: string;
     is_active?: boolean;
     sort_order?: number;
+    map_embed_url?: string;
+    latitude?: number;
+    longitude?: number;
 }
 
 export interface WorkingHour {

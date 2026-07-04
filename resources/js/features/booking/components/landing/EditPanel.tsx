@@ -861,11 +861,12 @@ function ContactForm({ data, set }: { data: Record<string, unknown>; set: (path:
                 <p className="text-xs text-neutral-500">Alamat, telepon, email, dan WhatsApp ditampilkan secara otomatis dari <strong>cabang utama (default)</strong>. Edit data kontak di menu <strong>Perusahaan → Cabang</strong>.</p>
             </div>
 
-            <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Peta</p>
-                <Field label="URL Embed Google Maps" hint="Tempel link embed dari Google Maps. Contoh: https://maps.google.com/maps?q=...">
-                    <input type="text" value={d?.map_embed_url ?? ''} onChange={(e) => set('contact.map_embed_url', e.target.value)} className={ic()} placeholder="https://maps.google.com/..." />
-                </Field>
+            <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 space-y-2">
+                <div className="flex items-center gap-2">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">i</span>
+                    <p className="text-xs font-semibold text-neutral-700">Peta Otomatis dari Cabang</p>
+                </div>
+                <p className="text-xs text-neutral-500">Peta Google Maps ditampilkan secara otomatis dari URL embed yang disimpan di <strong>cabang utama (default)</strong>. Atur peta di menu <strong>Perusahaan → Cabang</strong>.</p>
             </div>
         </div>
     );

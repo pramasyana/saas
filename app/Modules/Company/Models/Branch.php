@@ -29,6 +29,9 @@ class Branch extends Model
         'is_active',
         'sort_order',
         'is_default',
+        'map_embed_url',
+        'latitude',
+        'longitude',
     ];
 
     protected static function booted(): void
@@ -47,6 +50,8 @@ class Branch extends Model
             'id' => 'string',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
             'is_default' => 'boolean',
         ];
     }

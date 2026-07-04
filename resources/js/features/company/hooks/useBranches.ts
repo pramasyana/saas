@@ -34,6 +34,19 @@ function deleteBranch(id: string): Promise<void> {
     return api.delete(`/api/v1/company/branches/${id}`).then((res) => res.data);
 }
 
+function getBranch(id: string): Promise<{ status: string; data: Branch }> {
+    return api.get(`/api/v1/company/branches/${id}`).then((res) => res.data);
+}
+
+export function useBranch(id: string) {
+    return useQuery({
+        queryKey: ['company', 'branches', id],
+        queryFn: () => getBranch(id),
+        enabled: !!id,
+        retry: false,
+    });
+}
+
 export function useBranches(filters: BranchesFilters = {}) {
     return useQuery({
         queryKey: ['company', 'branches', filters],

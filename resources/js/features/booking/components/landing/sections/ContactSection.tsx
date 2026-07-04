@@ -9,6 +9,9 @@ interface BranchItem {
     phone: string | null;
     email: string | null;
     whatsapp: string | null;
+    map_embed_url: string | null;
+    latitude: number | null;
+    longitude: number | null;
     is_default: boolean;
 }
 
@@ -112,30 +115,33 @@ export default function ContactSection({ data, colors, branches }: Props) {
                     </FadeIn>
 
                     <FadeIn direction="right">
-                        {data.map_embed_url ? (
-                            <div className="h-80 overflow-hidden rounded-2xl shadow-sm lg:h-full">
-                                <iframe
-                                    src={data.map_embed_url}
-                                    width="100%"
-                                    height="100%"
-                                    style={{ border: 0 }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    title="Map"
-                                />
-                            </div>
-                        ) : (
-                            <div
-                                className="flex h-80 items-center justify-center rounded-2xl lg:h-full"
-                                style={{ backgroundColor: colors.primary + '06' }}
-                            >
-                                <div className="text-center">
-                                    <div className="text-5xl mb-4" style={{ color: colors.primary + '20' }}>🗺️</div>
-                                    <p className="text-sm" style={{ color: colors.text_muted }}>Peta akan ditampilkan di sini</p>
+                        {(() => {
+                            const mapUrl = data.map_embed_url || defaultBranch?.map_embed_url;
+                            return mapUrl ? (
+                                <div className="h-80 overflow-hidden rounded-2xl shadow-sm lg:h-full">
+                                    <iframe
+                                        src={mapUrl}
+                                        width="100%"
+                                        height="100%"
+                                        style={{ border: 0 }}
+                                        allowFullScreen
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        title="Map"
+                                    />
                                 </div>
-                            </div>
-                        )}
+                            ) : (
+                                <div
+                                    className="flex h-80 items-center justify-center rounded-2xl lg:h-full"
+                                    style={{ backgroundColor: colors.primary + '06' }}
+                                >
+                                    <div className="text-center">
+                                        <div className="text-5xl mb-4" style={{ color: colors.primary + '20' }}>🗺️</div>
+                                        <p className="text-sm" style={{ color: colors.text_muted }}>Peta akan ditampilkan di sini</p>
+                                    </div>
+                                </div>
+                            );
+                        })()}
                     </FadeIn>
                 </div>
             </div>

@@ -63,6 +63,17 @@ class CompanyService
         return $this->updateCompanyBrandingAction->execute($tenantId, $data);
     }
 
+    public function findBranch(string $tenantId, string $id): Branch
+    {
+        $branch = $this->branchRepository->findById($id);
+
+        if (! $branch) {
+            throw new RuntimeException('Cabang tidak ditemukan.');
+        }
+
+        return $branch;
+    }
+
     public function getBranches(string $tenantId, array $filters): LengthAwarePaginator
     {
         return $this->branchRepository->findAllByTenant($tenantId, $filters);

@@ -1,8 +1,33 @@
-import {  useEffect, useState } from 'react';
-import type {FormEvent} from 'react';
+import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
+import { Link } from '@inertiajs/react';
 import Button from '@/atoms/Button';
 import type { Branch, BranchFormData } from '@/features/company/types';
 import { cn } from '@/lib/utils';
+
+function convertGoogleMapsUrl(url: string): string {
+    const trimmed = url.trim();
+    if (!trimmed) return trimmed;
+
+    // Already an embed URL — keep as is
+    if (trimmed.includes('/maps/embed')) return trimmed;
+    if (trimmed.includes('output=embed')) return trimmed;
+
+    // Place URL: extract coordinates from @lat,lng and build embed URL
+    const placeMatch = trimmed.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (placeMatch) {
+        const [, lat, lng] = placeMatch;
+        return `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
+    }
+
+    // maps.google.com/maps?q=... without output=embed — add it
+    if (trimmed.includes('maps.google.com/maps?q=') || trimmed.includes('google.com/maps?q=')) {
+        const separator = trimmed.includes('?') ? '&' : '?';
+        return `${trimmed}${separator}output=embed`;
+    }
+
+    return trimmed;
+}
 
 interface BranchFormProps {
     branch: Branch | null;
@@ -11,6 +36,8 @@ interface BranchFormProps {
     onSave: (data: BranchFormData) => void;
 }
 
+type MapMode = 'embed' | 'coordinates';
+
 export default function BranchForm({ branch, saving, errors = {}, onSave }: BranchFormProps) {
     const [form, setForm] = useState<BranchFormData>({
         name: '',
@@ -18,10 +45,16 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
         address: '',
         phone: '',
         email: '',
+        whatsapp: '',
         manager_name: '',
+        map_embed_url: '',
+        latitude: undefined,
+        longitude: undefined,
         is_active: true,
         sort_order: 0,
     });
+
+    const [mapMode, setMapMode] = useState<MapMode>('embed');
 
     useEffect(() => {
         if (branch) {
@@ -31,10 +64,19 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
                 address: branch.address ?? '',
                 phone: branch.phone ?? '',
                 email: branch.email ?? '',
+                whatsapp: branch.whatsapp ?? '',
                 manager_name: branch.manager_name ?? '',
+                map_embed_url: branch.map_embed_url ?? '',
+                latitude: branch.latitude ?? undefined,
+                longitude: branch.longitude ?? undefined,
                 is_active: branch.is_active,
                 sort_order: branch.sort_order,
             });
+            if (branch.latitude != null || branch.longitude != null) {
+                setMapMode('coordinates');
+            } else {
+                setMapMode('embed');
+            }
         } else {
             setForm({
                 name: '',
@@ -42,10 +84,15 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
                 address: '',
                 phone: '',
                 email: '',
+                whatsapp: '',
                 manager_name: '',
+                map_embed_url: '',
+                latitude: undefined,
+                longitude: undefined,
                 is_active: true,
                 sort_order: 0,
             });
+            setMapMode('embed');
         }
     }, [branch]);
 
@@ -53,21 +100,21 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
         e.preventDefault();
         const payload = { ...form };
 
-        if (!payload.address) {
-delete payload.address;
-}
+        if (!payload.address) delete payload.address;
+        if (!payload.phone) delete payload.phone;
+        if (!payload.email) delete payload.email;
+        if (!payload.whatsapp) delete payload.whatsapp;
+        if (!payload.manager_name) delete payload.manager_name;
 
-        if (!payload.phone) {
-delete payload.phone;
-}
-
-        if (!payload.email) {
-delete payload.email;
-}
-
-        if (!payload.manager_name) {
-delete payload.manager_name;
-}
+        if (mapMode === 'embed') {
+            if (!payload.map_embed_url) delete payload.map_embed_url;
+            delete payload.latitude;
+            delete payload.longitude;
+        } else {
+            if (payload.latitude === undefined) delete payload.latitude;
+            if (payload.longitude === undefined) delete payload.longitude;
+            delete payload.map_embed_url;
+        }
 
         onSave(payload);
     }
@@ -102,7 +149,6 @@ delete payload.manager_name;
         hint?: string,
     ) {
         const fieldErrors = errors[field];
-
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">
@@ -132,7 +178,6 @@ delete payload.manager_name;
         hint?: string,
     ) {
         const fieldErrors = errors[field];
-
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">{label}</label>
@@ -152,6 +197,23 @@ delete payload.manager_name;
         );
     }
 
+    function renderSection(icon: React.ReactNode, title: string, desc: string, children: React.ReactNode) {
+        return (
+            <div>
+                <div className="flex items-center gap-2.5 border-b border-neutral-200 pb-4">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary">
+                        {icon}
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-semibold text-neutral-900">{title}</h3>
+                        <p className="text-xs text-neutral-500">{desc}</p>
+                    </div>
+                </div>
+                <div className="mt-5 space-y-5">{children}</div>
+            </div>
+        );
+    }
+
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
             {errors._general && (
@@ -163,23 +225,14 @@ delete payload.manager_name;
                 </div>
             )}
 
-            <div>
-                <div className="flex items-center gap-2.5 border-b border-neutral-200 pb-4">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary">
-                        <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 className="text-sm font-semibold text-neutral-900">
-                            {branch ? 'Edit Cabang' : 'Informasi Cabang'}
-                        </h3>
-                        <p className="text-xs text-neutral-500">
-                            {branch ? 'Perbarui data cabang.' : 'Data cabang baru.'}
-                        </p>
-                    </div>
-                </div>
-                <div className="mt-5 space-y-5">
+            {/* Informasi Cabang */}
+            {renderSection(
+                <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+                </svg>,
+                'Informasi Cabang',
+                'Data dasar cabang yang akan ditampilkan di halaman publik.',
+                <>
                     <div className="grid gap-5 sm:grid-cols-2">
                         {renderField('Nama Cabang', 'name', (
                             <div className="relative">
@@ -300,31 +353,213 @@ delete payload.manager_name;
                                 />
                             </div>
                         ))}
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-700">Aktif</label>
-                            <div className="mt-3 flex items-center gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => setField('is_active', !form.is_active)}
-                                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 ${
-                                        form.is_active ? 'bg-primary' : 'bg-neutral-300'
-                                    }`}
+                    </div>
+                </>,
+            )}
+
+            {/* Peta */}
+            {renderSection(
+                <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+                </svg>,
+                'Peta & Lokasi',
+                'Konfigurasi peta untuk ditampilkan di landing page publik.',
+                <>
+                    {/* Map mode toggle */}
+                    <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-3">Metode Peta</label>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setMapMode('embed')}
+                                className={cn(
+                                    'relative flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all',
+                                    mapMode === 'embed'
+                                        ? 'border-primary bg-primary/[0.04]'
+                                        : 'border-neutral-200 bg-white hover:border-neutral-300',
+                                )}
+                            >
+                                <div
+                                    className={cn(
+                                        'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all',
+                                        mapMode === 'embed' ? 'bg-primary text-white shadow-sm' : 'bg-neutral-100 text-neutral-400',
+                                    )}
                                 >
-                                    <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
-                                        form.is_active ? 'translate-x-5' : 'translate-x-0'
-                                    }`} />
-                                </button>
-                                <span className="text-sm text-neutral-600">
-                                    {form.is_active ? 'Aktif' : 'Nonaktif'}
-                                </span>
-                            </div>
+                                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                    </svg>
+                                </div>
+                                <div className="min-w-0">
+                                    <p className={cn('text-sm font-semibold', mapMode === 'embed' ? 'text-primary' : 'text-neutral-900')}>
+                                        URL Embed
+                                    </p>
+                                    <p className="mt-0.5 text-xs text-neutral-500">
+                                        Tempel link embed dari Google Maps. Cocok untuk tampilan statis.
+                                    </p>
+                                </div>
+                                {mapMode === 'embed' && (
+                                    <span className="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+                                        <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </span>
+                                )}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setMapMode('coordinates')}
+                                className={cn(
+                                    'relative flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all',
+                                    mapMode === 'coordinates'
+                                        ? 'border-primary bg-primary/[0.04]'
+                                        : 'border-neutral-200 bg-white hover:border-neutral-300',
+                                )}
+                            >
+                                <div
+                                    className={cn(
+                                        'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all',
+                                        mapMode === 'coordinates' ? 'bg-primary text-white shadow-sm' : 'bg-neutral-100 text-neutral-400',
+                                    )}
+                                >
+                                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                                    </svg>
+                                </div>
+                                <div className="min-w-0">
+                                    <p className={cn('text-sm font-semibold', mapMode === 'coordinates' ? 'text-primary' : 'text-neutral-900')}>
+                                        Koordinat
+                                    </p>
+                                    <p className="mt-0.5 text-xs text-neutral-500">
+                                        Input latitude & longitude. Peta interaktif akan tampil di landing page.
+                                    </p>
+                                </div>
+                                {mapMode === 'coordinates' && (
+                                    <span className="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+                                        <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </span>
+                                )}
+                            </button>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div className="flex items-center justify-end gap-3 border-t border-neutral-200 pt-6">
-                <Button type="submit" disabled={saving} className="min-w-[120px]">
+                    {/* Map fields based on mode */}
+                    {mapMode === 'embed' ? (
+                        renderFieldOptional('Google Maps Embed URL', 'map_embed_url', (
+                            <div className="relative">
+                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                                    <svg className="h-4.5 w-4.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                    </svg>
+                                </div>
+                                <input
+                                    type="text"
+                                    value={form.map_embed_url ?? ''}
+                                    onChange={(e) => setField('map_embed_url', e.target.value)}
+                                    onBlur={(e) => {
+                                        const converted = convertGoogleMapsUrl(e.target.value);
+                                        if (converted !== e.target.value) {
+                                            setField('map_embed_url', converted);
+                                        }
+                                    }}
+                                    className={inputClass('map_embed_url', 'pl-10')}
+                                    placeholder="https://maps.google.com/maps?q=..."
+                                />
+                            </div>
+                        ), 'Tempel URL Google Maps. Link place biasa otomatis dikonversi ke format embed. Contoh: https://maps.google.com/maps?q=-6.2088,106.8456')
+                    ) : (
+                        <div className="grid gap-5 sm:grid-cols-2">
+                            {renderFieldOptional('Latitude', 'latitude', (
+                                <div className="relative">
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                                        <svg className="h-4.5 w-4.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+                                        </svg>
+                                    </div>
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        value={form.latitude ?? ''}
+                                        onChange={(e) => setField('latitude', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                        className={inputClass('latitude', 'pl-10')}
+                                        placeholder="-6.2088"
+                                    />
+                                </div>
+                            ), 'Koordinat latitude (contoh: -6.2088)')
+                            }
+                            {renderFieldOptional('Longitude', 'longitude', (
+                                <div className="relative">
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                                        <svg className="h-4.5 w-4.5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+                                        </svg>
+                                    </div>
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        value={form.longitude ?? ''}
+                                        onChange={(e) => setField('longitude', e.target.value ? parseFloat(e.target.value) : undefined)}
+                                        className={inputClass('longitude', 'pl-10')}
+                                        placeholder="106.8456"
+                                    />
+                                </div>
+                            ), 'Koordinat longitude (contoh: 106.8456)')
+                            }
+                        </div>
+                    )}
+                </>,
+            )}
+
+            {/* Status */}
+            {renderSection(
+                <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>,
+                'Status',
+                'Atur visibilitas cabang di halaman publik.',
+                <>
+                    <div className="flex items-center justify-between rounded-xl border border-neutral-200 bg-neutral-50 px-5 py-4">
+                        <div>
+                            <p className="text-sm font-medium text-neutral-900">Cabang Aktif</p>
+                            <p className="text-xs text-neutral-500">
+                                {form.is_active
+                                    ? 'Cabang akan muncul di halaman publik dan tersedia untuk booking.'
+                                    : 'Cabang disembunyikan dari halaman publik.'}
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setField('is_active', !form.is_active)}
+                            className={cn(
+                                'relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2',
+                                form.is_active ? 'bg-primary' : 'bg-neutral-300',
+                            )}
+                        >
+                            <span
+                                className={cn(
+                                    'inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out',
+                                    form.is_active ? 'translate-x-5' : 'translate-x-0.5',
+                                )}
+                            />
+                        </button>
+                    </div>
+                </>,
+            )}
+
+            {/* Actions */}
+            <div className="flex items-center justify-between gap-3 border-t border-neutral-200 pt-6">
+                <Link
+                    href="/company/branches"
+                    className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-neutral-600 transition-colors hover:bg-neutral-100"
+                >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    Kembali
+                </Link>
+                <Button type="submit" disabled={saving} className="min-w-[140px]">
                     {saving ? (
                         <span className="inline-flex items-center gap-2">
                             <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -338,7 +573,7 @@ delete payload.manager_name;
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                             </svg>
-                            {branch ? 'Simpan' : 'Tambah'}
+                            {branch ? 'Simpan Perubahan' : 'Tambah Cabang'}
                         </span>
                     )}
                 </Button>

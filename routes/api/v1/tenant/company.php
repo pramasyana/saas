@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/company/branding', [BrandingController::class, 'update']);
 
     Route::get('/company/branches', [BranchController::class, 'index']);
+    Route::get('/company/branches/{id}', [BranchController::class, 'show']);
     Route::post('/company/branches', [BranchController::class, 'store']);
     Route::put('/company/branches/{id}', [BranchController::class, 'update']);
     Route::delete('/company/branches/{id}', [BranchController::class, 'destroy']);

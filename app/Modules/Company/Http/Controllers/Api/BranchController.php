@@ -82,4 +82,15 @@ class BranchController extends Controller
             'message' => 'Cabang berhasil dihapus.',
         ]);
     }
+
+    public function show(string $id): JsonResponse
+    {
+        $tenantId = auth()->user()->tenant_id;
+        $branch = $this->companyService->findBranch($tenantId, $id);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => new BranchResource($branch),
+        ]);
+    }
 }
