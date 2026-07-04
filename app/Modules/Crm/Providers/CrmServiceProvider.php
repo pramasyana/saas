@@ -23,9 +23,19 @@ use App\Modules\Crm\Repositories\MembershipTierRepository;
 use App\Modules\Crm\Repositories\ReferralRepository;
 use App\Modules\Crm\Repositories\ReviewRepository;
 use App\Modules\Crm\Repositories\RewardRedemptionRepository;
+use App\Modules\Booking\Events\BookingCancelled;
+use App\Modules\Booking\Events\BookingCheckedIn;
+use App\Modules\Booking\Events\BookingCompleted;
+use App\Modules\Booking\Events\BookingConfirmed;
+use App\Modules\Booking\Events\BookingCreated;
+use App\Modules\Booking\Events\BookingNoShow;
+use App\Modules\Booking\Events\BookingRescheduled;
+use App\Modules\Crm\Listeners\AwardBookingPoints;
+use App\Modules\Crm\Listeners\RecordBookingTimeline;
 use App\Modules\Crm\Repositories\RewardRepository;
 use App\Modules\Crm\Repositories\TagRepository;
 use App\Modules\Crm\Repositories\TimelineEventRepository;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class CrmServiceProvider extends ServiceProvider
@@ -43,5 +53,18 @@ class CrmServiceProvider extends ServiceProvider
         $this->app->bind(RewardRepositoryInterface::class, RewardRepository::class);
         $this->app->bind(TagRepositoryInterface::class, TagRepository::class);
         $this->app->bind(TimelineEventRepositoryInterface::class, TimelineEventRepository::class);
+    }
+
+    public function boot(): void
+    {
+        Event::listen(
+            [BookingCreated::class, BookingConfirmed::class, BookingRescheduled::class, BookingCancelled::class, BookingCheckedIn::class, BookingCompleted::class, BookingNoShow::class],
+            RecordBookingTimeline::class,
+        );
+
+        Event::listen(
+            BookingCompleted::class,
+            AwardBookingPoints::class,
+        );
     }
 }

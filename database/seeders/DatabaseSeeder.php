@@ -74,6 +74,11 @@ class DatabaseSeeder extends Seeder
                     'tenantId' => $tenant->id,
                     'branchId' => $branch->id,
                 ]);
+
+                $this->call(AvailabilitySeeder::class, parameters: [
+                    'tenantId' => $tenant->id,
+                    'branchId' => $branch->id,
+                ]);
             }
         });
     }

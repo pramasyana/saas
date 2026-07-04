@@ -1,4 +1,6 @@
+import { motion } from 'framer-motion';
 import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
+import FadeIn from '@/atoms/FadeIn';
 
 interface BranchItem {
     id: string;
@@ -16,23 +18,77 @@ interface Props {
     branches?: BranchItem[];
 }
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.1 },
+    },
+};
+
+const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: 'easeOut' as const },
+    },
+};
+
 export default function BranchesSection({ data, colors, branches }: Props) {
     const items = branches ?? [];
 
     return (
-        <section id="branches" className="border-b border-neutral-200/50 py-16 sm:py-20 lg:py-24" style={{ backgroundColor: colors.background }}>
-            <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-                <div className="text-center">
-                    {data.title && <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: colors.text }}>{data.title}</h2>}
-                    {data.subtitle && <p className="mt-3" style={{ color: colors.text_muted }}>{data.subtitle}</p>}
-                </div>
+        <section id="branches" className="py-16 sm:py-20 lg:py-24" style={{ backgroundColor: colors.background }}>
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <FadeIn>
+                    <div className="text-center">
+                        {data.title && (
+                            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl" style={{ color: colors.text }}>
+                                {data.title}
+                            </h2>
+                        )}
+                        {data.subtitle && (
+                            <p className="mt-4 max-w-2xl mx-auto text-base leading-relaxed sm:text-lg" style={{ color: colors.text_muted }}>
+                                {data.subtitle}
+                            </p>
+                        )}
+                    </div>
+                </FadeIn>
+
                 {items.length > 0 ? (
-                    <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <motion.div
+                        className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: '-80px' }}
+                    >
                         {items.map((b) => (
-                            <div key={b.id} className="rounded-2xl border bg-white p-6 shadow-sm transition-all hover:shadow-md" style={{ borderColor: colors.primary + '20' }}>
-                                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold text-white" style={{ backgroundColor: colors.primary }}>{b.name.charAt(0)}</div>
+                            <motion.div key={b.id} variants={cardVariants}
+                                className="group relative overflow-hidden rounded-2xl border bg-white p-7 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
+                                style={{ borderColor: colors.primary + '15' }}
+                            >
+                                <div
+                                    className="absolute top-0 right-0 h-20 w-20 -translate-y-6 translate-x-6 rounded-full opacity-5 transition-all duration-500 group-hover:opacity-10 group-hover:scale-150"
+                                    style={{ backgroundColor: colors.primary }}
+                                />
+                                <div
+                                    className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl text-base font-bold text-white shadow-sm transition-all group-hover:scale-110 group-hover:shadow-md"
+                                    style={{ backgroundColor: colors.primary }}
+                                >
+                                    {b.name.charAt(0)}
+                                </div>
                                 <h3 className="text-lg font-semibold" style={{ color: colors.text }}>{b.name}</h3>
-                                <div className="mt-3 space-y-2.5 text-sm" style={{ color: colors.text_muted }}>
+                                {b.is_default && (
+                                    <span
+                                        className="mt-2 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                                        style={{ backgroundColor: colors.primary + '10', color: colors.primary }}
+                                    >
+                                        Utama
+                                    </span>
+                                )}
+                                <div className="mt-4 space-y-3 text-sm" style={{ color: colors.text_muted }}>
                                     {b.address && (
                                         <div className="flex items-start gap-2.5">
                                             <svg className="mt-0.5 h-4 w-4 shrink-0" style={{ color: colors.primary }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -59,11 +115,19 @@ export default function BranchesSection({ data, colors, branches }: Props) {
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 ) : (
-                    <div className="mt-12 text-center text-sm" style={{ color: colors.text_muted }}>Cabang akan muncul di halaman publik.</div>
+                    <div className="mt-14 text-center">
+                        <div className="inline-flex items-center gap-3 rounded-2xl border bg-white px-8 py-4 shadow-sm" style={{ borderColor: colors.primary + '15' }}>
+                            <svg className="h-5 w-5" style={{ color: colors.text_muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                            </svg>
+                            <span className="text-sm" style={{ color: colors.text_muted }}>Cabang akan muncul di halaman publik.</span>
+                        </div>
+                    </div>
                 )}
             </div>
         </section>

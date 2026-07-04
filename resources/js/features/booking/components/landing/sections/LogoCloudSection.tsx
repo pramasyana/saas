@@ -1,4 +1,7 @@
+import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import type { LandingConfig, LogoCloudItem } from '@/features/booking/hooks/useLandingSettings';
+import FadeIn from '@/atoms/FadeIn';
 
 interface Props {
     data: NonNullable<LandingConfig['logo_cloud']>;
@@ -7,27 +10,82 @@ interface Props {
 
 export default function LogoCloudSection({ data, colors }: Props) {
     const items = data.items;
+    const scrollRef = useRef<HTMLDivElement>(null);
 
-    if (!items?.length) {
-return null;
-}
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+        let animationId: number;
+        let pos = 0;
+        const speed = 0.3;
+
+        const animate = () => {
+            pos += speed;
+            if (pos >= el.scrollWidth / 2) pos = 0;
+            el.style.transform = `translateX(${-pos}px)`;
+            animationId = requestAnimationFrame(animate);
+        };
+
+        animationId = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(animationId);
+    }, [items]);
+
+    if (!items?.length) return null;
 
     return (
-        <section id="logo-cloud" className="border-b border-neutral-200/50 py-12 sm:py-16" style={{ backgroundColor: colors.background }}>
-            <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-                {data.title && <p className="mb-8 text-center text-sm font-medium tracking-wider uppercase" style={{ color: colors.text_muted }}>{data.title}</p>}
-                <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
-                    {items.map((item: LogoCloudItem, i: number) => (
-                        item.url ? (
-                            <a key={i} href={item.url} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-70">
-                                {item.image ? <img src={item.image} alt={item.name ?? ''} className="h-10 w-auto opacity-60 grayscale transition-all hover:opacity-100 hover:grayscale-0" /> : <span className="text-lg font-semibold" style={{ color: colors.text_muted }}>{item.name}</span>}
-                            </a>
-                        ) : (
-                            <div key={i}>
-                                {item.image ? <img src={item.image} alt={item.name ?? ''} className="h-10 w-auto opacity-60 grayscale transition-all hover:opacity-100 hover:grayscale-0" /> : <span className="text-lg font-semibold" style={{ color: colors.text_muted }}>{item.name}</span>}
+        <section id="logo-cloud" className="py-12 sm:py-16" style={{ backgroundColor: colors.background }}>
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <FadeIn>
+                    {data.title && (
+                        <p className="mb-10 text-center text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: colors.text_muted }}>
+                            {data.title}
+                        </p>
+                    )}
+                </FadeIn>
+
+                <div className="overflow-hidden" style={{ maskImage: 'linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)' }}>
+                    <motion.div
+                        ref={scrollRef}
+                        className="flex items-center gap-12 sm:gap-16"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        {[...items, ...items].map((item: LogoCloudItem, i: number) => (
+                            <div key={i} className="flex-shrink-0">
+                                {item.url ? (
+                                    <a
+                                        href={item.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block transition-all duration-300 hover:scale-110"
+                                    >
+                                        {item.image ? (
+                                            <img
+                                                src={item.image}
+                                                alt={item.name ?? ''}
+                                                className="h-10 w-auto opacity-50 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0"
+                                            />
+                                        ) : (
+                                            <span className="text-base font-semibold transition-colors" style={{ color: colors.text_muted }}>{item.name}</span>
+                                        )}
+                                    </a>
+                                ) : (
+                                    <div>
+                                        {item.image ? (
+                                            <img
+                                                src={item.image}
+                                                alt={item.name ?? ''}
+                                                className="h-10 w-auto opacity-50 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0"
+                                            />
+                                        ) : (
+                                            <span className="text-base font-semibold" style={{ color: colors.text_muted }}>{item.name}</span>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                        )
-                    ))}
+                        ))}
+                    </motion.div>
                 </div>
             </div>
         </section>

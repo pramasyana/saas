@@ -106,6 +106,15 @@ const crmNavItems = [
             </svg>
         ),
     },
+    {
+        label: 'Loyalty',
+        href: '/crm/loyalty',
+        icon: (
+            <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25l-9-5.25-9 5.25m9 5.25l-9-5.25m9 5.25l9-5.25m-9 5.25V21m-9-5.25v5.25m18-5.25v5.25" />
+            </svg>
+        ),
+    },
 ];
 
 const staffNavItems = [

@@ -108,6 +108,13 @@ export interface LoyaltyTransaction {
     created_at: string;
 }
 
+export interface LoyaltyConfig {
+    enabled: boolean;
+    mode: 'percentage' | 'fixed';
+    points_per_amount: number;
+    points_fixed: number;
+}
+
 export interface LoyaltyBalance {
     points: number;
     total_spent: number;

@@ -1,29 +1,44 @@
 import type { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface FadeInProps {
     children: ReactNode;
     delay?: number;
     className?: string;
+    direction?: 'up' | 'left' | 'right';
 }
+
+const variants = {
+    up: {
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0 },
+    },
+    left: {
+        hidden: { opacity: 0, x: -30 },
+        visible: { opacity: 1, x: 0 },
+    },
+    right: {
+        hidden: { opacity: 0, x: 30 },
+        visible: { opacity: 1, x: 0 },
+    },
+};
 
 export default function FadeIn({
     children,
     delay = 0,
     className,
+    direction = 'up',
 }: FadeInProps) {
     return (
-        <div
-            className={cn(
-                'animate-[fade-up_0.6s_ease-out_forwards] opacity-0',
-                className,
-            )}
-            style={{
-                animationDelay: `${delay}s`,
-                animationFillMode: 'forwards',
-            }}
+        <motion.div
+            className={className}
+            variants={variants[direction]}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, delay, ease: 'easeOut' }}
         >
             {children}
-        </div>
+        </motion.div>
     );
 }

@@ -6,6 +6,8 @@ namespace App\Modules\Booking\Http\Controllers\Public;
 
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Company\Models\Branch;
+use App\Modules\Service\Models\Category;
+use App\Modules\Service\Models\Package;
 use App\Modules\Service\Models\Service;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,10 +30,17 @@ class BookingController
             abort(404);
         }
 
-        $config = $tenant->getInternal('booking_config') ?? [];
+        $landingConfig = $tenant->getInternal('landing_config') ?? [];
+        $bookingConfig = $tenant->getInternal('booking_config') ?? [];
 
-        if (! ($config['enabled'] ?? false)) {
-            return Inertia::render('public/booking/Disabled');
+        if (! ($bookingConfig['enabled'] ?? false)) {
+            return Inertia::render('public/booking/Disabled', [
+                'colors' => $landingConfig['colors'] ?? null,
+                'tenant' => [
+                    'name' => $tenant->company_name ?? 'Booking',
+                    'logo' => null,
+                ],
+            ]);
         }
 
         $tenantId = $tenant->getTenantKey();
@@ -46,12 +55,37 @@ class BookingController
             ->orderBy('name')
             ->get(['id', 'name', 'description', 'duration', 'price', 'color', 'category_id']);
 
+        $categories = Category::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get(['id', 'name', 'slug', 'color']);
+
+        $packages = Package::where('is_active', true)
+            ->with('services')
+            ->orderBy('name')
+            ->get(['id', 'name', 'description', 'price', 'duration', 'branch_id'])
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'description' => $p->description,
+                'price' => (float) $p->price,
+                'duration' => $p->duration,
+                'branch_id' => $p->branch_id,
+                'services' => $p->services->map(fn ($s) => [
+                    'id' => $s->id,
+                    'name' => $s->name,
+                    'quantity' => $s->pivot->quantity,
+                ]),
+            ]);
+
         return Inertia::render('public/booking/index', [
             'branches' => $branches,
             'services' => $services,
+            'packages' => $packages,
+            'categories' => $categories,
             'settings' => [
-                'show_prices' => $config['show_prices'] ?? true,
+                'show_prices' => $bookingConfig['show_prices'] ?? true,
             ],
+            'colors' => $landingConfig['colors'] ?? null,
             'tenant' => [
                 'name' => $tenant->company_name ?? 'Booking',
                 'logo' => null,
@@ -67,10 +101,16 @@ class BookingController
             abort(404);
         }
 
-        $config = $tenant->getInternal('booking_config') ?? [];
+        $landingConfig = $tenant->getInternal('landing_config') ?? [];
+        $bookingConfig = $tenant->getInternal('booking_config') ?? [];
 
-        if (! ($config['enabled'] ?? false)) {
-            return Inertia::render('public/booking/Disabled');
+        if (! ($bookingConfig['enabled'] ?? false)) {
+            return Inertia::render('public/booking/Disabled', [
+                'colors' => $landingConfig['colors'] ?? null,
+                'tenant' => [
+                    'name' => $tenant->company_name ?? 'Booking',
+                ],
+            ]);
         }
 
         $booking = Booking::where('booking_code', $code)
@@ -97,6 +137,7 @@ class BookingController
                     'quantity' => $s->quantity,
                 ]),
             ],
+            'colors' => $landingConfig['colors'] ?? null,
             'tenant' => [
                 'name' => $tenant->company_name ?? 'Booking',
             ],

@@ -32,6 +32,11 @@ class HolidayRepository implements HolidayRepositoryInterface
             $query->where('date_end', '>=', now()->startOfDay());
         }
 
+        if (! empty($filters['date'])) {
+            $query->where('date_start', '<=', $filters['date'])
+                  ->where('date_end', '>=', $filters['date']);
+        }
+
         $sort = $filters['sort'] ?? 'date_start';
         $direction = $filters['direction'] ?? 'asc';
         $query->orderBy($sort, $direction);

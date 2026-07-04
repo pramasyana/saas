@@ -31,18 +31,6 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware(['web', 'auth', 'tenant'])
                 ->group(base_path('routes/web/tenant.php'));
 
-            // Public tenant routes — registered AFTER auth routes so they take
-            // priority on tenant domains. The public controller handles
-            // redirecting authenticated users to the admin booking page.
-            if (! $isCentral) {
-                Route::middleware(['web', 'tenant.domain.public'])
-                    ->group(base_path('routes/web/tenant_public.php'));
-
-                Route::middleware(['api', 'tenant.domain.public'])
-                    ->prefix('api/v1')
-                    ->group(base_path('routes/api/v1/tenant_public.php'));
-            }
-
             Route::middleware(['web', 'auth', 'tenant'])
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/tenant/staff.php'));
@@ -62,6 +50,18 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware(['web', 'auth', 'tenant'])
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/tenant/booking.php'));
+
+            // Public tenant routes — registered AFTER auth routes so they take
+            // priority on tenant domains. The public controller handles
+            // redirecting authenticated users to the admin booking page.
+            if (! $isCentral) {
+                Route::middleware(['web', 'tenant.domain.public'])
+                    ->group(base_path('routes/web/tenant_public.php'));
+
+                Route::middleware(['api', 'tenant.domain.public'])
+                    ->prefix('api/v1')
+                    ->group(base_path('routes/api/v1/tenant_public.php'));
+            }
 
             Route::middleware('api')
                 ->prefix('api')

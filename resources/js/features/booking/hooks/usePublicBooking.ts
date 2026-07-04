@@ -19,6 +19,16 @@ interface ServiceItem {
     category_id: string | null;
 }
 
+interface PackageItem {
+    id: string;
+    name: string;
+    description: string | null;
+    price: number;
+    duration: number;
+    branch_id: string;
+    services: { id: string; name: string; pivot: { quantity: number } }[];
+}
+
 interface StaffMember {
     id: string;
     name: string;
@@ -68,7 +78,8 @@ interface CreateBookingPayload {
     customer_name: string;
     customer_email: string;
     customer_phone: string;
-    service_id: string;
+    service_id?: string;
+    package_id?: string;
     staff_id?: string;
     branch_id: string;
     start_time: string;
@@ -78,6 +89,10 @@ interface CreateBookingPayload {
 
 function getBranches(): Promise<{ data: Branch[] }> {
     return api.get('/api/v1/booking/branches').then((r) => r.data);
+}
+
+function getPackages(params: { branch_id?: string }): Promise<{ data: PackageItem[] }> {
+    return api.get('/api/v1/booking/packages', { params }).then((r) => r.data);
 }
 
 function getServices(params: { branch_id?: string }): Promise<{ data: ServiceItem[] }> {
@@ -111,6 +126,15 @@ export function usePublicBranches() {
         queryKey: ['public-booking', 'branches'],
         queryFn: getBranches,
         staleTime: 1000 * 60 * 10,
+    });
+}
+
+export function usePublicPackages(params: { branch_id?: string }) {
+    return useQuery({
+        queryKey: ['public-booking', 'packages', params],
+        queryFn: () => getPackages(params),
+        staleTime: 1000 * 60 * 10,
+        enabled: !!params.branch_id,
     });
 }
 

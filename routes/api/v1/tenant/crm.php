@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Crm\Http\Controllers\Api\CustomerController;
 use App\Modules\Crm\Http\Controllers\Api\LoyaltyController;
+use App\Modules\Crm\Http\Controllers\Api\LoyaltySettingsController;
 use App\Modules\Crm\Http\Controllers\Api\MembershipController;
 use App\Modules\Crm\Http\Controllers\Api\MembershipTierController;
 use App\Modules\Crm\Http\Controllers\Api\NoteController;
@@ -81,4 +82,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/crm/membership-tiers', [MembershipTierController::class, 'store']);
     Route::put('/crm/membership-tiers/{id}', [MembershipTierController::class, 'update']);
     Route::delete('/crm/membership-tiers/{id}', [MembershipTierController::class, 'destroy']);
+
+    // Loyalty Config
+    Route::get('/crm/loyalty/config', [LoyaltySettingsController::class, 'show']);
+    Route::put('/crm/loyalty/config', [LoyaltySettingsController::class, 'update']);
 });

@@ -9,6 +9,7 @@ use App\Modules\Company\Http\Controllers\Tenant\HolidayController;
 use App\Modules\Company\Http\Controllers\Tenant\ProfileController;
 use App\Modules\Company\Http\Controllers\Tenant\WorkingHourController;
 use App\Modules\Crm\Http\Controllers\Tenant\CustomerController as CrmCustomerController;
+use App\Modules\Crm\Http\Controllers\Tenant\LoyaltySettingsController as CrmLoyaltySettingsController;
 use App\Modules\Crm\Http\Controllers\Tenant\MembershipTierController as CrmMembershipTierController;
 use App\Modules\Crm\Http\Controllers\Tenant\TagController as CrmTagController;
 use App\Modules\Service\Http\Controllers\Tenant\AddonController as ServiceAddonController;
@@ -52,6 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/customers/{id}/edit', [CrmCustomerController::class, 'edit'])->name('customers.edit');
         Route::get('/tags', [CrmTagController::class, 'index'])->name('tags');
         Route::get('/membership-tiers', [CrmMembershipTierController::class, 'index'])->name('membership-tiers');
+        Route::get('/loyalty', [CrmLoyaltySettingsController::class, 'index'])->name('loyalty');
     });
 
     // Booking pages

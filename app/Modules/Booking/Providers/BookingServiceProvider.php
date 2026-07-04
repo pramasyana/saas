@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Providers;
 
+use App\Modules\Booking\Console\SeedAvailabilityCommand;
 use App\Modules\Booking\Console\SendBookingRemindersCommand;
 use App\Modules\Booking\Contracts\BookingReminderRepositoryInterface;
 use App\Modules\Booking\Contracts\BookingRepositoryInterface;
@@ -37,6 +38,7 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->bind(BookingReminderRepositoryInterface::class, BookingReminderRepository::class);
 
         $this->commands([
+            SeedAvailabilityCommand::class,
             SendBookingRemindersCommand::class,
         ]);
     }

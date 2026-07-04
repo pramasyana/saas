@@ -25,13 +25,13 @@ class AvailabilityService
 
     public function getTenantId(): string
     {
-        return auth()->user()->tenant_id;
+        return tenant()->getTenantKey();
     }
 
     public function getAvailableSlots(string $date, string $serviceId, int $duration, ?string $branchId = null, ?string $staffId = null): array
     {
         $tenantId = $this->getTenantId();
-        $dayOfWeek = (int) date('N', strtotime($date));
+        $dayOfWeek = (int) date('w', strtotime($date));
 
         $holidays = $this->holidayRepository->findAllByTenant($tenantId, ['date' => $date]);
         if ($holidays->isNotEmpty()) {
@@ -53,8 +53,8 @@ class AvailabilityService
         $slots = $this->generateTimeSlots(
             $tenantId,
             $date,
-            $dayWh->open_time,
-            $dayWh->close_time,
+            $dayWh->open_time instanceof \Carbon\CarbonImmutable ? $dayWh->open_time->format('H:i') : $dayWh->open_time,
+            $dayWh->close_time instanceof \Carbon\CarbonImmutable ? $dayWh->close_time->format('H:i') : $dayWh->close_time,
             $duration,
             $staffCollection,
         );

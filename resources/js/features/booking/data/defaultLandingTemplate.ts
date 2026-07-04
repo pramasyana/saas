@@ -61,9 +61,9 @@ export const defaultLandingTemplate: LandingConfig = {
                 description: 'Tim terapis berpengalaman dan tersertifikasi, siap memberikan pelayanan terbaik.',
             },
             {
-                icon: 'currency',
-                title: 'Harga Terjangkau',
-                description: 'Menawarkan paket perawatan berkualitas dengan harga yang kompetitif dan transparan.',
+                icon: 'star',
+                title: 'Kualitas Terjamin',
+                description: 'Setiap perawatan kami awasi dengan standar kualitas ketat untuk hasil yang memuaskan.',
             },
             {
                 icon: 'clock',

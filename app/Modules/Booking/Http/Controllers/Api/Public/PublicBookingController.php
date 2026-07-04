@@ -9,6 +9,7 @@ use App\Modules\Booking\Http\Requests\StorePublicBookingRequest;
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Services\AvailabilityService;
 use App\Modules\Crm\Models\Customer;
+use App\Modules\Service\Models\Package;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -45,14 +46,35 @@ class PublicBookingController
             ]);
         }
 
+        $serviceId = $request->service_id;
+        $duration = (int) $request->duration_minutes;
+        $bookingServices = [];
+
+        if ($request->filled('package_id')) {
+            $package = Package::with('services')->findOrFail($request->package_id);
+            $serviceId = $package->services->first()?->id ?? $serviceId;
+            $duration = (int) $package->duration;
+
+            foreach ($package->services as $svc) {
+                $bookingServices[] = [
+                    'tenant_id' => $tenantId,
+                    'service_id' => $svc->id,
+                    'name' => $svc->name,
+                    'price' => (float) $svc->price,
+                    'duration' => (int) $svc->duration,
+                    'quantity' => $svc->pivot->quantity ?? 1,
+                ];
+            }
+        }
+
         $staffId = $request->staff_id;
 
         if (empty($staffId)) {
             $startDate = Carbon::parse($request->start_time)->format('Y-m-d');
             $slots = $this->availabilityService->getAvailableSlots(
                 date: $startDate,
-                serviceId: $request->service_id,
-                duration: (int) $request->duration_minutes,
+                serviceId: $serviceId,
+                duration: $duration,
                 branchId: $request->branch_id,
             );
 
@@ -69,7 +91,7 @@ class PublicBookingController
         }
 
         $startTime = Carbon::parse($request->start_time);
-        $endTime = $startTime->copy()->addMinutes((int) $request->duration_minutes);
+        $endTime = $startTime->copy()->addMinutes($duration);
 
         $booking = $this->createBookingAction->execute([
             'tenant_id' => $tenantId,
@@ -78,10 +100,11 @@ class PublicBookingController
             'staff_id' => $staffId,
             'start_time' => $startTime,
             'end_time' => $endTime,
-            'duration_minutes' => (int) $request->duration_minutes,
+            'duration_minutes' => $duration,
             'status' => ($config['auto_confirm'] ?? false) ? 'confirmed' : 'pending',
             'source' => 'online',
             'notes' => $request->notes,
+            'services' => $bookingServices,
         ], $tenantId);
 
         return response()->json([

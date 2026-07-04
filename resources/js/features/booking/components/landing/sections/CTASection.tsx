@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
 
 interface Props {
@@ -6,21 +7,68 @@ interface Props {
     colors: NonNullable<LandingConfig['colors']>;
 }
 
-export default function CTASection({ data }: Props) {
-    const bgColor = data.background_color || '#7C3AED';
+export default function CTASection({ data, colors }: Props) {
+    const bgColor = data.background_color || colors.primary;
     const txtColor = data.text_color || '#FFFFFF';
 
     return (
-        <section className="py-16 sm:py-20" style={{ backgroundColor: bgColor }}>
-            <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: txtColor }}>{data.title || 'Siap Booking?'}</h2>
-                {data.subtitle && <p className="mt-4 text-lg" style={{ color: txtColor + 'CC' }}>{data.subtitle}</p>}
-                <div className="mt-8">
-                    <Link href={data.button_link || '/booking'} className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 text-sm font-semibold shadow-lg transition-all hover:shadow-xl hover:scale-105" style={{ color: bgColor }}>
-                        {data.button_text || 'Booking Sekarang'}
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+        <section className="relative overflow-hidden py-20 sm:py-24 lg:py-28" style={{ backgroundColor: bgColor }}>
+            <div className="absolute inset-0 opacity-10">
+                <div className="absolute top-1/4 left-1/4 h-48 w-48 rounded-full bg-white/20 blur-3xl" style={{ animation: 'float 6s ease-in-out infinite' }} />
+                <div className="absolute bottom-1/4 right-1/4 h-36 w-36 rounded-full bg-white/15 blur-3xl" style={{ animation: 'float-slow 8s ease-in-out infinite' }} />
+                <div className="absolute top-1/2 left-1/2 h-24 w-24 rounded-full bg-white/10 blur-2xl" style={{ animation: 'float 7s ease-in-out infinite reverse' }} />
+            </div>
+            <div
+                className="absolute inset-0 opacity-5"
+                style={{
+                    backgroundImage: `radial-gradient(circle at 25% 50%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(circle at 75% 50%, rgba(255,255,255,0.15) 0%, transparent 50%)`,
+                }}
+            />
+            <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8 relative">
+                <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
+                    style={{ color: txtColor }}
+                >
+                    {data.title || 'Siap Booking?'}
+                </motion.h2>
+                {data.subtitle && (
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.15 }}
+                        className="mt-5 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto"
+                        style={{ color: txtColor + 'CC' }}
+                    >
+                        {data.subtitle}
+                    </motion.p>
+                )}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className="mt-10"
+                >
+                    <Link
+                        href={data.button_link || '/booking'}
+                        className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-white px-10 py-4 text-sm font-semibold shadow-2xl transition-all hover:shadow-3xl hover:scale-105"
+                        style={{ color: bgColor }}
+                    >
+                        <span className="relative z-10">{data.button_text || 'Booking Sekarang'}</span>
+                        <svg className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                        <div
+                            className="absolute inset-0 opacity-0 transition-opacity group-hover:opacity-10"
+                            style={{ backgroundColor: bgColor }}
+                        />
                     </Link>
-                </div>
+                </motion.div>
             </div>
         </section>
     );
