@@ -8,6 +8,7 @@ import {
     AboutSection,
     StatsSection,
     ServicesSection,
+    PricingSection,
     TeamSection,
     TestimonialsSection,
     FAQSection,
@@ -162,7 +163,9 @@ result.push('footer');
             case 'stats':
                 return <StatsSection data={sectionData as any} {...commonProps} />;
             case 'services':
-                return <ServicesSection data={sectionData as any} {...commonProps} services={services} packages={packages} categories={categories} settings={settings} />;
+                return <ServicesSection data={sectionData as any} {...commonProps} services={services} packages={packages} categories={categories} branches={branches} settings={settings} />;
+            case 'pricing':
+                return <PricingSection data={sectionData as any} {...commonProps} services={services} categories={categories} />;
             case 'team':
                 return <TeamSection data={sectionData as any} {...commonProps} team={team} />;
             case 'testimonials':

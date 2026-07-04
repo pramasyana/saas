@@ -2,12 +2,8 @@ import { useMemo } from 'react';
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import type { LandingConfig, ServiceItem, PricingItem, CategoryItem } from '@/features/booking/hooks/useLandingSettings';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import FadeIn from '@/atoms/FadeIn';
-
-function formatPrice(price: number): string {
-    return price.toLocaleString('id-ID');
-}
 
 interface Props {
     data: NonNullable<LandingConfig['pricing']>;

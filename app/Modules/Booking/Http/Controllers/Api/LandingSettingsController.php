@@ -100,7 +100,7 @@ class LandingSettingsController
     {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,webp|max:3072',
-            'section' => 'required|string|in:hero,about,gallery,logo_cloud,hero_background,hero_carousel',
+            'section' => 'required|string|in:hero,about,gallery,logo_cloud,hero_background,hero_carousel,hero_image',
         ]);
 
         $tenant = tenant();

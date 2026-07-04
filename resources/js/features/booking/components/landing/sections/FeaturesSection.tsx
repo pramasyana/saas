@@ -31,17 +31,17 @@ export default function FeaturesSection({ data, colors }: Props) {
     if (!items?.length) return null;
 
     return (
-        <section id="features" className="py-16 sm:py-20 lg:py-24" style={{ backgroundColor: colors.background }}>
-            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <section id="features" className="py-16 sm:py-20 lg:py-section-gap-desktop" style={{ backgroundColor: '#F2F3FF' }}>
+            <div className="mx-auto max-w-7xl px-gutter">
                 <FadeIn>
-                    <div className="text-center">
+                    <div className="text-center mb-20 space-y-4">
                         {data.title && (
                             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl" style={{ color: colors.text }}>
                                 {data.title}
                             </h2>
                         )}
                         {data.subtitle && (
-                            <p className="mt-4 max-w-2xl mx-auto text-base leading-relaxed sm:text-lg" style={{ color: colors.text_muted }}>
+                            <p className="max-w-2xl mx-auto text-base leading-relaxed sm:text-lg" style={{ color: colors.text_muted }}>
                                 {data.subtitle}
                             </p>
                         )}
@@ -49,7 +49,7 @@ export default function FeaturesSection({ data, colors }: Props) {
                 </FadeIn>
 
                 <motion.div
-                    className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                    className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
@@ -59,21 +59,25 @@ export default function FeaturesSection({ data, colors }: Props) {
                         <motion.div
                             key={i}
                             variants={itemVariants}
-                            className="group relative overflow-hidden rounded-2xl border bg-white p-8 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-                            style={{ borderColor: colors.primary + '12' }}
+                            className="group relative overflow-hidden rounded-lg p-8 transition-all duration-500 hover:-translate-y-2"
+                            style={{
+                                backgroundColor: 'rgba(255,255,255,0.7)',
+                                backdropFilter: 'blur(12px)',
+                                border: '1px solid rgba(255,255,255,0.2)',
+                                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            }}
                         >
                             <div
-                                className="absolute top-0 right-0 h-24 w-24 -translate-y-8 translate-x-8 rounded-full opacity-10 transition-all duration-500 group-hover:opacity-20 group-hover:scale-150"
-                                style={{ backgroundColor: colors.primary }}
-                            />
-                            <div
-                                className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl shadow-md transition-all duration-300 group-hover:shadow-lg group-hover:scale-110"
+                                className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-all duration-500"
                                 style={{
-                                    backgroundColor: colors.primary,
-                                    animation: `float ${3 + i * 0.5}s ease-in-out infinite`,
+                                    backgroundColor: colors.primary + '10',
+                                    color: colors.primary,
                                 }}
                             >
-                                <FeatureIcon icon={item.icon} />
+                                <div className="group-hover:hidden transition-all duration-500">
+                                    <FeatureIcon icon={item.icon} />
+                                </div>
                             </div>
                             <h3 className="text-lg font-semibold" style={{ color: colors.text }}>{item.title}</h3>
                             <p className="mt-2 text-sm leading-relaxed" style={{ color: colors.text_muted }}>{item.description}</p>

@@ -19,12 +19,12 @@ interface PublicLayoutProps {
 }
 
 const defaultColors = {
-    primary: '#3B82F6',
-    secondary: '#10B981',
-    accent: '#F59E0B',
-    background: '#FAFAFA',
-    text: '#171717',
-    text_muted: '#737373',
+    primary: '#6B38D4',
+    secondary: '#4648D4',
+    accent: '#855000',
+    background: '#FAF8FF',
+    text: '#131B2E',
+    text_muted: '#494454',
 };
 
 export default function PublicLayout({ children, tenantName, logo, colors, solidHeader }: PublicLayoutProps) {
@@ -57,11 +57,11 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
             <header
                 className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                     scrolled
-                        ? 'bg-white/80 shadow-lg shadow-black/5 backdrop-blur-xl'
+                        ? 'bg-white/70 shadow-sm shadow-primary/10 backdrop-blur-xl border-b border-white/20'
                         : 'bg-transparent'
                 }`}
             >
-                <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-gutter">
                     <Link href="/" className="flex items-center gap-3 group">
                         {logo ? (
                             <img src={logo} alt={tenantName ?? 'Logo'} className="max-h-8 w-auto transition-transform group-hover:scale-105" />
@@ -74,42 +74,37 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
                             </div>
                         )}
                         <span
-                            className={`text-base font-bold tracking-tight transition-colors ${
-                                scrolled ? '' : 'text-white'
-                            }`}
-                            style={scrolled ? { color: c.text } : { color: '#fff' }}
+                            className="text-base font-bold tracking-tight"
+                            style={{ color: c.text }}
                         >
                             {tenantName ?? 'Booking'}
                         </span>
                     </Link>
 
-                    <nav className="hidden items-center gap-1 sm:flex">
+                    <nav className="hidden md:flex items-center gap-8">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="relative rounded-lg px-4 py-2 text-sm font-medium transition-all hover:bg-white/10"
-                                style={{ color: scrolled ? c.text : '#fff' }}
+                                className="text-sm font-medium transition-colors"
+                                style={{ color: c.text, borderBottom: scrolled ? `2px solid ${c.primary}` : '2px solid transparent', paddingBottom: '4px' }}
                             >
                                 {link.label}
                             </Link>
                         ))}
                         <Link
                             href="/booking"
-                            className="ml-2 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                            className="hidden lg:inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
                             style={{ backgroundColor: c.primary }}
                         >
-                            Booking
-                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
+                            Book Ritual
                         </Link>
                     </nav>
 
                     <button
                         type="button"
                         onClick={() => setMobileOpen(!mobileOpen)}
-                        className="flex h-9 w-9 items-center justify-center rounded-lg sm:hidden"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg md:hidden"
                         style={{ color: scrolled ? c.text : '#fff' }}
                     >
                         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -128,7 +123,7 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
-                            className="border-t bg-white px-4 pb-4 pt-2 shadow-xl sm:hidden"
+                            className="border-t bg-white px-4 pb-4 pt-2 shadow-xl md:hidden"
                             style={{ borderColor: c.primary + '15' }}
                         >
                             <div className="flex flex-col gap-1">
@@ -149,7 +144,7 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
                                     style={{ backgroundColor: c.primary }}
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    Booking Sekarang
+                                    Book Ritual
                                 </Link>
                             </div>
                         </motion.div>
@@ -161,71 +156,95 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
                 {children}
             </main>
 
-            <footer className="border-t" style={{ backgroundColor: c.text, borderColor: c.text + '20' }}>
-                <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-                    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                        <div className="sm:col-span-2 lg:col-span-1">
-                            <div className="flex items-center gap-3 mb-4">
-                                {logo ? (
-                                    <img src={logo} alt={tenantName ?? 'Logo'} className="max-h-8 w-auto brightness-0 invert" />
-                                ) : (
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl text-base font-bold text-white" style={{ backgroundColor: c.primary }}>
-                                        {(tenantName ?? 'B').charAt(0).toUpperCase()}
-                                    </div>
-                                )}
-                                <span className="text-base font-bold text-white">{tenantName ?? 'Booking'}</span>
-                            </div>
-                            <p className="text-sm leading-relaxed" style={{ color: '#9CA3AF' }}>
-                                Solusi perawatan premium untuk Anda. Pengalaman terbaik dengan hasil maksimal.
-                            </p>
+            <footer className="border-t w-full py-section-gap-desktop" style={{ borderColor: 'rgba(203,195,215,0.3)', backgroundColor: '#F2F3FF' }}>
+                <div className="mx-auto max-w-7xl px-gutter grid grid-cols-1 md:grid-cols-4 gap-base gap-y-16">
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3">
+                            {logo ? (
+                                <img src={logo} alt={tenantName ?? 'Logo'} className="max-h-8 w-auto" />
+                            ) : (
+                                <div className="flex h-9 w-9 items-center justify-center rounded-xl text-base font-bold text-white" style={{ backgroundColor: c.primary }}>
+                                    {(tenantName ?? 'B').charAt(0).toUpperCase()}
+                                </div>
+                            )}
+                            <span className="text-base font-bold" style={{ color: c.text }}>{tenantName ?? 'Booking'}</span>
                         </div>
-
-                        <div>
-                            <h4 className="text-sm font-semibold tracking-wider uppercase text-white mb-4">Navigasi</h4>
-                            <ul className="space-y-2.5">
-                                {['Beranda', 'Layanan', 'Booking', 'Kontak'].map((item) => (
-                                    <li key={item}>
-                                        <Link
-                                            href={item === 'Booking' ? '/booking' : '/'}
-                                            className="text-sm transition-colors hover:text-white"
-                                            style={{ color: '#9CA3AF' }}
-                                        >
-                                            {item}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-semibold tracking-wider uppercase text-white mb-4">Kontak</h4>
-                            <ul className="space-y-2.5 text-sm" style={{ color: '#9CA3AF' }}>
-                                <li>info@{tenantName?.toLowerCase().replace(/\s+/g, '')}.com</li>
-                                <li>+62 812 3456 7890</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-semibold tracking-wider uppercase text-white mb-4">Ikuti Kami</h4>
-                            <div className="flex gap-3">
-                                {['Instagram', 'Facebook', 'YouTube'].map((social) => (
-                                    <a
-                                        key={social}
-                                        href="#"
-                                        className="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-medium transition-all hover:scale-110"
-                                        style={{ backgroundColor: c.primary + '20', color: '#fff' }}
-                                    >
-                                        {social.charAt(0)}
-                                    </a>
-                                ))}
-                            </div>
+                        <p className="text-sm leading-relaxed" style={{ color: c.text_muted }}>
+                            Solusi perawatan premium untuk Anda. Pengalaman terbaik dengan hasil maksimal di setiap kunjungan.
+                        </p>
+                        <div className="flex gap-4">
+                            {['IG', 'FB', 'YT'].map((social) => (
+                                <a
+                                    key={social}
+                                    href="#"
+                                    className="flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold transition-all hover:scale-110"
+                                    style={{ backgroundColor: c.primary + '10', color: c.primary }}
+                                >
+                                    {social}
+                                </a>
+                            ))}
                         </div>
                     </div>
 
-                    <div className="mt-10 border-t pt-6 text-center" style={{ borderColor: '#ffffff10' }}>
-                        <p className="text-xs" style={{ color: '#6B7280' }}>
-                            &copy; {new Date().getFullYear()} {tenantName ?? 'BookCRM'}. All rights reserved.
+                    <div className="space-y-6">
+                        <h5 className="font-bold uppercase tracking-widest text-sm" style={{ color: c.text }}>Navigasi</h5>
+                        <ul className="space-y-4">
+                            {['Beranda', 'Layanan', 'Booking', 'Kontak'].map((item) => (
+                                <li key={item}>
+                                    <Link
+                                        href={item === 'Booking' ? '/booking' : '/'}
+                                        className="text-sm transition-colors font-semibold"
+                                        style={{ color: c.text_muted }}
+                                    >
+                                        {item}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h5 className="font-bold uppercase tracking-widest text-sm" style={{ color: c.text }}>Kontak</h5>
+                        <ul className="space-y-4 text-sm" style={{ color: c.text_muted }}>
+                            <li>info@{tenantName?.toLowerCase().replace(/\s+/g, '')}.com</li>
+                            <li>+62 812 3456 7890</li>
+                            <li className="flex items-start gap-2">
+                                <span className="mt-0.5">Jl. Kemang Raya No. 42, Jakarta Selatan</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h5 className="font-bold uppercase tracking-widest text-sm" style={{ color: c.text }}>Newsletter</h5>
+                        <p className="text-sm" style={{ color: c.text_muted }}>
+                            Dapatkan update promo dan tips kecantikan terbaru langsung di email Anda.
                         </p>
+                        <div className="flex gap-2">
+                            <input
+                                type="email"
+                                placeholder="Email Anda"
+                                className="flex-1 rounded-lg border px-4 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                                style={{ borderColor: 'rgba(203,195,215,0.5)', backgroundColor: '#fff' }}
+                            />
+                            <button
+                                className="flex h-10 w-10 items-center justify-center rounded-lg transition-all hover:scale-105"
+                                style={{ backgroundColor: c.primary, color: '#fff' }}
+                            >
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mx-auto max-w-7xl px-gutter mt-16 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: 'rgba(203,195,215,0.3)' }}>
+                    <p className="text-xs" style={{ color: c.text_muted }}>
+                        &copy; {new Date().getFullYear()} {tenantName ?? 'BookCRM'}. All rights reserved.
+                    </p>
+                    <div className="flex gap-6 text-xs" style={{ color: c.text_muted }}>
+                        <a href="#" className="hover:underline">Privacy Policy</a>
+                        <a href="#" className="hover:underline">Terms of Service</a>
                     </div>
                 </div>
             </footer>

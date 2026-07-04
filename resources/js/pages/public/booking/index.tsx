@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePublicBranches, usePublicServices, usePublicPackages, usePublicStaff, usePublicAvailability, usePublicCreateBooking } from '@/features/booking/hooks/usePublicBooking';
 import PublicLayout from '@/layouts/PublicLayout';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 
 interface Branch {
     id: string;
@@ -90,10 +90,6 @@ function formatDate(dateStr: string): string {
     return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function formatPrice(price: number): string {
-    return price.toLocaleString('id-ID');
-}
-
 const containerVariants = {
     hidden: { opacity: 0, y: 12 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' as const } },
@@ -145,6 +141,8 @@ export default function PublicBookingPage({ branches, services, settings, colors
         if (activeCategory === '__packages') return [];
         return servicesList.filter((s) => s.category_id === activeCategory);
     }, [activeCategory, servicesList]);
+
+    const showPackagesInline = activeCategory === 'all' && packagesList.length > 0;
 
     const steps = useMemo(() => {
         const s = ['Layanan', 'Waktu', 'Data', 'Konfirmasi'];
@@ -470,7 +468,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                                 </span>
                                                                 {settings.show_prices && (
                                                                     <span className="shrink-0 text-sm font-bold" style={{ color: c.primary }}>
-                                                                        Rp{formatPrice(pkg.price)}
+                                                                        {formatPrice(pkg.price)}
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -514,7 +512,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                 })}
                                             </div>
                                         )
-                                    ) : filteredServices.length === 0 ? (
+                                    ) : filteredServices.length === 0 && !showPackagesInline ? (
                                         <div className="flex items-center gap-3 rounded-2xl border bg-white px-8 py-5 shadow-sm" style={{ borderColor: c.primary + '15' }}>
                                             <svg className="h-8 w-8 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1} style={{ color: c.text_muted }}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 11.625l2.25-2.25M12 11.625l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
@@ -563,7 +561,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                             </div>
                                                             {settings.show_prices && (
                                                                 <span className="shrink-0 text-sm font-bold" style={{ color: c.primary }}>
-                                                                    Rp{formatPrice(s.price)}
+                                                                    {formatPrice(s.price)}
                                                                 </span>
                                                             )}
                                                         </div>
@@ -572,6 +570,72 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                             </svg>
                                                             {s.duration} menit
+                                                        </span>
+                                                    </button>
+                                                );
+                                            })}
+                                            {showPackagesInline && packagesList.map((pkg) => {
+                                                const isActive = selectedPackage?.id === pkg.id;
+                                                return (
+                                                    <button
+                                                        key={`pkg-${pkg.id}`}
+                                                        type="button"
+                                                        onClick={() => { setSelectedPackage(pkg); setSelectedService(null); setSelectedStaff(null); setSelectedSlot(null); }}
+                                                        className={cn(
+                                                            'group relative flex flex-col gap-3 rounded-2xl border-2 p-5 text-left transition-all duration-300',
+                                                            isActive ? 'shadow-sm' : 'bg-white hover:border-neutral-300 hover:shadow-sm',
+                                                        )}
+                                                        style={{
+                                                            borderColor: isActive ? c.primary : c.primary + '14',
+                                                            boxShadow: isActive ? `0 2px 12px ${c.primary}14` : undefined,
+                                                        }}
+                                                    >
+                                                        <div className="flex items-center justify-between gap-2">
+                                                            <span
+                                                                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
+                                                                style={{ backgroundColor: c.primary + '08', color: c.primary }}
+                                                            >
+                                                                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                                                </svg>
+                                                                Paket
+                                                            </span>
+                                                            {settings.show_prices && (
+                                                                <span className="shrink-0 text-sm font-bold" style={{ color: c.primary }}>
+                                                                    {formatPrice(pkg.price)}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <h3 className="text-sm font-semibold" style={{ color: c.text }}>{pkg.name}</h3>
+                                                        {pkg.description && (
+                                                            <p className="text-xs leading-relaxed" style={{ color: c.text_muted }}>{pkg.description}</p>
+                                                        )}
+                                                        {pkg.services.length > 0 && (
+                                                            <div className="rounded-xl px-3 py-2.5" style={{ backgroundColor: c.primary + '03' }}>
+                                                                <div className="mb-1.5 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider" style={{ color: c.text_muted }}>
+                                                                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75" />
+                                                                    </svg>
+                                                                    Termasuk
+                                                                </div>
+                                                                <div className="space-y-0.5">
+                                                                    {pkg.services.map((ps) => (
+                                                                        <div key={ps.id} className="flex items-center gap-2 text-xs" style={{ color: c.text_muted }}>
+                                                                            <svg className="h-3 w-3 shrink-0" style={{ color: c.secondary }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                                            </svg>
+                                                                            {ps.quantity > 1 && <span className="font-semibold tabular-nums" style={{ color: c.text }}>{ps.quantity}x</span>}
+                                                                            <span>{ps.name}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        <span className="inline-flex items-center gap-1 text-[11px] font-medium" style={{ color: c.text_muted }}>
+                                                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                            {pkg.duration} menit
                                                         </span>
                                                     </button>
                                                 );
@@ -801,7 +865,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                             { label: 'Tanggal', value: formatDate(selectedSlot) },
                                             { label: 'Waktu', value: `${formatTime(selectedSlot)} - ${formatTime(new Date(new Date(selectedSlot).getTime() + ((selectedPackage?.duration ?? selectedService!.duration) * 60_000)).toISOString())}` },
                                             { label: 'Durasi', value: `${selectedPackage?.duration ?? selectedService!.duration} menit` },
-                                            ...(settings.show_prices ? [{ label: 'Harga', value: `Rp${formatPrice(selectedPackage?.price ?? selectedService!.price)}`, highlight: true as const }] : []),
+                                            ...(settings.show_prices ? [{ label: 'Harga', value: formatPrice(selectedPackage?.price ?? selectedService!.price), highlight: true as const }] : []),
                                             { label: 'Nama', value: customerName },
                                             { label: 'Email', value: customerEmail },
                                             { label: 'Telepon', value: customerPhone },

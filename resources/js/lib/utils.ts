@@ -9,3 +9,12 @@ export function cn(...inputs: ClassValue[]) {
 export function formatNumber(value: number): string {
     return new Intl.NumberFormat('id-ID').format(value);
 }
+
+export function formatPrice(value: number, withFraction: boolean = false): string {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: withFraction ? 2 : 0,
+        maximumFractionDigits: withFraction ? 2 : 0,
+    }).format(value);
+}

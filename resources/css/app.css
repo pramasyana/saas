@@ -21,6 +21,10 @@
     --color-warning-light: #FEF3C7;
     --color-border: #E5E7EB;
     --color-subtle: #F9FAFB;
+    --spacing-gutter: 1.5rem;
+    --spacing-section-gap-desktop: 5rem;
+    --spacing-section-gap-mobile: 3rem;
+    --spacing-base: 1.5rem;
 }
 
 @keyframes float {

@@ -1,4 +1,4 @@
-import type { LandingConfig, FeatureItem, StatItem, FAQItem, GalleryItem, LogoCloudItem } from '@/features/booking/hooks/useLandingSettings';
+import type { LandingConfig, FeatureItem, StatItem, FAQItem, GalleryItem, LogoCloudItem, PricingItem } from '@/features/booking/hooks/useLandingSettings';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -36,19 +36,27 @@ function SectionInfo({ title, description }: { title: string; description: strin
     );
 }
 
-function ic() {
-    return 'block w-full rounded-lg border border-neutral-300 px-3.5 py-2.5 text-sm text-neutral-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30';
+const inputBase = 'block w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 hover:border-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30';
+
+function ic(extra?: string) {
+    return extra ? `${inputBase} ${extra}` : inputBase;
 }
+
+const inputInline = 'mt-1 block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 hover:border-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30';
+
+const textareaInline = 'mt-1 block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 hover:border-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none';
+
+const inputCompact = 'block w-full rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 hover:border-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30';
 
 const sectionIcons: Record<string, string> = {
     hero: '🏠', features: '⭐', about: 'ℹ️', stats: '📊', services: '🛠️',
-    team: '👥', testimonials: '💬', faq: '❓', gallery: '🖼️', cta: '📢',
-    contact: '📞', branches: '📍', divider: '➖', logo_cloud: '🏢', footer: '📄',
+    pricing: '💰', team: '👥', testimonials: '💬', faq: '❓', gallery: '🖼️',
+    cta: '📢', contact: '📞', branches: '📍', divider: '➖', logo_cloud: '🏢', footer: '📄',
 };
 
 const sectionLabels: Record<string, string> = {
     hero: 'Hero', features: 'Keunggulan', about: 'Tentang', stats: 'Statistik',
-    services: 'Layanan', team: 'Tim', testimonials: 'Testimoni',
+    services: 'Layanan', pricing: 'Harga', team: 'Tim', testimonials: 'Testimoni',
     faq: 'FAQ', gallery: 'Galeri', cta: 'CTA Banner', contact: 'Kontak',
     divider: 'Pemisah', logo_cloud: 'Logo Partner', footer: 'Footer',
 };
@@ -92,6 +100,7 @@ function SectionForm({ sectionKey, data, set, handleImageUpload }: {
         case 'features': return <FeaturesForm data={data} set={set} />;
         case 'stats': return <StatsForm data={data} set={set} />;
         case 'services': return <ServicesForm data={data} set={set} />;
+        case 'pricing': return <PricingForm data={data} set={set} />;
         case 'team': return <TeamForm data={data} set={set} />;
         case 'testimonials': return <TestimonialsForm data={data} set={set} />;
         case 'faq': return <FAQForm data={data} set={set} />;
@@ -133,6 +142,78 @@ function HeroForm({ data, set, handleImageUpload }: { data: Record<string, unkno
                         <input type="text" value={d?.cta_link ?? ''} onChange={(e) => set('hero.cta_link', e.target.value)} className={ic()} placeholder="/booking" />
                     </Field>
                 </div>
+            </div>
+
+            <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Badge & Gambar</p>
+                <Field label="Badge" hint="Teks kecil di atas judul, seperti 'Premium Wellness' atau 'Spesialis Terpercaya'.">
+                    <input type="text" value={(d as any)?.badge ?? ''} onChange={(e) => set('hero.badge', e.target.value)} className={ic()} placeholder="Premium Wellness" />
+                </Field>
+                <Field label="Gambar Hero" hint="Gambar yang tampil di samping kanan judul. Rekomendasi: 800x1000px, format portrait.">
+                    <div className="flex items-center gap-4">
+                        {(d as any)?.image ? (
+                            <div className="relative group">
+                                <img src={(d as any).image} alt="" className="h-20 w-24 rounded-lg border border-neutral-200 object-cover shadow-sm" />
+                                <button type="button" onClick={() => set('hero.image', null)}
+                                    className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-white shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex h-20 w-24 shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 text-neutral-300">
+                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
+                            </div>
+                        )}
+                        <label className="cursor-pointer rounded-lg bg-white px-3.5 py-2 text-xs font-medium text-neutral-700 ring-1 ring-inset ring-neutral-300 transition-colors hover:bg-neutral-50">
+                            Pilih File
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 'hero_image')} />
+                        </label>
+                    </div>
+                </Field>
+            </div>
+
+            <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Statistik</p>
+                {!((d as any)?.stats?.length) && (
+                    <div className="flex flex-col items-center gap-2 py-4 text-center">
+                        <span className="text-xl">📊</span>
+                        <p className="text-xs text-neutral-400">Tampilkan angka di bawah hero. Klik <strong>Tambah Statistik</strong>.</p>
+                    </div>
+                )}
+                {((d as any)?.stats ?? []).map((stat: { number?: string; label?: string; prefix?: string; suffix?: string }, i: number) => (
+                    <div key={i} className="flex items-end gap-2 rounded-xl border border-neutral-200 bg-neutral-50 p-3">
+                        <div className="flex-1">
+                            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Angka</label>
+                            <input type="text" value={stat.number ?? ''} onChange={(e) => {
+                                const newStats = [...((d as any)?.stats ?? [])];
+                                newStats[i] = { ...newStats[i], number: e.target.value };
+                                set('hero.stats', newStats);
+                            }} className="block w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-xs text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 hover:border-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="500+" />
+                        </div>
+                        <div className="flex-1">
+                            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Label</label>
+                            <input type="text" value={stat.label ?? ''} onChange={(e) => {
+                                const newStats = [...((d as any)?.stats ?? [])];
+                                newStats[i] = { ...newStats[i], label: e.target.value };
+                                set('hero.stats', newStats);
+                            }} className="block w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-xs text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 hover:border-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="Pelanggan Puas" />
+                        </div>
+                        <button type="button" onClick={() => {
+                            const newStats = [...((d as any)?.stats ?? [])];
+                            newStats.splice(i, 1);
+                            set('hero.stats', newStats);
+                        }} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-neutral-400 hover:bg-danger hover:text-white transition-colors">
+                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+                ))}
+                <button type="button" onClick={() => {
+                    const newStats = [...((d as any)?.stats ?? []), { number: '', label: '' }];
+                    set('hero.stats', newStats);
+                }} className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-neutral-300 px-4 py-2.5 text-xs font-medium text-neutral-500 transition-colors hover:border-primary hover:text-primary">
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                    Tambah Statistik
+                </button>
             </div>
 
             <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
@@ -272,23 +353,23 @@ function HeroForm({ data, set, handleImageUpload }: { data: Record<string, unkno
                                                 const items = [...((d as any)?.carousel_items ?? [])];
                                                 items[i] = { ...items[i], title: e.target.value };
                                                 set('hero.carousel_items', items);
-                                            }} className="block w-full rounded-lg border border-neutral-300 px-3 py-1.5 text-xs text-neutral-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="Judul slide" />
+                                            }} className={inputCompact} placeholder="Judul slide" />
                                             <input type="text" value={item.subtitle} onChange={(e) => {
                                                 const items = [...((d as any)?.carousel_items ?? [])];
                                                 items[i] = { ...items[i], subtitle: e.target.value };
                                                 set('hero.carousel_items', items);
-                                            }} className="block w-full rounded-lg border border-neutral-300 px-3 py-1.5 text-xs text-neutral-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="Subjudul slide" />
+                                            }} className={inputCompact} placeholder="Subjudul slide" />
                                             <div className="grid grid-cols-2 gap-1.5">
                                                 <input type="text" value={item.cta_text} onChange={(e) => {
                                                     const items = [...((d as any)?.carousel_items ?? [])];
                                                     items[i] = { ...items[i], cta_text: e.target.value };
                                                     set('hero.carousel_items', items);
-                                                }} className="block w-full rounded-lg border border-neutral-300 px-3 py-1.5 text-xs text-neutral-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="Teks tombol" />
+                                                }} className={inputCompact} placeholder="Teks tombol" />
                                                 <input type="text" value={item.cta_link} onChange={(e) => {
                                                     const items = [...((d as any)?.carousel_items ?? [])];
                                                     items[i] = { ...items[i], cta_link: e.target.value };
                                                     set('hero.carousel_items', items);
-                                                }} className="block w-full rounded-lg border border-neutral-300 px-3 py-1.5 text-xs text-neutral-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="/booking" />
+                                                }} className={inputCompact} placeholder="/booking" />
                                             </div>
                                         </div>
                                     </div>
@@ -393,13 +474,13 @@ function FeaturesForm({ data, set }: { data: Record<string, unknown>; set: (path
                         </div>
                         <div className="grid gap-3 sm:grid-cols-3">
                             <Field label="Ikon" hint="Nama ikon Feather Icons (contoh: star, heart, shield).">
-                                <input type="text" value={item.icon ?? ''} onChange={(e) => setItem(i, 'icon', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="star" />
+                                <input type="text" value={item.icon ?? ''} onChange={(e) => setItem(i, 'icon', e.target.value)} className={inputInline} placeholder="star" />
                             </Field>
                             <Field label="Judul" hint="Nama fitur.">
-                                <input type="text" value={item.title} onChange={(e) => setItem(i, 'title', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Nama fitur" />
+                                <input type="text" value={item.title} onChange={(e) => setItem(i, 'title', e.target.value)} className={inputInline} placeholder="Nama fitur" />
                             </Field>
                             <Field label="Deskripsi" hint="Penjelasan singkat fitur.">
-                                <input type="text" value={item.description} onChange={(e) => setItem(i, 'description', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Deskripsi fitur" />
+                                <input type="text" value={item.description} onChange={(e) => setItem(i, 'description', e.target.value)} className={inputInline} placeholder="Deskripsi fitur" />
                             </Field>
                         </div>
                     </div>
@@ -457,10 +538,10 @@ function StatsForm({ data, set }: { data: Record<string, unknown>; set: (path: s
                         </div>
                         <div className="grid gap-3 sm:grid-cols-2">
                             <Field label="Angka" hint="Contoh: 500+, 10,000, 99%">
-                                <input type="text" value={item.number} onChange={(e) => setItem(i, 'number', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="500+" />
+                                <input type="text" value={item.number} onChange={(e) => setItem(i, 'number', e.target.value)} className={inputInline} placeholder="500+" />
                             </Field>
                             <Field label="Label" hint="Contoh: Pelanggan Puas, Layanan Tersedia">
-                                <input type="text" value={item.label} onChange={(e) => setItem(i, 'label', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Pelanggan Puas" />
+                                <input type="text" value={item.label} onChange={(e) => setItem(i, 'label', e.target.value)} className={inputInline} placeholder="Pelanggan Puas" />
                             </Field>
                         </div>
                     </div>
@@ -501,6 +582,134 @@ function ServicesForm({ data, set }: { data: Record<string, unknown>; set: (path
                 </div>
                 <p className="text-xs text-neutral-500">Data layanan, paket, kategori, harga, dan diskon ditampilkan secara otomatis dari menu <strong>Layanan</strong>. Kelola layanan di menu samping untuk mengubah konten yang tampil.</p>
             </div>
+        </div>
+    );
+}
+
+function PricingForm({ data, set }: { data: Record<string, unknown>; set: (path: string, v: unknown) => void }) {
+    const d = data as LandingConfig['pricing'];
+    const items = d?.items ?? [];
+    const source = d?.source ?? 'services';
+
+    function setItem(i: number, field: string, value: unknown) {
+        const newItems = [...items];
+        (newItems[i] as any)[field] = value;
+        set('pricing.items', newItems);
+    }
+
+    function addItem() {
+        set('pricing.items', [...items, { name: '', price: '', period: '/bulan', description: '', features: [], cta_text: 'Pilih Paket', cta_link: '/booking', highlighted: false, highlight_label: '' }]);
+    }
+
+    function removeItem(i: number) {
+        set('pricing.items', items.filter((_: unknown, idx: number) => idx !== i));
+    }
+
+    return (
+        <div className="space-y-5">
+            <SectionInfo
+                title="Harga & Paket"
+                description="Tampilkan daftar harga paket atau layanan. Bisa diisi otomatis dari menu Layanan atau diatur manual dengan paket kustom."
+            />
+
+            <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Konten Utama</p>
+                <Field label="Judul" hint="Judul bagian harga.">
+                    <input type="text" value={d?.title ?? ''} onChange={(e) => set('pricing.title', e.target.value)} className={ic()} placeholder="Harga & Paket" />
+                </Field>
+                <Field label="Subjudul" hint="Deskripsi pendukung di bawah judul.">
+                    <input type="text" value={d?.subtitle ?? ''} onChange={(e) => set('pricing.subtitle', e.target.value)} className={ic()} placeholder="Pilih paket yang sesuai" />
+                </Field>
+            </div>
+
+            <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Sumber Data</p>
+                <div className="flex gap-2">
+                    {([{ value: 'services', label: 'Auto dari Layanan', desc: 'Ambil data dari menu Layanan, dikelompokkan per kategori' },
+                       { value: 'custom', label: 'Atur Manual', desc: 'Buat paket harga sendiri' }] as const).map((opt) => (
+                        <button key={opt.value} type="button" onClick={() => set('pricing.source', opt.value)}
+                            className={cn('flex-1 rounded-xl border-2 px-4 py-3 text-left transition-all', source === opt.value
+                                ? 'border-primary bg-primary/[0.06] text-primary'
+                                : 'border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300')}
+                        >
+                            <span className="block text-sm font-semibold">{opt.label}</span>
+                            <span className="block text-[11px] opacity-70 mt-0.5">{opt.desc}</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {source === 'services' && (
+                <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 space-y-2">
+                    <div className="flex items-center gap-2">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">i</span>
+                        <p className="text-xs font-semibold text-neutral-700">Informasi</p>
+                    </div>
+                    <p className="text-xs text-neutral-500">Paket harga akan ditampilkan secara otomatis dari data layanan di menu <strong>Layanan</strong>, dikelompokkan berdasarkan kategori. Edit layanan di menu samping untuk mengubah konten yang tampil.</p>
+                </div>
+            )}
+
+            {source === 'custom' && (
+                <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Daftar Paket</p>
+                    {items.length === 0 && (
+                        <div className="flex flex-col items-center gap-2 py-6 text-center">
+                            <span className="text-2xl">📋</span>
+                            <p className="text-xs text-neutral-400">Belum ada paket. Klik <strong>Tambah Paket</strong> untuk memulai.</p>
+                        </div>
+                    )}
+                    {items.map((item: PricingItem, i: number) => (
+                        <div key={i} className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 space-y-3">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">{i + 1}</span>
+                                    <span className="text-xs font-semibold text-neutral-500">{item.name || `Paket #${i + 1}`}</span>
+                                </div>
+                                <button type="button" onClick={() => removeItem(i)} className="text-xs text-danger hover:underline">Hapus</button>
+                            </div>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                <Field label="Nama Paket">
+                                    <input type="text" value={item.name} onChange={(e) => setItem(i, 'name', e.target.value)} className={inputInline} placeholder="Paket Basic" />
+                                </Field>
+                                <Field label="Harga">
+                                    <input type="text" value={item.price} onChange={(e) => setItem(i, 'price', e.target.value)} className={inputInline} placeholder="99.000" />
+                                </Field>
+                                <Field label="Periode" hint="Contoh: /bulan, /tahun, /sesi">
+                                    <input type="text" value={item.period ?? ''} onChange={(e) => setItem(i, 'period', e.target.value)} className={inputInline} placeholder="/bulan" />
+                                </Field>
+                                <Field label="Teks Tombol">
+                                    <input type="text" value={item.cta_text ?? ''} onChange={(e) => setItem(i, 'cta_text', e.target.value)} className={inputInline} placeholder="Pilih Paket" />
+                                </Field>
+                            </div>
+                            <Field label="Deskripsi">
+                                <input type="text" value={item.description ?? ''} onChange={(e) => setItem(i, 'description', e.target.value)} className={inputInline} placeholder="Deskripsi singkat paket" />
+                            </Field>
+                            <Field label="Link Tombol">
+                                <input type="text" value={item.cta_link ?? ''} onChange={(e) => setItem(i, 'cta_link', e.target.value)} className={inputInline} placeholder="/booking" />
+                            </Field>
+                            <Field label="Fitur (pisahkan dengan koma)" hint="Contoh: Konsultasi gratis, 2x treatment, Produk premium">
+                                <input type="text" value={(item.features ?? []).join(', ')} onChange={(e) => setItem(i, 'features', e.target.value.split(',').map((f: string) => f.trim()).filter(Boolean))} className={inputInline} placeholder="Fitur 1, Fitur 2, Fitur 3" />
+                            </Field>
+                            <div className="flex items-center gap-4">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" checked={item.highlighted ?? false} onChange={(e) => setItem(i, 'highlighted', e.target.checked)}
+                                        className="h-4 w-4 rounded border-neutral-300 text-primary focus:ring-primary" />
+                                    <span className="text-sm text-neutral-700">Paket Unggulan</span>
+                                </label>
+                                {item.highlighted && (
+                                    <Field label="Label Unggulan" className="flex-1">
+                                        <input type="text" value={item.highlight_label ?? ''} onChange={(e) => setItem(i, 'highlight_label', e.target.value)} className={inputInline} placeholder="Paling Laris" />
+                                    </Field>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                    <button type="button" onClick={addItem} className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-500 transition-colors hover:border-primary hover:text-primary">
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        Tambah Paket
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
@@ -590,14 +799,14 @@ function TestimonialsForm({ data, set }: { data: Record<string, unknown>; set: (
                         </div>
                         <div className="grid gap-3 sm:grid-cols-2">
                             <Field label="Nama" hint="Nama lengkap pelanggan.">
-                                <input type="text" value={item.name} onChange={(e) => setItem(i, 'name', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Nama pelanggan" />
+                                <input type="text" value={item.name} onChange={(e) => setItem(i, 'name', e.target.value)} className={inputInline} placeholder="Nama pelanggan" />
                             </Field>
                             <Field label="Role / Jabatan" hint="Contoh: CEO, Founder, atau Pelanggan Setia.">
-                                <input type="text" value={item.role ?? ''} onChange={(e) => setItem(i, 'role', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="CEO Perusahaan" />
+                                <input type="text" value={item.role ?? ''} onChange={(e) => setItem(i, 'role', e.target.value)} className={inputInline} placeholder="CEO Perusahaan" />
                             </Field>
                         </div>
                         <Field label="Testimoni" hint="Isi ulasan atau pengalaman pelanggan.">
-                            <textarea value={item.content} onChange={(e) => setItem(i, 'content', e.target.value)} rows={2} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Ulasan pelanggan..." />
+                            <textarea value={item.content} onChange={(e) => setItem(i, 'content', e.target.value)} rows={2} className={textareaInline} placeholder="Ulasan pelanggan..." />
                         </Field>
                         <Field label="Rating" hint="Pilih jumlah bintang dari 1-5.">
                             <div className="mt-1 flex gap-1">
@@ -673,10 +882,10 @@ function FAQForm({ data, set }: { data: Record<string, unknown>; set: (path: str
                             <button type="button" onClick={() => removeItem(i)} className="text-xs text-danger hover:underline">Hapus</button>
                         </div>
                         <Field label="Pertanyaan" hint="Pertanyaan yang sering diajukan pelanggan.">
-                            <input type="text" value={item.question} onChange={(e) => setItem(i, 'question', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Pertanyaan..." />
+                            <input type="text" value={item.question} onChange={(e) => setItem(i, 'question', e.target.value)} className={inputInline} placeholder="Pertanyaan..." />
                         </Field>
                         <Field label="Jawaban" hint="Jawaban yang jelas dan membantu.">
-                            <textarea value={item.answer} onChange={(e) => setItem(i, 'answer', e.target.value)} rows={3} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Jawaban..." />
+                            <textarea value={item.answer} onChange={(e) => setItem(i, 'answer', e.target.value)} rows={3} className={textareaInline} placeholder="Jawaban..." />
                         </Field>
                     </div>
                 ))}
@@ -763,10 +972,10 @@ function GalleryForm({ data, set, handleImageUpload }: { data: Record<string, un
                             </div>
                             <div className="flex-1 space-y-2">
                                 <Field label="Judul" hint="Nama atau keterangan gambar.">
-                                    <input type="text" value={item.title ?? ''} onChange={(e) => setItem(i, 'title', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Judul" />
+                                    <input type="text" value={item.title ?? ''} onChange={(e) => setItem(i, 'title', e.target.value)} className={inputInline} placeholder="Judul" />
                                 </Field>
                                 <Field label="Deskripsi" hint="Penjelasan singkat gambar.">
-                                    <input type="text" value={item.description ?? ''} onChange={(e) => setItem(i, 'description', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Deskripsi" />
+                                    <input type="text" value={item.description ?? ''} onChange={(e) => setItem(i, 'description', e.target.value)} className={inputInline} placeholder="Deskripsi" />
                                 </Field>
                                 <label className="cursor-pointer inline-flex items-center gap-1 text-xs text-primary hover:underline">
                                     <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
@@ -822,10 +1031,10 @@ function CTAForm({ data, set }: { data: Record<string, unknown>; set: (path: str
                 <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Warna</p>
                 <div className="grid gap-4 sm:grid-cols-2">
                     <Field label="Warna Latar" hint="Pilih warna background banner.">
-                        <input type="color" value={d?.background_color ?? '#7C3AED'} onChange={(e) => set('cta.background_color', e.target.value)} className="h-10 w-full cursor-pointer rounded-lg border border-neutral-300 bg-white p-0.5" />
+                        <input type="color" value={d?.background_color ?? '#7C3AED'} onChange={(e) => set('cta.background_color', e.target.value)} className="h-10 w-full cursor-pointer rounded-lg border border-neutral-300 bg-white p-0.5 transition-all duration-200 hover:border-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
                     </Field>
                     <Field label="Warna Teks" hint="Pilih warna teks di atas banner.">
-                        <input type="color" value={d?.text_color ?? '#FFFFFF'} onChange={(e) => set('cta.text_color', e.target.value)} className="h-10 w-full cursor-pointer rounded-lg border border-neutral-300 bg-white p-0.5" />
+                        <input type="color" value={d?.text_color ?? '#FFFFFF'} onChange={(e) => set('cta.text_color', e.target.value)} className="h-10 w-full cursor-pointer rounded-lg border border-neutral-300 bg-white p-0.5 transition-all duration-200 hover:border-neutral-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
                     </Field>
                 </div>
             </div>
@@ -932,7 +1141,7 @@ function DividerForm({ data, set }: { data: Record<string, unknown>; set: (path:
                 <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
                     <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Ukuran</p>
                     <Field label="Tinggi (px)" hint="Semakin tinggi nilai, semakin besar jarak vertikal pemisah.">
-                        <input type="number" value={d?.height ?? 60} onChange={(e) => set('divider.height', parseInt(e.target.value) || 60)} className="block w-32 rounded-lg border border-neutral-300 px-3.5 py-2.5 text-sm" min={20} max={200} />
+                        <input type="number" value={d?.height ?? 60} onChange={(e) => set('divider.height', parseInt(e.target.value) || 60)} className={ic('w-32')} min={20} max={200} />
                     </Field>
                 </div>
             )}
@@ -1012,10 +1221,10 @@ function LogoCloudForm({ data, set, handleImageUpload }: { data: Record<string, 
                             <div className="flex-1 space-y-2">
                                 <div className="grid gap-2 sm:grid-cols-2">
                                     <Field label="Nama Partner" hint="Nama perusahaan atau brand.">
-                                        <input type="text" value={item.name ?? ''} onChange={(e) => setItem(i, 'name', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="Nama partner" />
+                                        <input type="text" value={item.name ?? ''} onChange={(e) => setItem(i, 'name', e.target.value)} className={inputInline} placeholder="Nama partner" />
                                     </Field>
                                     <Field label="URL Website" hint="Link ke website partner (opsional).">
-                                        <input type="text" value={item.url ?? ''} onChange={(e) => setItem(i, 'url', e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm" placeholder="https://..." />
+                                        <input type="text" value={item.url ?? ''} onChange={(e) => setItem(i, 'url', e.target.value)} className={inputInline} placeholder="https://..." />
                                     </Field>
                                 </div>
                                 <label className="cursor-pointer inline-flex items-center gap-1 text-xs text-primary hover:underline">

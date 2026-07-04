@@ -51,10 +51,6 @@ function formatDateTime(dateStr: string): string {
     });
 }
 
-function formatPrice(price: number): string {
-    return price.toLocaleString('id-ID');
-}
-
 const statusLabels: Record<string, { label: string; color: string; bg: string }> = {
     pending: { label: 'Menunggu Konfirmasi', color: '#92400e', bg: '#fef3c7' },
     confirmed: { label: 'Telah Dikonfirmasi', color: '#065f46', bg: '#d1fae5' },

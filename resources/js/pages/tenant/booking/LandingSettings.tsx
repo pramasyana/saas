@@ -231,6 +231,8 @@ return;
             onSuccess: (res) => {
                 if (section === 'hero_background') {
                     set('hero.background_image', res?.url);
+                } else if (section === 'hero_image') {
+                    set('hero.image', res?.url);
                 } else if (section === 'hero_carousel' && typeof index === 'number') {
                     setConfig((prev) => {
                         setDirty(true);

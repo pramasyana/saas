@@ -1,8 +1,13 @@
 import { Link } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice as baseFormatPrice } from '@/lib/utils';
 import type { Plan, BillingInterval } from '@/types';
+
+function formatPrice(value: number): string {
+    if (value === 0) return 'Gratis';
+    return baseFormatPrice(value);
+}
 
 interface PlanCardGroupProps {
     mode: 'link' | 'select';
@@ -11,19 +16,6 @@ interface PlanCardGroupProps {
     onBillingChange?: (interval: BillingInterval) => void;
     selectedPlanId?: string;
     onPlanSelect?: (planId: string) => void;
-}
-
-function formatPrice(value: number): string {
-    if (value === 0) {
-        return 'Gratis';
-    }
-
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 export default function PlanCardGroup({ mode, plans, billingInterval: controlledInterval, onBillingChange, selectedPlanId, onPlanSelect }: PlanCardGroupProps) {

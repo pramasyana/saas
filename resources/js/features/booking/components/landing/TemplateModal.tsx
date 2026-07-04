@@ -28,6 +28,19 @@ interface TemplateModalProps {
 
 const templates: TemplateCard[] = [
     {
+        key: 'lumina',
+        name: 'Lumina Wellness',
+        badge: { text: 'Paling Baru', className: 'bg-purple-50 text-purple-700 ring-1 ring-purple-200/50' },
+        gradient: 'from-violet-600 to-indigo-600',
+        letter: 'L',
+        description: 'Desain modern dengan palet warna MD3 purple. Glassmorphic cards, mesh gradient CTA, dan layout refined.',
+        colors: ['#6B38D4', '#4648D4', '#855000', '#FAF8FF', '#131B2E'],
+        sectionCount: 15,
+        displayTags: ['Hero 2-Kolom', 'Glass Cards', 'Gradient CTA', 'Filter Pills', 'Newsletter'],
+        extraTags: 10,
+        config: defaultLandingTemplate,
+    },
+    {
         key: 'clean-business',
         name: 'Clean Business',
         badge: { text: 'Paling Populer', className: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200/50' },
@@ -38,7 +51,22 @@ const templates: TemplateCard[] = [
         sectionCount: 15,
         displayTags: ['Hero', 'Keunggulan', 'Tentang', 'Statistik', 'Layanan'],
         extraTags: 10,
-        config: defaultLandingTemplate,
+        config: {
+            ...defaultLandingTemplate,
+            template: 'clean-business',
+            colors: {
+                primary: '#7C3AED',
+                secondary: '#10B981',
+                accent: '#F59E0B',
+                background: '#FAFAFA',
+                text: '#171717',
+                text_muted: '#737373',
+            },
+            cta: {
+                ...defaultLandingTemplate.cta!,
+                background_color: '#7C3AED',
+            },
+        },
     },
     {
         key: 'modern-minimalis',
@@ -66,6 +94,10 @@ const templates: TemplateCard[] = [
                 text: '#171717',
                 text_muted: '#737373',
             },
+            cta: {
+                ...defaultLandingTemplate.cta!,
+                background_color: '#3B82F6',
+            },
         },
     },
     {
@@ -83,6 +115,18 @@ const templates: TemplateCard[] = [
             ...defaultLandingTemplate,
             template: 'portfolio',
             section_order: ['hero', 'gallery', 'testimonials', 'cta', 'contact', 'footer'],
+            colors: {
+                primary: '#7C3AED',
+                secondary: '#10B981',
+                accent: '#F59E0B',
+                background: '#FAFAFA',
+                text: '#171717',
+                text_muted: '#737373',
+            },
+            cta: {
+                ...defaultLandingTemplate.cta!,
+                background_color: '#7C3AED',
+            },
         },
     },
 ];

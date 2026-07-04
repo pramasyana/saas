@@ -128,6 +128,8 @@ export interface LandingConfig {
         enabled?: boolean;
         title?: string;
         subtitle?: string;
+        badge?: string;
+        image?: string | null;
         cta_text?: string;
         cta_link?: string;
         background_type?: 'color' | 'image' | 'carousel';
@@ -141,6 +143,7 @@ export interface LandingConfig {
             background_image: string | null;
         }[];
         carousel_interval?: number;
+        stats?: StatItem[];
     };
     about?: {
         enabled?: boolean;

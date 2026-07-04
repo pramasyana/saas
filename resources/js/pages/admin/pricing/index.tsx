@@ -8,6 +8,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import AdminLayout from '@/layouts/AdminLayout';
 import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
+import { formatPrice } from '@/lib/utils';
 
 interface PricingPageProps {
     title: string;
@@ -16,15 +17,6 @@ interface PricingPageProps {
         active_plans: number;
         cheapest_price: number | null;
     };
-}
-
-function formatPrice(value: number): string {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 function CardsSkeleton() {
