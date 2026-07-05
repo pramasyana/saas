@@ -12,9 +12,11 @@ export default function SettingsForm({ settings, saving, onSave }: SettingsFormP
 
     useEffect(() => {
         const initial: Record<string, string> = {};
+
         for (const s of settings) {
             initial[s.key] = formatValue(s.value, s.type);
         }
+
         setValues(initial);
     }, [settings]);
 
@@ -22,23 +24,29 @@ export default function SettingsForm({ settings, saving, onSave }: SettingsFormP
         if (type === 'json' && Array.isArray(value)) {
             return value.join(', ');
         }
+
         if (type === 'boolean') {
             return value ? 'true' : 'false';
         }
+
         return String(value ?? '');
     }
 
     function parseValue(raw: string, type: string): unknown {
         if (type === 'integer') {
             const n = parseInt(raw, 10);
+
             return isNaN(n) ? 0 : n;
         }
+
         if (type === 'boolean') {
             return raw === 'true' || raw === '1';
         }
+
         if (type === 'json') {
             return raw.split(',').map((s) => s.trim()).filter(Boolean);
         }
+
         return raw;
     }
 

@@ -54,5 +54,6 @@ export function useUpdateSettings() {
 export function useSetting(key: string, defaultValue: unknown = null) {
     const { data } = useSettings();
     const item = data?.data?.find((s) => s.key === key);
+
     return item?.value ?? defaultValue;
 }

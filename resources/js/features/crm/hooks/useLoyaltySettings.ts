@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/axios';
 import type { LoyaltyConfig } from '@/features/crm/types';
+import api from '@/lib/axios';
 
 interface ApiResponse {
     status: string;

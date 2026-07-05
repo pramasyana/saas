@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 import { usePublicBooking } from '@/features/booking/hooks/usePublicBooking';
 import PublicLayout from '@/layouts/PublicLayout';
-import { motion } from 'framer-motion';
 import { formatPrice } from '@/lib/utils';
 
 interface ServiceAddon {
@@ -104,6 +104,7 @@ export default function ConfirmationPage({ booking, colors: colorsProp, tenant }
     const totalPrice = currentBooking.services.reduce((sum, svc) => {
         const svcTotal = Number(svc.price) * Number(svc.quantity) * totalGuests;
         const addonTotal = (svc.addons || []).reduce((aSum, a) => aSum + Number(a.price) * Number(a.quantity), 0);
+
         return sum + svcTotal + addonTotal;
     }, 0);
 

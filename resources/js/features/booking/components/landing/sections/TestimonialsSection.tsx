@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
 
 interface Props {
@@ -24,18 +24,27 @@ export default function TestimonialsSection({ data, colors }: Props) {
 
     // Auto-play advances both
     useEffect(() => {
-        if (n <= 1) return;
+        if (n <= 1) {
+return;
+}
+
         intervalRef.current = setInterval(() => {
             nextPair();
             nextItem();
         }, 4000);
+
         return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
+            if (intervalRef.current) {
+clearInterval(intervalRef.current);
+}
         };
     }, [nextPair, nextItem, n]);
 
     const resetInterval = useCallback(() => {
-        if (intervalRef.current) clearInterval(intervalRef.current);
+        if (intervalRef.current) {
+clearInterval(intervalRef.current);
+}
+
         if (n > 1) {
             intervalRef.current = setInterval(() => {
                 nextPair();
@@ -48,7 +57,10 @@ export default function TestimonialsSection({ data, colors }: Props) {
     const handleDragStart = useCallback((clientX: number) => {
         dragState.current.isDragging = true;
         dragState.current.startX = clientX;
-        if (intervalRef.current) clearInterval(intervalRef.current);
+
+        if (intervalRef.current) {
+clearInterval(intervalRef.current);
+}
     }, []);
 
     const handleDragEnd = useCallback(() => {
@@ -57,8 +69,12 @@ export default function TestimonialsSection({ data, colors }: Props) {
     }, [resetInterval]);
 
     const handleDragMove = useCallback((clientX: number, step: number) => {
-        if (!dragState.current.isDragging) return;
+        if (!dragState.current.isDragging) {
+return;
+}
+
         const diff = dragState.current.startX - clientX;
+
         if (Math.abs(diff) > 60) {
             if (diff > 0) {
                 nextPair();
@@ -67,18 +83,23 @@ export default function TestimonialsSection({ data, colors }: Props) {
                 setPairIdx((p) => (p - 1 + totalPairs) % totalPairs);
                 setItemIdx((i) => (i - 1 + n) % n);
             }
+
             dragState.current.isDragging = false;
         }
     }, [nextPair, nextItem, totalPairs, n]);
 
-    const onMouseDown = (e: React.MouseEvent) => { handleDragStart(e.clientX); e.preventDefault(); };
+    const onMouseDown = (e: React.MouseEvent) => {
+ handleDragStart(e.clientX); e.preventDefault(); 
+};
     const onMouseMove = (e: React.MouseEvent) => handleDragMove(e.clientX, 2);
     const onMouseUp = () => handleDragEnd();
     const onTouchStart = (e: React.TouchEvent) => handleDragStart(e.touches[0].clientX);
     const onTouchMove = (e: React.TouchEvent) => handleDragMove(e.touches[0].clientX, 1);
     const onTouchEnd = () => handleDragEnd();
 
-    if (!items?.length) return null;
+    if (!items?.length) {
+return null;
+}
 
     // Desktop: 2 cards from current pair
     const cardA = items[(pairIdx * 2) % n];
@@ -138,21 +159,33 @@ export default function TestimonialsSection({ data, colors }: Props) {
                             </p>
                         )}
                         <div className="flex items-center gap-4 pt-4">
-                            <button type="button" onClick={() => { setPairIdx((p) => (p - 1 + totalPairs) % totalPairs); setItemIdx((i) => (i - 1 + n) % n); resetInterval(); }}
+                            <button type="button" onClick={() => {
+ setPairIdx((p) => (p - 1 + totalPairs) % totalPairs); setItemIdx((i) => (i - 1 + n) % n); resetInterval(); 
+}}
                                 className="w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:text-white"
                                 style={{ borderColor: 'rgba(203,195,215,0.5)', color: colors.text, backgroundColor: 'transparent' }}
-                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.primary; e.currentTarget.style.borderColor = colors.primary; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'rgba(203,195,215,0.5)'; }}
+                                onMouseEnter={(e) => {
+ e.currentTarget.style.backgroundColor = colors.primary; e.currentTarget.style.borderColor = colors.primary; 
+}}
+                                onMouseLeave={(e) => {
+ e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'rgba(203,195,215,0.5)'; 
+}}
                             >
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                                 </svg>
                             </button>
-                            <button type="button" onClick={() => { nextPair(); nextItem(); resetInterval(); }}
+                            <button type="button" onClick={() => {
+ nextPair(); nextItem(); resetInterval(); 
+}}
                                 className="w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:text-white"
                                 style={{ borderColor: 'rgba(203,195,215,0.5)', color: colors.text, backgroundColor: 'transparent' }}
-                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.primary; e.currentTarget.style.borderColor = colors.primary; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'rgba(203,195,215,0.5)'; }}
+                                onMouseEnter={(e) => {
+ e.currentTarget.style.backgroundColor = colors.primary; e.currentTarget.style.borderColor = colors.primary; 
+}}
+                                onMouseLeave={(e) => {
+ e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'rgba(203,195,215,0.5)'; 
+}}
                             >
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -162,7 +195,9 @@ export default function TestimonialsSection({ data, colors }: Props) {
                             <div className="hidden lg:flex gap-1.5">
                                 {Array.from({ length: totalPairs }).map((_, i) => (
                                     <button key={i} type="button"
-                                        onClick={() => { setPairIdx(i); setItemIdx(i * 2); resetInterval(); }}
+                                        onClick={() => {
+ setPairIdx(i); setItemIdx(i * 2); resetInterval(); 
+}}
                                         className={`h-1.5 rounded-full transition-all duration-300 ${i === pairIdx ? 'w-5' : 'w-1.5'}`}
                                         style={{ backgroundColor: i === pairIdx ? colors.primary : colors.primary + '40' }}
                                     />
@@ -226,7 +261,9 @@ export default function TestimonialsSection({ data, colors }: Props) {
                     <div className="mt-4 flex justify-center gap-2">
                         {items.map((_, i) => (
                             <button key={i} type="button"
-                                onClick={() => { goItem(i); setPairIdx(Math.floor(i / 2)); resetInterval(); }}
+                                onClick={() => {
+ goItem(i); setPairIdx(Math.floor(i / 2)); resetInterval(); 
+}}
                                 className={`h-2 rounded-full transition-all duration-300 ${i === itemIdx ? 'w-6' : 'w-2'}`}
                                 style={{ backgroundColor: i === itemIdx ? colors.primary : colors.primary + '30' }}
                             />

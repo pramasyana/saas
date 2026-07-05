@@ -202,4 +202,48 @@ class BookingRepository implements BookingRepositoryInterface
             ->orderByDesc('total_bookings')
             ->get();
     }
+
+    public function countByDateRange(string $tenantId, string $startDate, string $endDate, ?string $status = null): int
+    {
+        $query = Booking::where('tenant_id', $tenantId)
+            ->where('start_time', '>=', $startDate)
+            ->where('start_time', '<=', $endDate);
+
+        if ($status !== null) {
+            $query->where('status', $status);
+        }
+
+        return $query->count();
+    }
+
+    public function getUrgentBookings(string $tenantId, int $minutes = 60, int $limit = 10): Collection
+    {
+        return Booking::where('tenant_id', $tenantId)
+            ->where('start_time', '>=', now())
+            ->where('start_time', '<=', now()->addMinutes($minutes))
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->with(['customer:id,name,phone', 'staff:id,name', 'services'])
+            ->orderBy('start_time')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getLatestBookings(string $tenantId, int $limit = 5): Collection
+    {
+        return Booking::where('tenant_id', $tenantId)
+            ->with(['customer:id,name', 'services'])
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getTodayBookings(string $tenantId, int $limit = 10): Collection
+    {
+        return Booking::where('tenant_id', $tenantId)
+            ->whereDate('start_time', today())
+            ->with(['customer:id,name', 'staff:id,name', 'services'])
+            ->orderBy('start_time')
+            ->limit($limit)
+            ->get();
+    }
 }

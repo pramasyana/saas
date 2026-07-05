@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
 import L from 'leaflet';
+import { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 interface MarkerData {
@@ -28,7 +28,9 @@ export default function LeafletMap({ markers, className = '' }: Props) {
     const instanceRef = useRef<L.Map | null>(null);
 
     useEffect(() => {
-        if (!mapRef.current || instanceRef.current) return;
+        if (!mapRef.current || instanceRef.current) {
+return;
+}
 
         const map = L.map(mapRef.current, {
             zoomControl: true,
@@ -50,7 +52,10 @@ export default function LeafletMap({ markers, className = '' }: Props) {
 
     useEffect(() => {
         const map = instanceRef.current;
-        if (!map) return;
+
+        if (!map) {
+return;
+}
 
         // Clear existing markers
         map.eachLayer((layer) => {
@@ -59,7 +64,9 @@ export default function LeafletMap({ markers, className = '' }: Props) {
             }
         });
 
-        if (markers.length === 0) return;
+        if (markers.length === 0) {
+return;
+}
 
         const bounds = L.latLngBounds([]);
 

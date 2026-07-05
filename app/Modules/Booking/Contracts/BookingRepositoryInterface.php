@@ -37,4 +37,12 @@ interface BookingRepositoryInterface
     public function getTopServices(string $tenantId, int $limit = 5, ?string $startDate = null, ?string $endDate = null): Collection;
 
     public function getStaffPerformance(string $tenantId, ?string $startDate = null, ?string $endDate = null): Collection;
+
+    public function countByDateRange(string $tenantId, string $startDate, string $endDate, ?string $status = null): int;
+
+    public function getUrgentBookings(string $tenantId, int $minutes = 60, int $limit = 10): Collection;
+
+    public function getLatestBookings(string $tenantId, int $limit = 5): Collection;
+
+    public function getTodayBookings(string $tenantId, int $limit = 10): Collection;
 }

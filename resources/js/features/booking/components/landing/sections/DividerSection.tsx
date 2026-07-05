@@ -6,7 +6,9 @@ interface Props {
 }
 
 export default function DividerSection({ data, colors }: Props) {
-    if (!data.style) return null;
+    if (!data.style) {
+return null;
+}
 
     const height = data.height ?? 60;
 

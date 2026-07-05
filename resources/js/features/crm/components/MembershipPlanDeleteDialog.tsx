@@ -11,7 +11,9 @@ interface MembershipPlanDeleteDialogProps {
 }
 
 export default function MembershipPlanDeleteDialog({ open, plan, deleting, error, onClose, onConfirm }: MembershipPlanDeleteDialogProps) {
-    if (!open) return null;
+    if (!open) {
+return null;
+}
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

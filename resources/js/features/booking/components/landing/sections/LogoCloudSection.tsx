@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import type { LandingConfig, LogoCloudItem } from '@/features/booking/hooks/useLandingSettings';
+import { useEffect, useRef } from 'react';
 import FadeIn from '@/atoms/FadeIn';
+import type { LandingConfig, LogoCloudItem } from '@/features/booking/hooks/useLandingSettings';
 
 interface Props {
     data: NonNullable<LandingConfig['logo_cloud']>;
@@ -14,23 +14,34 @@ export default function LogoCloudSection({ data, colors }: Props) {
 
     useEffect(() => {
         const el = scrollRef.current;
-        if (!el) return;
+
+        if (!el) {
+return;
+}
+
         let animationId: number;
         let pos = 0;
         const speed = 0.3;
 
         const animate = () => {
             pos += speed;
-            if (pos >= el.scrollWidth / 2) pos = 0;
+
+            if (pos >= el.scrollWidth / 2) {
+pos = 0;
+}
+
             el.style.transform = `translateX(${-pos}px)`;
             animationId = requestAnimationFrame(animate);
         };
 
         animationId = requestAnimationFrame(animate);
+
         return () => cancelAnimationFrame(animationId);
     }, [items]);
 
-    if (!items?.length) return null;
+    if (!items?.length) {
+return null;
+}
 
     return (
         <section id="logo-cloud" className="py-12 sm:py-16" style={{ backgroundColor: colors.background }}>

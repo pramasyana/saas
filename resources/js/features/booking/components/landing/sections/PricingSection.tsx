@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
+import FadeIn from '@/atoms/FadeIn';
 import type { LandingConfig, ServiceItem, PricingItem, CategoryItem } from '@/features/booking/hooks/useLandingSettings';
 import { cn, formatPrice } from '@/lib/utils';
-import FadeIn from '@/atoms/FadeIn';
 
 interface Props {
     data: NonNullable<LandingConfig['pricing']>;
@@ -96,7 +96,9 @@ export default function PricingSection({ data, colors, services, categories }: P
     const isFromServices = data.source === 'services' || (!data.items?.length && (services?.length ?? 0) > 0);
 
     const groups = useMemo(() => {
-        if (!isFromServices) return null;
+        if (!isFromServices) {
+return null;
+}
 
         const svcs = services ?? [];
         const cats = categories ?? [];
@@ -105,7 +107,10 @@ export default function PricingSection({ data, colors, services, categories }: P
 
         for (const cat of cats) {
             const catServices = svcs.filter((s) => s.category_id === cat.id);
-            if (!catServices.length) continue;
+
+            if (!catServices.length) {
+continue;
+}
 
             grouped.push({
                 name: cat.name,
@@ -125,6 +130,7 @@ export default function PricingSection({ data, colors, services, categories }: P
         }
 
         const uncategorized = svcs.filter((s) => !s.category_id);
+
         if (uncategorized.length) {
             grouped.push({
                 name: 'Lainnya',
@@ -147,7 +153,9 @@ export default function PricingSection({ data, colors, services, categories }: P
     }, [isFromServices, services, categories]);
 
     if (isFromServices) {
-        if (!groups?.length) return null;
+        if (!groups?.length) {
+return null;
+}
 
         return (
             <section id="pricing" className="py-16 sm:py-20 lg:py-24" style={{ backgroundColor: colors.background }}>
@@ -198,7 +206,10 @@ export default function PricingSection({ data, colors, services, categories }: P
     }
 
     const items = data.items ?? [];
-    if (!items.length) return null;
+
+    if (!items.length) {
+return null;
+}
 
     return (
         <section id="pricing" className="py-16 sm:py-20 lg:py-24" style={{ backgroundColor: colors.background }}>

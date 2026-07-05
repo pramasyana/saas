@@ -1,5 +1,5 @@
-import PublicLayout from '@/layouts/PublicLayout';
 import { motion } from 'framer-motion';
+import PublicLayout from '@/layouts/PublicLayout';
 
 interface PageProps {
     colors?: {

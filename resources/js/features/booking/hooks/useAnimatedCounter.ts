@@ -14,12 +14,16 @@ export function useAnimatedCounter({ end, duration = 2000, enabled = true }: Use
     useEffect(() => {
         if (!enabled) {
             setDisplay(end);
+
             return;
         }
 
         startTime.current = null;
         const animate = (timestamp: number) => {
-            if (startTime.current === null) startTime.current = timestamp;
+            if (startTime.current === null) {
+startTime.current = timestamp;
+}
+
             const elapsed = timestamp - startTime.current;
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3);
@@ -33,7 +37,9 @@ export function useAnimatedCounter({ end, duration = 2000, enabled = true }: Use
         rafId.current = requestAnimationFrame(animate);
 
         return () => {
-            if (rafId.current) cancelAnimationFrame(rafId.current);
+            if (rafId.current) {
+cancelAnimationFrame(rafId.current);
+}
         };
     }, [end, duration, enabled]);
 

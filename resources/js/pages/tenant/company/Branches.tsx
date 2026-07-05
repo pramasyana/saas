@@ -18,13 +18,24 @@ interface BranchesFilters {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -65,12 +76,18 @@ export default function CompanyBranchesPage() {
     const [branchToDelete, setBranchToDelete] = useState<Branch | null>(null);
 
     useEffect(() => {
-        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
+
         searchTimeout.current = setTimeout(() => {
             setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
         }, 400);
+
         return () => {
-            if (searchTimeout.current) clearTimeout(searchTimeout.current);
+            if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
         };
     }, [searchInput]);
 
@@ -96,7 +113,10 @@ export default function CompanyBranchesPage() {
     }
 
     function handleDelete() {
-        if (!branchToDelete) return;
+        if (!branchToDelete) {
+return;
+}
+
         deleteMutation.mutate(branchToDelete.id, {
             onSuccess: () => {
                 setDeleteOpen(false);

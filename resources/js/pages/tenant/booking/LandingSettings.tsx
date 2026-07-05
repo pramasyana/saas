@@ -238,11 +238,14 @@ return;
                         setDirty(true);
                         const newConfig = structuredClone(prev);
                         const items = [...(newConfig.hero?.carousel_items ?? [])];
+
                         while (items.length <= index) {
                             items.push({ title: '', subtitle: '', cta_text: '', cta_link: '', background_image: null });
                         }
+
                         items[index] = { ...items[index], background_image: res?.url };
                         newConfig.hero = { ...newConfig.hero, carousel_items: items };
+
                         return newConfig;
                     });
                 } else if (typeof index === 'number') {
@@ -253,6 +256,7 @@ return;
                         const items = [...((sectionData['items'] as unknown[] | undefined) ?? [])];
                         items[index] = { ...items[index] as Record<string, unknown>, image: res?.url };
                         (newConfig as Record<string, unknown>)[section] = { ...sectionData, items };
+
                         return newConfig;
                     });
                 } else {

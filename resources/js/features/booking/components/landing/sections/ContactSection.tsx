@@ -1,6 +1,6 @@
+import FadeIn from '@/atoms/FadeIn';
 import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
 import { ContactItem } from './_utils';
-import FadeIn from '@/atoms/FadeIn';
 
 interface BranchItem {
     id: string;
@@ -22,7 +22,9 @@ interface Props {
 }
 
 export default function ContactSection({ data, colors, branches }: Props) {
-    if (!data || Object.keys(data).length === 0) return null;
+    if (!data || Object.keys(data).length === 0) {
+return null;
+}
 
     const defaultBranch = branches?.find((b) => b.is_default) ?? branches?.[0];
     const address = data.address || defaultBranch?.address || null;
@@ -117,6 +119,7 @@ export default function ContactSection({ data, colors, branches }: Props) {
                     <FadeIn direction="right">
                         {(() => {
                             const mapUrl = data.map_embed_url || defaultBranch?.map_embed_url;
+
                             return mapUrl ? (
                                 <div className="h-80 overflow-hidden rounded-2xl shadow-sm lg:h-full">
                                     <iframe

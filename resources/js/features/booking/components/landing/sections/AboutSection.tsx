@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
 import FadeIn from '@/atoms/FadeIn';
+import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
 
 interface Props {
     data: NonNullable<LandingConfig['about']>;
@@ -8,7 +8,9 @@ interface Props {
 }
 
 export default function AboutSection({ data, colors }: Props) {
-    if (!data.content) return null;
+    if (!data.content) {
+return null;
+}
 
     return (
         <section id="about" className="relative overflow-hidden py-16 sm:py-20 lg:py-24" style={{ backgroundColor: colors.background }}>

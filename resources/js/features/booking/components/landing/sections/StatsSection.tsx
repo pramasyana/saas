@@ -1,7 +1,7 @@
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
-import type { LandingConfig, StatItem } from '@/features/booking/hooks/useLandingSettings';
 import { useAnimatedCounter } from '@/features/booking/hooks/useAnimatedCounter';
+import type { LandingConfig, StatItem } from '@/features/booking/hooks/useLandingSettings';
 
 interface Props {
     data: NonNullable<LandingConfig['stats']>;
@@ -32,7 +32,9 @@ export default function StatsSection({ data, colors }: Props) {
     const ref = useRef<HTMLDivElement>(null);
     const isInView = useInView(ref, { once: true, margin: '-100px' });
 
-    if (!items?.length) return null;
+    if (!items?.length) {
+return null;
+}
 
     return (
         <section className="relative overflow-hidden py-16 sm:py-20" style={{ backgroundColor: colors.primary }}>

@@ -1,11 +1,11 @@
-import { useState } from 'react';
 import { Head } from '@inertiajs/react';
-import TenantLayout from '@/layouts/TenantLayout';
+import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
-import { useSettings, useUpdateSettings } from '@/features/settings/hooks/useSettings';
 import SettingsForm from '@/features/settings/components/SettingsForm';
-import { useToastStore } from '@/stores/toast';
+import { useSettings, useUpdateSettings } from '@/features/settings/hooks/useSettings';
+import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
+import { useToastStore } from '@/stores/toast';
 
 type Tab = 'booking' | 'room' | 'recurring';
 

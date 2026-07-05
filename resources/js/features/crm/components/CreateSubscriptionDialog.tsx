@@ -1,9 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import type { CustomerMembershipPlan } from '@/features/crm/types';
 import { useCustomers } from '@/features/crm/hooks/useCustomers';
-import { useAllMembershipPlans } from '@/features/crm/hooks/useMembershipPlans';
 import { useCreateCustomerSubscription } from '@/features/crm/hooks/useCustomerSubscriptions';
+import { useAllMembershipPlans } from '@/features/crm/hooks/useMembershipPlans';
+import type { CustomerMembershipPlan } from '@/features/crm/types';
 
 interface Props {
     open: boolean;
@@ -20,7 +20,9 @@ export default function CreateSubscriptionDialog({ open, onClose }: Props) {
     const [planId, setPlanId] = useState('');
     const [error, setError] = useState('');
 
-    if (!open) return null;
+    if (!open) {
+return null;
+}
 
     const customers = customersData?.data ?? [];
     const plans = plansData?.data ?? [];
@@ -33,6 +35,7 @@ export default function CreateSubscriptionDialog({ open, onClose }: Props) {
 
         if (!customerId || !planId) {
             setError('Pilih customer dan paket membership.');
+
             return;
         }
 

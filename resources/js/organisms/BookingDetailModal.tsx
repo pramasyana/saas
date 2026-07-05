@@ -58,9 +58,11 @@ function getAvatarColor(name: string): string {
         'from-rose-500 to-rose-600', 'from-sky-500 to-sky-600', 'from-violet-500 to-violet-600',
     ];
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return colors[Math.abs(hash) % colors.length];
 }
 
@@ -86,7 +88,9 @@ function StatusTimeline({ logs }: { logs: StatusLogItem[] }) {
         no_show: 'No Show',
     };
 
-    if (logs.length === 0) return null;
+    if (logs.length === 0) {
+return null;
+}
 
     return (
         <div>
@@ -97,6 +101,7 @@ function StatusTimeline({ logs }: { logs: StatusLogItem[] }) {
             <div className="space-y-0">
                 {[...logs].reverse().map((log, i) => {
                     const isLast = i === logs.length - 1;
+
                     return (
                         <div key={i} className="flex gap-3">
                             <div className="flex flex-col items-center">
@@ -153,18 +158,27 @@ export default function BookingDetailModal({ bookingId, onClose }: BookingDetail
     const noShowMut = useMarkNoShow();
 
     async function doAction(action: string) {
-        if (!booking) return;
+        if (!booking) {
+return;
+}
+
         if (action === 'cancel' || action === 'no_show') {
             setConfirmAction(action);
+
             return;
         }
+
         await executeAction(action);
     }
 
     async function executeAction(action: string) {
-        if (!booking) return;
+        if (!booking) {
+return;
+}
+
         setLoadingAction(action);
         setConfirmAction(null);
+
         try {
             const actions: Record<string, () => Promise<unknown>> = {
                 confirm: () => confirmMut.mutateAsync(booking.id),
@@ -280,6 +294,7 @@ export default function BookingDetailModal({ bookingId, onClose }: BookingDetail
                                 <div className="divide-y rounded-xl border shadow-sm" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
                                     {booking.services.map((s) => {
                                         const pax = Math.max(1, booking.total_guests ?? 1);
+
                                         return (
                                             <div key={s.id} className="px-4 py-3.5 first:rounded-t-xl last:rounded-b-xl hover:bg-neutral-50/50">
                                                 <div className="flex items-center justify-between">
@@ -343,6 +358,7 @@ export default function BookingDetailModal({ bookingId, onClose }: BookingDetail
                                         const pax = Math.max(1, booking.total_guests ?? 1);
                                         const svcTotal = Number(s.price) * Number(s.quantity) * pax;
                                         const addonTotal = (s.addons || []).reduce((a, b) => a + Number(b.price) * Number(b.quantity), 0);
+
                                         return sum + svcTotal + addonTotal;
                                     }, 0).toLocaleString('id-ID')}
                                 </span>
@@ -436,6 +452,7 @@ export default function BookingDetailModal({ bookingId, onClose }: BookingDetail
             <Modal open={!!confirmAction} onClose={() => setConfirmAction(null)} size="sm">
                 {confirmAction && (() => {
                     const cfg = confirmConfig[confirmAction];
+
                     return (
                         <div className="p-6">
                             <div className="flex flex-col items-center gap-4 text-center">

@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import axios from 'axios';
+import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
 import RoomForm from '@/features/rooms/components/RoomForm';
 import { useCreateRoom } from '@/features/rooms/hooks/useRooms';
@@ -11,13 +11,16 @@ import { useToastStore } from '@/stores/toast';
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
+
         if (data.errors && typeof data.errors === 'object') {
             return data.errors as Record<string, string[]>;
         }
+
         if (data.message && typeof data.message === 'string') {
             return { _general: [data.message] };
         }
     }
+
     return {};
 }
 

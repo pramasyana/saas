@@ -11,7 +11,9 @@ interface RoomDeleteDialogProps {
 }
 
 export default function RoomDeleteDialog({ open, room, deleting, error, onClose, onConfirm }: RoomDeleteDialogProps) {
-    if (!open) return null;
+    if (!open) {
+return null;
+}
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

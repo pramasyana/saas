@@ -1,28 +1,39 @@
+import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link } from '@inertiajs/react';
 import Button from '@/atoms/Button';
 import type { Branch, BranchFormData } from '@/features/company/types';
 import { cn } from '@/lib/utils';
 
 function convertGoogleMapsUrl(url: string): string {
     const trimmed = url.trim();
-    if (!trimmed) return trimmed;
+
+    if (!trimmed) {
+return trimmed;
+}
 
     // Already an embed URL — keep as is
-    if (trimmed.includes('/maps/embed')) return trimmed;
-    if (trimmed.includes('output=embed')) return trimmed;
+    if (trimmed.includes('/maps/embed')) {
+return trimmed;
+}
+
+    if (trimmed.includes('output=embed')) {
+return trimmed;
+}
 
     // Place URL: extract coordinates from @lat,lng and build embed URL
     const placeMatch = trimmed.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+
     if (placeMatch) {
         const [, lat, lng] = placeMatch;
+
         return `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
     }
 
     // maps.google.com/maps?q=... without output=embed — add it
     if (trimmed.includes('maps.google.com/maps?q=') || trimmed.includes('google.com/maps?q=')) {
         const separator = trimmed.includes('?') ? '&' : '?';
+
         return `${trimmed}${separator}output=embed`;
     }
 
@@ -72,6 +83,7 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
                 is_active: branch.is_active,
                 sort_order: branch.sort_order,
             });
+
             if (branch.latitude != null || branch.longitude != null) {
                 setMapMode('coordinates');
             } else {
@@ -100,19 +112,42 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
         e.preventDefault();
         const payload = { ...form };
 
-        if (!payload.address) delete payload.address;
-        if (!payload.phone) delete payload.phone;
-        if (!payload.email) delete payload.email;
-        if (!payload.whatsapp) delete payload.whatsapp;
-        if (!payload.manager_name) delete payload.manager_name;
+        if (!payload.address) {
+delete payload.address;
+}
+
+        if (!payload.phone) {
+delete payload.phone;
+}
+
+        if (!payload.email) {
+delete payload.email;
+}
+
+        if (!payload.whatsapp) {
+delete payload.whatsapp;
+}
+
+        if (!payload.manager_name) {
+delete payload.manager_name;
+}
 
         if (mapMode === 'embed') {
-            if (!payload.map_embed_url) delete payload.map_embed_url;
+            if (!payload.map_embed_url) {
+delete payload.map_embed_url;
+}
+
             delete payload.latitude;
             delete payload.longitude;
         } else {
-            if (payload.latitude === undefined) delete payload.latitude;
-            if (payload.longitude === undefined) delete payload.longitude;
+            if (payload.latitude === undefined) {
+delete payload.latitude;
+}
+
+            if (payload.longitude === undefined) {
+delete payload.longitude;
+}
+
             delete payload.map_embed_url;
         }
 
@@ -149,6 +184,7 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
         hint?: string,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">
@@ -178,6 +214,7 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
         hint?: string,
     ) {
         const fieldErrors = errors[field];
+
         return (
             <div>
                 <label className="block text-sm font-medium text-neutral-700">{label}</label>
@@ -460,6 +497,7 @@ export default function BranchForm({ branch, saving, errors = {}, onSave }: Bran
                                     onChange={(e) => setField('map_embed_url', e.target.value)}
                                     onBlur={(e) => {
                                         const converted = convertGoogleMapsUrl(e.target.value);
+
                                         if (converted !== e.target.value) {
                                             setField('map_embed_url', converted);
                                         }

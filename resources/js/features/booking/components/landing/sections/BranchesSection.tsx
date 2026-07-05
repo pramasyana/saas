@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
-import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
 import FadeIn from '@/atoms/FadeIn';
+import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
 
 import LeafletMap from '@/molecules/LeafletMap';
 

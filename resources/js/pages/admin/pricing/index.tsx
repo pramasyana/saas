@@ -6,9 +6,9 @@ import { usePlans, useTogglePopular, useDeletePlan } from '@/features/pricing/ho
 import type { PlanFilters } from '@/features/pricing/types';
 import { useDebounce } from '@/hooks/useDebounce';
 import AdminLayout from '@/layouts/AdminLayout';
+import { formatPrice } from '@/lib/utils';
 import Pagination from '@/molecules/Pagination';
 import { useToastStore } from '@/stores/toast';
-import { formatPrice } from '@/lib/utils';
 
 interface PricingPageProps {
     title: string;

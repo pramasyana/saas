@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
-import type { CSSProperties, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 interface PublicLayoutProps {
     children: ReactNode;
@@ -33,9 +33,15 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
     const [mobileOpen, setMobileOpen] = useState(false);
 
     useEffect(() => {
-        if (solidHeader) { setScrolled(true); return; }
+        if (solidHeader) {
+ setScrolled(true);
+
+ return; 
+}
+
         const onScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', onScroll, { passive: true });
+
         return () => window.removeEventListener('scroll', onScroll);
     }, [solidHeader]);
 

@@ -71,6 +71,7 @@ export default function AnalyticsIndexPage() {
                     <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
                         {Object.entries(statusConfig).map(([key, config]) => {
                             const value = analytics?.[key as keyof typeof analytics];
+
                             return (
                                 <div key={key} className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm transition-all hover:shadow-md">
                                     <div className="flex items-center gap-3">

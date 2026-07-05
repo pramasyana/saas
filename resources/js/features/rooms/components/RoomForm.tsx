@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import type { Room, RoomFormData } from '@/features/rooms/types';
 import { useBranches } from '@/features/company/hooks/useBranches';
+import type { Room, RoomFormData } from '@/features/rooms/types';
 import { useSettingsGroup } from '@/features/settings/hooks/useSettings';
 import { cn } from '@/lib/utils';
 
@@ -67,7 +67,9 @@ export default function RoomForm({ room, saving, errors = {}, data, onChange, on
     }
 
     return (
-        <form onSubmit={(e) => { e.preventDefault(); onSave(); }} className="space-y-8">
+        <form onSubmit={(e) => {
+ e.preventDefault(); onSave(); 
+}} className="space-y-8">
             {errors._general && (
                 <div className="flex items-center gap-2.5 rounded-xl border border-danger/20 bg-danger-light px-4 py-3 text-sm text-danger">
                     <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

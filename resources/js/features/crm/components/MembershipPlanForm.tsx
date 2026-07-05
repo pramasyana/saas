@@ -57,7 +57,9 @@ export default function MembershipPlanForm({ plan, saving, errors = {}, onSave, 
     function addBenefit() {
         const val = benefitInput.trim();
 
-        if (!val) return;
+        if (!val) {
+return;
+}
 
         setForm({ ...form, benefits: [...(form.benefits ?? []), val] });
         setBenefitInput('');
@@ -220,7 +222,11 @@ export default function MembershipPlanForm({ plan, saving, errors = {}, onSave, 
                                         type="text"
                                         value={benefitInput}
                                         onChange={(e) => setBenefitInput(e.target.value)}
-                                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addBenefit(); } }}
+                                        onKeyDown={(e) => {
+ if (e.key === 'Enter') {
+ e.preventDefault(); addBenefit(); 
+} 
+}}
                                         className={inputClass('benefits', 'flex-1')}
                                         placeholder="Contoh: Diskon 15% semua layanan"
                                     />

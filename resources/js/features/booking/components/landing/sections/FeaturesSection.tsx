@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
+import FadeIn from '@/atoms/FadeIn';
 import type { LandingConfig, FeatureItem } from '@/features/booking/hooks/useLandingSettings';
 import { FeatureIcon } from './_utils';
-import FadeIn from '@/atoms/FadeIn';
 
 interface Props {
     data: NonNullable<LandingConfig['features']>;
@@ -28,7 +28,9 @@ const itemVariants = {
 export default function FeaturesSection({ data, colors }: Props) {
     const items = data.items;
 
-    if (!items?.length) return null;
+    if (!items?.length) {
+return null;
+}
 
     return (
         <section id="features" className="py-16 sm:py-20 lg:py-section-gap-desktop" style={{ backgroundColor: '#F2F3FF' }}>

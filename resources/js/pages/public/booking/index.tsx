@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
-import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useMemo, useRef } from 'react';
 import {
     usePublicBranches, usePublicServices, usePublicPackages, usePublicStaff,
     usePublicAvailability, usePublicCreateBooking, usePublicAddons,
@@ -58,11 +58,13 @@ const defaultColors = {
 
 function formatTime(dateStr: string): string {
     const d = new Date(dateStr);
+
     return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 }
 
 function formatDate(dateStr: string): string {
     const d = new Date(dateStr);
+
     return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 
@@ -132,7 +134,10 @@ export default function PublicBookingPage({ branches, services, settings, colors
 
 
     const totalDuration = useMemo(() => {
-        if (selectedPackage) return Number(selectedPackage.duration) || 0;
+        if (selectedPackage) {
+return Number(selectedPackage.duration) || 0;
+}
+
         return selectedServices.reduce((sum, s) => sum + (Number(s.duration) || 0), 0);
     }, [selectedServices, selectedPackage]);
 
@@ -141,10 +146,13 @@ export default function PublicBookingPage({ branches, services, settings, colors
     const totalPrice = useMemo(() => {
         if (selectedPackage) {
             const addonTotal = Object.values(serviceAddons).flat().reduce((sum, a) => sum + (Number(a.addon.price) || 0) * (Number(a.quantity) || 0), 0);
+
             return ((Number(selectedPackage.price) || 0) * pax) + addonTotal;
         }
+
         const serviceTotal = selectedServices.reduce((sum, s) => sum + (Number(s.price) || 0), 0) * pax;
         const addonTotal = Object.values(serviceAddons).flat().reduce((sum, a) => sum + (Number(a.addon.price) || 0) * (Number(a.quantity) || 0), 0);
+
         return serviceTotal + addonTotal;
     }, [selectedServices, selectedPackage, serviceAddons, pax]);
 
@@ -163,14 +171,20 @@ export default function PublicBookingPage({ branches, services, settings, colors
 
     const filteredServices = useMemo(() => {
         let result = servicesList;
-        if (activeCategory === '__packages') return [];
+
+        if (activeCategory === '__packages') {
+return [];
+}
+
         if (activeCategory !== 'all') {
             result = result.filter((s) => s.category_id === activeCategory);
         }
+
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
             result = result.filter((s) => s.name.toLowerCase().includes(q) || (s.description && s.description.toLowerCase().includes(q)));
         }
+
         return result;
     }, [activeCategory, servicesList, searchQuery]);
 
@@ -178,14 +192,33 @@ export default function PublicBookingPage({ branches, services, settings, colors
 
     const steps = useMemo(() => {
         const s: StepName[] = [];
-        if (multiBranch) s.push('Cabang');
+
+        if (multiBranch) {
+s.push('Cabang');
+}
+
         s.push('Layanan');
-        if (enableAddons && addonsList.length > 0) s.push('Tambahan');
-        if (enableGuests || enableGroupBooking) s.push('Tamu');
-        if (enableRooms) s.push('Ruangan');
+
+        if (enableAddons && addonsList.length > 0) {
+s.push('Tambahan');
+}
+
+        if (enableGuests || enableGroupBooking) {
+s.push('Tamu');
+}
+
+        if (enableRooms) {
+s.push('Ruangan');
+}
+
         s.push('Waktu');
-        if (enableRecurringPublic) s.push('Berulang');
+
+        if (enableRecurringPublic) {
+s.push('Berulang');
+}
+
         s.push('Data', 'Konfirmasi');
+
         return s;
     }, [multiBranch, enableAddons, enableGuests, enableGroupBooking, enableRooms, enableRecurringPublic, addonsList.length]);
 
@@ -212,7 +245,10 @@ export default function PublicBookingPage({ branches, services, settings, colors
     }
 
     function nextStep() {
-        if (!canProceed()) return;
+        if (!canProceed()) {
+return;
+}
+
         setError('');
         setStep(step + 1);
     }
@@ -233,8 +269,10 @@ export default function PublicBookingPage({ branches, services, settings, colors
             setParticipants([]);
             setIsRecurring(false);
             setServiceAddons({});
+
             return;
         }
+
         setSelectedPackage(null);
         setSelectedStaff(null);
         setSelectedSlot(null);
@@ -244,7 +282,11 @@ export default function PublicBookingPage({ branches, services, settings, colors
         setIsRecurring(false);
         setSelectedServices((prev) => {
             const exists = prev.find((s) => s.id === svc.id);
-            if (exists) return prev.filter((s) => s.id !== svc.id);
+
+            if (exists) {
+return prev.filter((s) => s.id !== svc.id);
+}
+
             return [...prev, svc];
         });
     }
@@ -265,9 +307,11 @@ export default function PublicBookingPage({ branches, services, settings, colors
         setServiceAddons((prev) => {
             const current = prev[svcId] || [];
             const exists = current.find((a) => a.addon.id === addon.id);
+
             if (exists) {
                 return { ...prev, [svcId]: current.filter((a) => a.addon.id !== addon.id) };
             }
+
             return { ...prev, [svcId]: [...current, { addon, quantity: 1 }] };
         });
     }
@@ -275,6 +319,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
     function updateAddonQty(svcId: string, addonId: string, qty: number) {
         setServiceAddons((prev) => {
             const current = prev[svcId] || [];
+
             return {
                 ...prev,
                 [svcId]: current.map((a) => a.addon.id === addonId ? { ...a, quantity: Math.max(1, qty) } : a),
@@ -286,8 +331,14 @@ export default function PublicBookingPage({ branches, services, settings, colors
         const clamped = Math.max(1, Math.min(50, count));
         setTotalGuests(clamped);
         setGuestNames((prev) => {
-            if (prev.length === clamped) return prev;
-            if (prev.length < clamped) return [...prev, ...Array(clamped - prev.length).fill('')];
+            if (prev.length === clamped) {
+return prev;
+}
+
+            if (prev.length < clamped) {
+return [...prev, ...Array(clamped - prev.length).fill('')];
+}
+
             return prev.slice(0, clamped);
         });
     }
@@ -296,6 +347,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
         setGuestNames((prev) => {
             const next = [...prev];
             next[idx] = name;
+
             return next;
         });
     }
@@ -316,6 +368,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                 })) || [],
             }));
         }
+
         return selectedServices.map((s) => ({
             service_id: s.id,
             name: s.name,
@@ -332,7 +385,10 @@ export default function PublicBookingPage({ branches, services, settings, colors
     }
 
     function handleSubmit() {
-        if (!hasSelection || !selectedSlot || !branchId) return;
+        if (!hasSelection || !selectedSlot || !branchId) {
+return;
+}
+
         setError('');
         const servicesPayload = buildServicesPayload();
         const guestDetailsArr = totalGuests > 1 ? guestNames.filter(Boolean) : undefined;
@@ -386,6 +442,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                 {steps.map((label, i) => {
                     const isActive = i === step;
                     const isDone = i < step;
+
                     return (
                         <div key={label} className="flex items-center shrink-0">
                             {i > 0 && (
@@ -441,10 +498,17 @@ export default function PublicBookingPage({ branches, services, settings, colors
     }
 
     function renderSummaryBar() {
-        if (!hasSelection || step >= getStepIndex('Konfirmasi')) return null;
+        if (!hasSelection || step >= getStepIndex('Konfirmasi')) {
+return null;
+}
+
         const stepName = steps[step];
         const showCompact = stepName === 'Layanan' || stepName === 'Tambahan' || stepName === 'Tamu';
-        if (!showCompact) return null;
+
+        if (!showCompact) {
+return null;
+}
+
         return (
             <div className="glass-card rounded-2xl px-5 py-3.5 flex items-center gap-3">
                 <span className="material-symbols-rounded text-lg shrink-0" style={{ color: c.primary }}>contract_edit</span>
@@ -470,7 +534,10 @@ export default function PublicBookingPage({ branches, services, settings, colors
     }
 
     function renderOrderSummary() {
-        if (!hasSelection) return null;
+        if (!hasSelection) {
+return null;
+}
+
         return (
             <div className="glass-card rounded-2xl p-5">
                 <h4 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: c.text }}>
@@ -534,7 +601,10 @@ export default function PublicBookingPage({ branches, services, settings, colors
     }
 
     function renderStickyFooter() {
-        if (step >= getStepIndex('Konfirmasi')) return null;
+        if (step >= getStepIndex('Konfirmasi')) {
+return null;
+}
+
         return (
             <div className="sticky bottom-0 left-0 right-0 z-40 border-t" style={{ backgroundColor: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderColor: `${c.primary}10` }}>
                 <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
@@ -585,6 +655,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
             'massage': 'massage',
             'treatment': 'spa',
         };
+
         return map[cat.slug] || 'spa';
     }
 
@@ -706,11 +777,14 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                     <div className="grid gap-4 sm:grid-cols-2 max-w-2xl mx-auto">
                                         {branches.map((b) => {
                                             const isActive = branchId === b.id;
+
                                             return (
                                                 <button
                                                     key={b.id}
                                                     type="button"
-                                                    onClick={() => { setBranchId(b.id); setSelectedServices([]); setSelectedPackage(null); setSelectedStaff(null); setSelectedSlot(null); setSelectedRoom(''); setIsGroupBooking(false); setParticipants([]); setIsRecurring(false); setServiceAddons({}); }}
+                                                    onClick={() => {
+ setBranchId(b.id); setSelectedServices([]); setSelectedPackage(null); setSelectedStaff(null); setSelectedSlot(null); setSelectedRoom(''); setIsGroupBooking(false); setParticipants([]); setIsRecurring(false); setServiceAddons({}); 
+}}
                                                     className={cn(
                                                         'group relative flex flex-col gap-3 rounded-2xl p-6 text-left transition-all duration-300',
                                                         isActive ? 'glass-card-strong bloom-shadow' : 'glass-card hover:glass-card-strong hover:bloom-shadow',
@@ -758,7 +832,9 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                 <div className="flex lg:flex-col gap-1 overflow-x-auto pb-1 lg:pb-0">
                                                     <button
                                                         type="button"
-                                                        onClick={() => { setActiveCategory('all'); setSearchQuery(''); }}
+                                                        onClick={() => {
+ setActiveCategory('all'); setSearchQuery(''); 
+}}
                                                         className={cn(
                                                             'flex shrink-0 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition-all whitespace-nowrap lg:w-full',
                                                         )}
@@ -782,11 +858,14 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                     {categories.map((cat) => {
                                                         const isCatActive = activeCategory === cat.id;
                                                         const count = servicesList.filter((s) => s.category_id === cat.id).length;
+
                                                         return (
                                                             <button
                                                                 key={cat.id}
                                                                 type="button"
-                                                                onClick={() => { setActiveCategory(cat.id); setSearchQuery(''); }}
+                                                                onClick={() => {
+ setActiveCategory(cat.id); setSearchQuery(''); 
+}}
                                                                 className={cn(
                                                                     'flex shrink-0 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition-all whitespace-nowrap lg:w-full',
                                                                 )}
@@ -812,7 +891,9 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                     {hasPackages && (
                                                         <button
                                                             type="button"
-                                                            onClick={() => { setActiveCategory('__packages'); setSearchQuery(''); }}
+                                                            onClick={() => {
+ setActiveCategory('__packages'); setSearchQuery(''); 
+}}
                                                             className={cn(
                                                                 'flex shrink-0 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition-all whitespace-nowrap lg:w-full',
                                                             )}
@@ -875,6 +956,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                     <div className="grid gap-4 sm:grid-cols-2">
                                                         {packagesList.map((pkg) => {
                                                             const isActive = selectedPackage?.id === pkg.id;
+
                                                             return (
                                                                 <button
                                                                     key={pkg.id}
@@ -946,6 +1028,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                         const isActive = enableMultiService
                                                             ? !!selectedServices.find((x) => x.id === s.id)
                                                             : selectedServices[0]?.id === s.id;
+
                                                         return (
                                                             <button
                                                                 key={s.id}
@@ -995,6 +1078,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                     })}
                                                     {showPackagesInline && packagesList.map((pkg) => {
                                                         const isActive = selectedPackage?.id === pkg.id;
+
                                                         return (
                                                             <button
                                                                 key={`pkg-${pkg.id}`}
@@ -1076,6 +1160,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                             const svcId = 'id' in svc ? svc.id : svc.id;
                                             const svcName = svc.name;
                                             const selected = serviceAddons[svcId] || [];
+
                                             return (
                                                 <div key={svcId} className="glass-card-strong rounded-2xl p-6">
                                                     <h3 className="text-sm font-bold mb-4 flex items-center gap-2" style={{ color: c.text }}>
@@ -1088,6 +1173,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                         <div className="space-y-2">
                                                             {addonsList.map((addon) => {
                                                                 const isSelected = !!selected.find((a) => a.addon.id === addon.id);
+
                                                                 return (
                                                                     <div
                                                                         key={addon.id}
@@ -1129,7 +1215,9 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                                                 <div className="flex items-center gap-1">
                                                                                     <button
                                                                                         type="button"
-                                                                                        onClick={(e) => { e.stopPropagation(); updateAddonQty(svcId, addon.id, (selected.find((a) => a.addon.id === addon.id)?.quantity || 1) - 1); }}
+                                                                                        onClick={(e) => {
+ e.stopPropagation(); updateAddonQty(svcId, addon.id, (selected.find((a) => a.addon.id === addon.id)?.quantity || 1) - 1); 
+}}
                                                                                         className="flex h-7 w-7 items-center justify-center rounded-lg text-sm transition-all"
                                                                                         style={{ backgroundColor: `${c.primary}0c`, color: c.text }}
                                                                                     >
@@ -1140,7 +1228,9 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                                                     </span>
                                                                                     <button
                                                                                         type="button"
-                                                                                        onClick={(e) => { e.stopPropagation(); updateAddonQty(svcId, addon.id, (selected.find((a) => a.addon.id === addon.id)?.quantity || 1) + 1); }}
+                                                                                        onClick={(e) => {
+ e.stopPropagation(); updateAddonQty(svcId, addon.id, (selected.find((a) => a.addon.id === addon.id)?.quantity || 1) + 1); 
+}}
                                                                                         className="flex h-7 w-7 items-center justify-center rounded-lg text-sm transition-all"
                                                                                         style={{ backgroundColor: `${c.primary}0c`, color: c.text }}
                                                                                     >
@@ -1184,7 +1274,13 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                     <input
                                                         type="checkbox"
                                                         checked={isGroupBooking}
-                                                        onChange={(e) => { setIsGroupBooking(e.target.checked); if (!e.target.checked) setParticipants([]); }}
+                                                        onChange={(e) => {
+ setIsGroupBooking(e.target.checked);
+
+ if (!e.target.checked) {
+setParticipants([]);
+} 
+}}
                                                         className="h-5 w-5 rounded accent-current"
                                                         style={{ accentColor: c.primary }}
                                                     />
@@ -1215,10 +1311,16 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                                     <span className="material-symbols-rounded text-sm">close</span>
                                                                 </button>
                                                             </div>
-                                                            <input type="text" value={p.name} onChange={(e) => { const next = [...participants]; next[i] = { ...next[i], name: e.target.value }; setParticipants(next); }} placeholder="Nama" className="block w-full rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                            <input type="text" value={p.name} onChange={(e) => {
+ const next = [...participants]; next[i] = { ...next[i], name: e.target.value }; setParticipants(next); 
+}} placeholder="Nama" className="block w-full rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
                                                             <div className="flex gap-2">
-                                                                <input type="text" value={p.phone} onChange={(e) => { const next = [...participants]; next[i] = { ...next[i], phone: e.target.value }; setParticipants(next); }} placeholder="No. Telepon" className="block w-1/2 rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
-                                                                <input type="email" value={p.email} onChange={(e) => { const next = [...participants]; next[i] = { ...next[i], email: e.target.value }; setParticipants(next); }} placeholder="Email" className="block w-1/2 rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                                <input type="text" value={p.phone} onChange={(e) => {
+ const next = [...participants]; next[i] = { ...next[i], phone: e.target.value }; setParticipants(next); 
+}} placeholder="No. Telepon" className="block w-1/2 rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                                <input type="email" value={p.email} onChange={(e) => {
+ const next = [...participants]; next[i] = { ...next[i], email: e.target.value }; setParticipants(next); 
+}} placeholder="Email" className="block w-1/2 rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
                                                             </div>
                                                         </div>
                                                     ))}
@@ -1301,7 +1403,9 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                             <div className="text-center py-6">
                                                 <span className="material-symbols-rounded text-2xl" style={{ color: c.text_muted }}>meeting_room</span>
                                                 <p className="mt-2 text-sm" style={{ color: c.text_muted }}>Tidak ada ruangan tersedia.</p>
-                                                <button type="button" onClick={() => { setSelectedRoom('-'); nextStep(); }} className="mt-3 inline-flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-medium" style={{ backgroundColor: `${c.primary}0c`, color: c.primary }}>
+                                                <button type="button" onClick={() => {
+ setSelectedRoom('-'); nextStep(); 
+}} className="mt-3 inline-flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-medium" style={{ backgroundColor: `${c.primary}0c`, color: c.primary }}>
                                                     <span className="material-symbols-rounded text-sm">arrow_forward</span>
                                                     Lewati
                                                 </button>
@@ -1322,6 +1426,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                 </button>
                                                 {roomsList.map((r) => {
                                                     const isActive = selectedRoom === r.id;
+
                                                     return (
                                                         <button
                                                             key={r.id}
@@ -1380,6 +1485,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                 </button>
                                                 {staffList.map((s) => {
                                                     const isActive = selectedStaff?.id === s.id;
+
                                                     return (
                                                         <button
                                                             key={s.id}
@@ -1413,7 +1519,9 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                             <input
                                                 type="date"
                                                 value={selectedDate}
-                                                onChange={(e) => { setSelectedDate(e.target.value); setSelectedSlot(null); }}
+                                                onChange={(e) => {
+ setSelectedDate(e.target.value); setSelectedSlot(null); 
+}}
                                                 min={new Date().toISOString().split('T')[0]}
                                                 className="block w-full rounded-xl border-2 px-4 py-2.5 text-sm outline-none transition-all"
                                                 style={{
@@ -1443,6 +1551,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
                                                         {slots.map((slot) => {
                                                             const isActive = selectedSlot === slot.start_time;
+
                                                             return (
                                                                 <button
                                                                     key={slot.start_time}

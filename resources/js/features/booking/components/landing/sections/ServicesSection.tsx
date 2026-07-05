@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@inertiajs/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useMemo } from 'react';
+import FadeIn from '@/atoms/FadeIn';
 import type { LandingConfig, ServiceItem, PackageItem, CategoryItem, PricingInfo } from '@/features/booking/hooks/useLandingSettings';
 import { cn, formatPrice } from '@/lib/utils';
-import FadeIn from '@/atoms/FadeIn';
 
 interface BranchItem {
     id: string; name: string; is_default: boolean;
@@ -213,7 +213,10 @@ function PackageCard({
 export default function ServicesSection({ data, colors, services, packages, categories, branches, settings }: Props) {
     const showBranchSelector = branches && branches.length > 1;
     const defaultBranchId = useMemo(() => {
-        if (!branches || branches.length === 0) return null;
+        if (!branches || branches.length === 0) {
+return null;
+}
+
         return branches.find((b) => b.is_default)?.id ?? branches[0].id;
     }, [branches]);
 
@@ -221,12 +224,18 @@ export default function ServicesSection({ data, colors, services, packages, cate
     const [activeTab, setActiveTab] = useState<string>('all');
 
     const filteredServices = useMemo(() => {
-        if (!selectedBranchId || !services) return services ?? [];
+        if (!selectedBranchId || !services) {
+return services ?? [];
+}
+
         return services.filter((s) => s.branch_id === selectedBranchId || s.branch_id === null);
     }, [services, selectedBranchId]);
 
     const filteredPackages = useMemo(() => {
-        if (!selectedBranchId || !packages) return packages ?? [];
+        if (!selectedBranchId || !packages) {
+return packages ?? [];
+}
+
         return packages.filter((p) => p.branch_id === selectedBranchId || p.branch_id === null);
     }, [packages, selectedBranchId]);
 
@@ -261,8 +270,12 @@ export default function ServicesSection({ data, colors, services, packages, cate
                 : items.filter((s) => s.category_id === activeTab);
 
     function getPricing(item: ServiceItem | PackageItem): PricingInfo | null {
-        if (!selectedBranchId) return null;
+        if (!selectedBranchId) {
+return null;
+}
+
         const p = (item as any).pricing_by_branch?.[selectedBranchId];
+
         return p ?? null;
     }
 
@@ -318,6 +331,7 @@ export default function ServicesSection({ data, colors, services, packages, cate
                 <div className="flex gap-2 p-1.5 rounded-full overflow-x-auto mb-10" style={{ backgroundColor: '#E2E7FF' }}>
                     {tabs.map((tab) => {
                         const isActive = activeTab === tab.id;
+
                         return (
                             <button
                                 key={tab.id}

@@ -1,8 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import Badge from '@/atoms/Badge';
-import { useCustomerSubscriptions, useCustomerSubscriptionStats } from '@/features/crm/hooks/useCustomerSubscriptions';
 import CreateSubscriptionDialog from '@/features/crm/components/CreateSubscriptionDialog';
+import { useCustomerSubscriptions, useCustomerSubscriptionStats } from '@/features/crm/hooks/useCustomerSubscriptions';
 import TenantLayout from '@/layouts/TenantLayout';
 
 const statusLabels: Record<string, { label: string; variant: 'success' | 'danger' | 'warning' | 'neutral' }> = {
@@ -135,14 +135,18 @@ export default function CustomerSubscriptionsIndexPage() {
                     <input
                         type="text"
                         value={search}
-                        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                        onChange={(e) => {
+ setSearch(e.target.value); setPage(1); 
+}}
                         placeholder="Cari pelanggan..."
                         className="block w-full rounded-xl border border-neutral-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                     />
                 </div>
                 <select
                     value={statusFilter}
-                    onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+                    onChange={(e) => {
+ setStatusFilter(e.target.value); setPage(1); 
+}}
                     className="w-full rounded-xl border border-neutral-300 bg-white py-2.5 pl-3.5 pr-8 text-sm text-neutral-900 shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 sm:w-44"
                 >
                     <option value="">Semua Status</option>
@@ -287,7 +291,9 @@ export default function CustomerSubscriptionsIndexPage() {
                         <span className="text-sm text-neutral-500">Per halaman:</span>
                         <select
                             value={perPage}
-                            onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
+                            onChange={(e) => {
+ setPerPage(Number(e.target.value)); setPage(1); 
+}}
                             className="rounded-xl border border-neutral-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                         >
                             <option value={10}>10</option>

@@ -5,7 +5,10 @@ import { cn, formatPrice as baseFormatPrice } from '@/lib/utils';
 import type { Plan, BillingInterval } from '@/types';
 
 function formatPrice(value: number): string {
-    if (value === 0) return 'Gratis';
+    if (value === 0) {
+return 'Gratis';
+}
+
     return baseFormatPrice(value);
 }
 

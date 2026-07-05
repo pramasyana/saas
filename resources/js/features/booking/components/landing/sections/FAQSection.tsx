@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import FadeIn from '@/atoms/FadeIn';
 import type { LandingConfig, FAQItem } from '@/features/booking/hooks/useLandingSettings';
 import { cn } from '@/lib/utils';
-import FadeIn from '@/atoms/FadeIn';
 
 interface Props {
     data: NonNullable<LandingConfig['faq']>;
@@ -13,7 +13,9 @@ export default function FAQSection({ data, colors }: Props) {
     const items = data.items;
     const [openIndex, setOpenIndex] = useState(-1);
 
-    if (!items?.length) return null;
+    if (!items?.length) {
+return null;
+}
 
     return (
         <section id="faq" className="py-16 sm:py-20 lg:py-24" style={{ backgroundColor: colors.background }}>
@@ -36,6 +38,7 @@ export default function FAQSection({ data, colors }: Props) {
                 <div className="mt-12 space-y-3">
                     {items.map((item: FAQItem, i: number) => {
                         const isOpen = openIndex === i;
+
                         return (
                             <div
                                 key={i}

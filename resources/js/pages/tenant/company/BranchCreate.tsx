@@ -16,9 +16,16 @@ interface CreatePageProps {
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
         const data = error.response.data as Record<string, unknown>;
-        if (data.errors && typeof data.errors === 'object') return data.errors as Record<string, string[]>;
-        if (data.message && typeof data.message === 'string') return { _general: [data.message] };
+
+        if (data.errors && typeof data.errors === 'object') {
+return data.errors as Record<string, string[]>;
+}
+
+        if (data.message && typeof data.message === 'string') {
+return { _general: [data.message] };
+}
     }
+
     return {};
 }
 

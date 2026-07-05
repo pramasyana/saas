@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { LandingConfig, GalleryItem } from '@/features/booking/hooks/useLandingSettings';
+import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
+import type { LandingConfig, GalleryItem } from '@/features/booking/hooks/useLandingSettings';
 
 interface Props {
     data: NonNullable<LandingConfig['gallery']>;
@@ -30,7 +30,9 @@ export default function GallerySection({ data, colors }: Props) {
     const items = data.items;
     const [lightbox, setLightbox] = useState<number | null>(null);
 
-    if (!items?.length) return null;
+    if (!items?.length) {
+return null;
+}
 
     return (
         <section id="gallery" className="py-16 sm:py-20 lg:py-24" style={{ backgroundColor: colors.background }}>

@@ -5,8 +5,8 @@ import { useSubscriptions } from '@/features/subscriptions/hooks/useSubscription
 import type { SubscriptionFilters } from '@/features/subscriptions/types';
 import { useDebounce } from '@/hooks/useDebounce';
 import AdminLayout from '@/layouts/AdminLayout';
-import Pagination from '@/molecules/Pagination';
 import { formatPrice } from '@/lib/utils';
+import Pagination from '@/molecules/Pagination';
 
 interface SubscriptionsPageProps {
     title: string;

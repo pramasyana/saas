@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAllServices } from '@/features/service/hooks/useServices';
 import { useStaffServices, useSyncStaffServices } from '@/features/staff/hooks/useStaffServices';
-import { useToastStore } from '@/stores/toast';
 import { cn } from '@/lib/utils';
+import { useToastStore } from '@/stores/toast';
 
 interface StaffServiceMappingProps {
     staffId: string;
@@ -29,12 +29,18 @@ export default function StaffServiceMapping({ staffId }: StaffServiceMappingProp
     function toggle(id: string) {
         setSelected((prev) => {
             const next = new Set(prev);
+
             if (next.has(id)) {
                 next.delete(id);
-                setPrimaries((p) => { const p2 = new Set(p); p2.delete(id); return p2; });
+                setPrimaries((p) => {
+ const p2 = new Set(p); p2.delete(id);
+
+ return p2; 
+});
             } else {
                 next.add(id);
             }
+
             return next;
         });
     }
@@ -42,8 +48,13 @@ export default function StaffServiceMapping({ staffId }: StaffServiceMappingProp
     function togglePrimary(id: string) {
         setPrimaries((prev) => {
             const next = new Set(prev);
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
+
+            if (next.has(id)) {
+next.delete(id);
+} else {
+next.add(id);
+}
+
             return next;
         });
     }
@@ -62,10 +73,22 @@ export default function StaffServiceMapping({ staffId }: StaffServiceMappingProp
     const isLoading = loadingServices || loadingMapped;
     const services = allServices?.data ?? [];
     const hasChanges = (() => {
-        if (!staffServices) return true;
+        if (!staffServices) {
+return true;
+}
+
         const mappedIds = new Set(staffServices.map((s) => s.id));
-        if (mappedIds.size !== selected.size) return true;
-        for (const id of mappedIds) if (!selected.has(id)) return true;
+
+        if (mappedIds.size !== selected.size) {
+return true;
+}
+
+        for (const id of mappedIds) {
+if (!selected.has(id)) {
+return true;
+}
+}
+
         return false;
     })();
 
@@ -96,6 +119,7 @@ export default function StaffServiceMapping({ staffId }: StaffServiceMappingProp
                     {services.map((svc) => {
                         const isSelected = selected.has(svc.id);
                         const isPrimary = primaries.has(svc.id);
+
                         return (
                             <div
                                 key={svc.id}

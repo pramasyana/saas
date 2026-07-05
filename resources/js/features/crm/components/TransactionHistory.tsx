@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import FadeIn from '@/atoms/FadeIn';
 import Badge from '@/atoms/Badge';
-import Modal from '@/molecules/Modal';
+import FadeIn from '@/atoms/FadeIn';
 import { useBookings, useBooking } from '@/features/booking/hooks/useBookings';
 import type { Booking, BookingServiceItem } from '@/features/booking/types';
 import { formatPrice } from '@/lib/utils';
+import Modal from '@/molecules/Modal';
 
 interface TransactionHistoryProps {
     customerId: string;
@@ -29,9 +29,11 @@ function formatTime(d: string) {
 
 function calcTotal(svc: BookingServiceItem[], guests: number): number {
     const pax = Math.max(1, guests ?? 1);
+
     return svc.reduce((sum, s) => {
         const svcTotal = Number(s.price) * Number(s.quantity) * pax;
         const addonTotal = (s.addons || []).reduce((a, b) => a + Number(b.price) * Number(b.quantity), 0);
+
         return sum + svcTotal + addonTotal;
     }, 0);
 }
@@ -136,6 +138,7 @@ function DetailModal({ booking, onClose }: { booking: Booking; onClose: () => vo
                                 <div className="space-y-3">
                                     {[...logs].reverse().map((log, i) => {
                                         const isLast = i === logs.length - 1;
+
                                         return (
                                             <div key={i} className="relative flex gap-2.5">
                                                 <div className="relative z-10 mt-0.5">
@@ -214,6 +217,7 @@ export default function TransactionHistory({ customerId }: TransactionHistoryPro
                     <div className="space-y-3">
                         {bookings.map((b) => {
                             const total = calcTotal(b.services, b.total_guests);
+
                             return (
                                 <div key={b.id} className="flex items-center justify-between gap-4 rounded-xl border border-neutral-200 bg-white p-4 transition-colors hover:bg-neutral-50">
                                     <div className="min-w-0 flex-1">

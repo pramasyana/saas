@@ -51,7 +51,9 @@ export default function MembershipPlansIndexPage() {
     const stats = statsData?.data;
 
     function handleDelete() {
-        if (!planToDelete) return;
+        if (!planToDelete) {
+return;
+}
 
         deleteMutation.mutate(planToDelete.id, {
             onSuccess: () => {
@@ -63,11 +65,17 @@ export default function MembershipPlansIndexPage() {
 
     const deleteError = (() => {
         const err = deleteMutation.error;
-        if (!err) return undefined;
+
+        if (!err) {
+return undefined;
+}
+
         if (err instanceof Error && 'response' in err) {
             const axiosErr = err as { response?: { data?: { message?: string } } };
+
             return axiosErr.response?.data?.message ?? err.message;
         }
+
         return String(err);
     })();
 
@@ -144,7 +152,9 @@ export default function MembershipPlansIndexPage() {
                     <input
                         type="text"
                         value={search}
-                        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                        onChange={(e) => {
+ setSearch(e.target.value); setPage(1); 
+}}
                         placeholder="Cari paket..."
                         className="block w-full rounded-xl border border-neutral-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                     />
@@ -331,7 +341,9 @@ export default function MembershipPlansIndexPage() {
                         <span className="text-sm text-neutral-500">Per halaman:</span>
                         <select
                             value={perPage}
-                            onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
+                            onChange={(e) => {
+ setPerPage(Number(e.target.value)); setPage(1); 
+}}
                             className="rounded-xl border border-neutral-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                         >
                             <option value={10}>10</option>
@@ -382,7 +394,9 @@ export default function MembershipPlansIndexPage() {
                     plan={planToDelete}
                     deleting={deleteMutation.isPending}
                     error={deleteError}
-                    onClose={() => { setPlanToDelete(null); deleteMutation.reset(); }}
+                    onClose={() => {
+ setPlanToDelete(null); deleteMutation.reset(); 
+}}
                     onConfirm={handleDelete}
                 />
             )}

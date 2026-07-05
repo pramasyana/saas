@@ -221,6 +221,7 @@ function HeroForm({ data, set, handleImageUpload }: { data: Record<string, unkno
                 <div className="flex gap-2">
                     {(['color', 'image', 'carousel'] as const).map((type) => {
                         const icons = { color: '🎨', image: '🖼️', carousel: '🎠' };
+
                         return (
                             <button key={type} type="button" onClick={() => set('hero.background_type', type)}
                                 className={cn('flex-1 rounded-xl border-2 px-3 py-2.5 text-xs font-semibold transition-all flex flex-col items-center gap-1', bgType === type
@@ -261,6 +262,7 @@ function HeroForm({ data, set, handleImageUpload }: { data: Record<string, unkno
                             <div className="flex items-center gap-3">
                                 {(() => {
                                     const overlayVal = (d as any)?.overlay_opacity ?? 50;
+
                                     return (
                                         <>
                                             <input type="range" min={0} max={100} value={overlayVal}
@@ -291,7 +293,11 @@ function HeroForm({ data, set, handleImageUpload }: { data: Record<string, unkno
                                 <span className="text-xs font-medium text-neutral-500">Slide ({((d as any)?.carousel_items ?? []).length}/5)</span>
                                 <button type="button" onClick={() => {
                                     const items = [...((d as any)?.carousel_items ?? [])];
-                                    if (items.length >= 5) return;
+
+                                    if (items.length >= 5) {
+return;
+}
+
                                     items.push({ title: '', subtitle: '', cta_text: '', cta_link: '', background_image: null });
                                     set('hero.carousel_items', items);
                                 }}

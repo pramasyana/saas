@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
+import FadeIn from '@/atoms/FadeIn';
 import type { LandingConfig } from '@/features/booking/hooks/useLandingSettings';
 import { getInitials } from './_utils';
-import FadeIn from '@/atoms/FadeIn';
 
 interface TeamMember {
     id: string; name: string; position: string | null; email: string | null;
