@@ -17,6 +17,7 @@ class ServiceResource extends JsonResource
             'id' => $this->id,
             'category_id' => $this->category_id,
             'category_name' => $this->whenLoaded('category', fn () => $this->category?->name),
+            'room_id' => $this->room_id,
             'name' => $this->name,
             'description' => $this->description,
             'duration' => $this->duration,

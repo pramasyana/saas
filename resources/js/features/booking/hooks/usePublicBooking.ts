@@ -46,6 +46,14 @@ export interface AddonItem {
     duration: number | null;
 }
 
+export interface RoomItem {
+    id: string;
+    name: string;
+    capacity: number;
+    color: string | null;
+    branch_id: string | null;
+}
+
 interface AvailabilitySlot {
     time: string;
     start_time: string;
@@ -95,7 +103,11 @@ export interface BookingDetail {
     notes: string | null;
     total_guests: number;
     guest_details: string[] | null;
+    is_group?: boolean;
+    max_participants?: number;
     services: BookingServiceItem[];
+    rooms?: { id: string; name: string; color: string | null }[];
+    participants?: { name: string; phone?: string; email?: string; status?: string }[];
 }
 
 export interface CreateBookingServiceItem {
@@ -126,6 +138,17 @@ export interface CreateBookingPayload {
     notes?: string;
     total_guests?: number;
     guest_details?: string[];
+    rooms?: { room_id: string; start_time: string; end_time: string }[];
+    is_group?: boolean;
+    max_participants?: number;
+    participants?: { name: string; phone?: string; email?: string; notes?: string }[];
+    recurring?: {
+        frequency: 'daily' | 'weekly' | 'monthly';
+        interval?: number;
+        end_type: 'after_count' | 'until_date' | 'never';
+        count?: number;
+        until_date?: string;
+    };
 }
 
 function getBranches(): Promise<{ data: Branch[] }> {
@@ -144,8 +167,16 @@ function getServices(params: { branch_id?: string }): Promise<{ data: ServiceIte
     return api.get('/api/v1/booking/services', { params }).then((r) => r.data);
 }
 
-function getStaff(params: { branch_id?: string }): Promise<{ data: StaffMember[] }> {
+function getStaff(params: { branch_id?: string; date?: string; service_id?: string }): Promise<{ data: StaffMember[] }> {
     return api.get('/api/v1/booking/staff', { params }).then((r) => r.data);
+}
+
+function getRooms(params: { branch_id?: string }): Promise<{ data: RoomItem[] }> {
+    return api.get('/api/v1/booking/rooms', { params }).then((r) => r.data);
+}
+
+function getAvailableRooms(params: { date: string; start_time: string; end_time: string; branch_id?: string }): Promise<{ data: RoomItem[] }> {
+    return api.get('/api/v1/booking/rooms/available', { params }).then((r) => r.data);
 }
 
 function getAvailability(params: {
@@ -201,7 +232,7 @@ export function usePublicServices(params: { branch_id?: string }) {
     });
 }
 
-export function usePublicStaff(params: { branch_id?: string; date?: string }) {
+export function usePublicStaff(params: { branch_id?: string; date?: string; service_id?: string }) {
     return useQuery({
         queryKey: ['public-booking', 'staff', params],
         queryFn: () => getStaff(params),
@@ -234,6 +265,25 @@ export function usePublicCreateBooking() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['public-booking'] });
         },
+    });
+}
+
+export function usePublicRooms(params: { branch_id?: string }) {
+    return useQuery({
+        queryKey: ['public-booking', 'rooms', params],
+        queryFn: () => getRooms(params),
+        staleTime: 1000 * 60 * 10,
+        enabled: !!params.branch_id,
+    });
+}
+
+export function usePublicAvailableRooms(params: { date: string; start_time: string; end_time: string; branch_id?: string }) {
+    return useQuery({
+        queryKey: ['public-booking', 'rooms-available', params],
+        queryFn: () => getAvailableRooms(params),
+        staleTime: 1000 * 60,
+        enabled: !!params.date && !!params.start_time && !!params.end_time,
+        retry: false,
     });
 }
 

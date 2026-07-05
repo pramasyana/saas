@@ -175,6 +175,10 @@ class BookingController extends Controller
                 'enable_addons' => $config['enable_addons'] ?? false,
                 'enable_multi_service' => $config['enable_multi_service'] ?? false,
                 'enable_guests' => $config['enable_guests'] ?? false,
+                'enable_rooms' => $config['enable_rooms'] ?? false,
+                'enable_staff_filter' => $config['enable_staff_filter'] ?? true,
+                'enable_group_booking' => $config['enable_group_booking'] ?? false,
+                'enable_recurring_public' => $config['enable_recurring_public'] ?? false,
             ],
         ]);
     }
@@ -188,6 +192,10 @@ class BookingController extends Controller
             'enable_addons' => 'boolean',
             'enable_multi_service' => 'boolean',
             'enable_guests' => 'boolean',
+            'enable_rooms' => 'boolean',
+            'enable_staff_filter' => 'boolean',
+            'enable_group_booking' => 'boolean',
+            'enable_recurring_public' => 'boolean',
         ]);
 
         $tenant = tenant();

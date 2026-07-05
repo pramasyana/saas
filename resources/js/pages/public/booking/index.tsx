@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     usePublicBranches, usePublicServices, usePublicPackages, usePublicStaff,
     usePublicAvailability, usePublicCreateBooking, usePublicAddons,
+    usePublicRooms,
 } from '@/features/booking/hooks/usePublicBooking';
-import type { ServiceItem, PackageItem, StaffMember, AddonItem, Branch } from '@/features/booking/hooks/usePublicBooking';
+import type { ServiceItem, PackageItem, StaffMember, AddonItem, Branch, RoomItem } from '@/features/booking/hooks/usePublicBooking';
 import PublicLayout from '@/layouts/PublicLayout';
 import { cn, formatPrice } from '@/lib/utils';
 
@@ -27,6 +28,10 @@ interface PageProps {
         enable_addons: boolean;
         enable_multi_service: boolean;
         enable_guests: boolean;
+        enable_staff_filter: boolean;
+        enable_rooms: boolean;
+        enable_group_booking: boolean;
+        enable_recurring_public: boolean;
     };
     colors: {
         primary?: string;
@@ -67,7 +72,7 @@ const containerVariants = {
     exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
 };
 
-type StepName = 'Cabang' | 'Layanan' | 'Tambahan' | 'Tamu' | 'Waktu' | 'Data' | 'Konfirmasi';
+type StepName = 'Cabang' | 'Layanan' | 'Tambahan' | 'Tamu' | 'Ruangan' | 'Waktu' | 'Berulang' | 'Data' | 'Konfirmasi';
 
 export default function PublicBookingPage({ branches, services, settings, colors: colorsProp, tenant: tenantInfo, categories, packages: initialPackages, addons: initialAddons }: PageProps) {
     const c = { ...defaultColors, ...colorsProp };
@@ -86,13 +91,36 @@ export default function PublicBookingPage({ branches, services, settings, colors
     const [customerPhone, setCustomerPhone] = useState('');
     const [totalGuests, setTotalGuests] = useState(1);
     const [guestNames, setGuestNames] = useState<string[]>([]);
+    // Room
+    const [selectedRoom, setSelectedRoom] = useState<string>('');
+    // Group booking
+    const [isGroupBooking, setIsGroupBooking] = useState(false);
+    const [participants, setParticipants] = useState<{ name: string; phone: string; email: string; notes: string }[]>([]);
+    const [maxParticipants, setMaxParticipants] = useState(10);
+    // Recurring
+    const [isRecurring, setIsRecurring] = useState(false);
+    const [recurringFreq, setRecurringFreq] = useState<'daily' | 'weekly' | 'monthly'>('weekly');
+    const [recurringInterval, setRecurringInterval] = useState(1);
+    const [recurringEndType, setRecurringEndType] = useState<'after_count' | 'until_date' | 'never'>('after_count');
+    const [recurringCount, setRecurringCount] = useState(4);
+    const [recurringUntilDate, setRecurringUntilDate] = useState('');
     const [notes, setNotes] = useState('');
     const [error, setError] = useState('');
 
     const { data: servicesData } = usePublicServices({ branch_id: branchId });
     const { data: packagesData } = usePublicPackages({ branch_id: branchId });
-    const { data: staffData } = usePublicStaff({ branch_id: branchId });
+    const enableAddons = settings.enable_addons;
+    const enableMultiService = settings.enable_multi_service;
+    const enableGuests = settings.enable_guests;
+    const enableStaffFilter = settings.enable_staff_filter;
+    const enableRooms = settings.enable_rooms;
+    const enableGroupBooking = settings.enable_group_booking;
+    const enableRecurringPublic = settings.enable_recurring_public;
+
+    const staffServiceId = enableStaffFilter ? (selectedServices[0]?.id || selectedPackage?.services[0]?.id || '') : undefined;
+    const { data: staffData } = usePublicStaff({ branch_id: branchId, service_id: staffServiceId || undefined });
     const { data: addonsData } = usePublicAddons({ branch_id: branchId });
+    const { data: roomsData } = usePublicRooms({ branch_id: enableRooms ? branchId : undefined });
     const createMutation = usePublicCreateBooking();
 
     const multiBranch = branches.length > 1;
@@ -100,10 +128,8 @@ export default function PublicBookingPage({ branches, services, settings, colors
     const packagesList = packagesData?.data ?? initialPackages;
     const staffList = staffData?.data ?? [];
     const addonsList = addonsData?.data ?? initialAddons;
+    const roomsList = roomsData?.data ?? [];
 
-    const enableAddons = settings.enable_addons;
-    const enableMultiService = settings.enable_multi_service;
-    const enableGuests = settings.enable_guests;
 
     const totalDuration = useMemo(() => {
         if (selectedPackage) return Number(selectedPackage.duration) || 0;
@@ -155,10 +181,13 @@ export default function PublicBookingPage({ branches, services, settings, colors
         if (multiBranch) s.push('Cabang');
         s.push('Layanan');
         if (enableAddons && addonsList.length > 0) s.push('Tambahan');
-        if (enableGuests) s.push('Tamu');
-        s.push('Waktu', 'Data', 'Konfirmasi');
+        if (enableGuests || enableGroupBooking) s.push('Tamu');
+        if (enableRooms) s.push('Ruangan');
+        s.push('Waktu');
+        if (enableRecurringPublic) s.push('Berulang');
+        s.push('Data', 'Konfirmasi');
         return s;
-    }, [multiBranch, enableAddons, enableGuests, addonsList.length]);
+    }, [multiBranch, enableAddons, enableGuests, enableGroupBooking, enableRooms, enableRecurringPublic, addonsList.length]);
 
     function getStepIndex(stepName: StepName): number {
         return steps.indexOf(stepName);
@@ -173,8 +202,10 @@ export default function PublicBookingPage({ branches, services, settings, colors
             case 'Cabang': return multiBranch ? !!branchId : true;
             case 'Layanan': return hasSelection;
             case 'Tambahan': return true;
-            case 'Tamu': return true;
+            case 'Tamu': return !isGroupBooking || participants.some((p) => p.name.trim().length > 0);
+            case 'Ruangan': return !enableRooms || !!selectedRoom;
             case 'Waktu': return !!selectedSlot;
+            case 'Berulang': return true;
             case 'Data': return !!customerName && !!customerEmail && !!customerPhone;
             default: return false;
         }
@@ -197,12 +228,20 @@ export default function PublicBookingPage({ branches, services, settings, colors
             setSelectedPackage(null);
             setSelectedStaff(null);
             setSelectedSlot(null);
+            setSelectedRoom('');
+            setIsGroupBooking(false);
+            setParticipants([]);
+            setIsRecurring(false);
             setServiceAddons({});
             return;
         }
         setSelectedPackage(null);
         setSelectedStaff(null);
         setSelectedSlot(null);
+        setSelectedRoom('');
+        setIsGroupBooking(false);
+        setParticipants([]);
+        setIsRecurring(false);
         setSelectedServices((prev) => {
             const exists = prev.find((s) => s.id === svc.id);
             if (exists) return prev.filter((s) => s.id !== svc.id);
@@ -215,6 +254,10 @@ export default function PublicBookingPage({ branches, services, settings, colors
         setSelectedServices([]);
         setSelectedStaff(null);
         setSelectedSlot(null);
+        setSelectedRoom('');
+        setIsGroupBooking(false);
+        setParticipants([]);
+        setIsRecurring(false);
         setServiceAddons({});
     }
 
@@ -294,6 +337,18 @@ export default function PublicBookingPage({ branches, services, settings, colors
         const servicesPayload = buildServicesPayload();
         const guestDetailsArr = totalGuests > 1 ? guestNames.filter(Boolean) : undefined;
 
+        const selectedRoomId = selectedRoom && selectedRoom !== '-' ? selectedRoom : null;
+        const slotStart = selectedSlot || '';
+        const slotEnd = new Date(new Date(slotStart).getTime() + (totalDuration * 60_000)).toISOString();
+
+        const recurringData = isRecurring ? {
+            frequency: recurringFreq,
+            interval: recurringInterval,
+            end_type: recurringEndType,
+            ...(recurringEndType === 'after_count' ? { count: recurringCount } : {}),
+            ...(recurringEndType === 'until_date' && recurringUntilDate ? { until_date: recurringUntilDate } : {}),
+        } : undefined;
+
         createMutation.mutate({
             customer_name: customerName,
             customer_email: customerEmail,
@@ -302,11 +357,14 @@ export default function PublicBookingPage({ branches, services, settings, colors
             package_id: selectedPackage?.id,
             staff_id: selectedStaff?.id,
             branch_id: branchId,
-            start_time: selectedSlot,
+            start_time: slotStart,
             duration_minutes: totalDuration,
             total_guests: totalGuests,
             guest_details: guestDetailsArr,
             notes: notes || undefined,
+            ...(selectedRoomId ? { rooms: [{ room_id: selectedRoomId, start_time: slotStart, end_time: slotEnd }] } : {}),
+            ...(isGroupBooking ? { is_group: true, max_participants: maxParticipants, participants: participants.filter((p) => p.name.trim()) } : {}),
+            ...(recurringData ? { recurring: recurringData } : {}),
         }, {
             onSuccess: (result) => {
                 router.visit(`/booking/${result.data.booking_code}/confirmation`);
@@ -652,7 +710,7 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                 <button
                                                     key={b.id}
                                                     type="button"
-                                                    onClick={() => { setBranchId(b.id); setSelectedServices([]); setSelectedPackage(null); setSelectedStaff(null); setSelectedSlot(null); setServiceAddons({}); }}
+                                                    onClick={() => { setBranchId(b.id); setSelectedServices([]); setSelectedPackage(null); setSelectedStaff(null); setSelectedSlot(null); setSelectedRoom(''); setIsGroupBooking(false); setParticipants([]); setIsRecurring(false); setServiceAddons({}); }}
                                                     className={cn(
                                                         'group relative flex flex-col gap-3 rounded-2xl p-6 text-left transition-all duration-300',
                                                         isActive ? 'glass-card-strong bloom-shadow' : 'glass-card hover:glass-card-strong hover:bloom-shadow',
@@ -1112,56 +1170,180 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                     </div>
 
                                     <div className="glass-card-strong rounded-2xl p-6 max-w-lg mx-auto">
-                                        <div className="mb-5">
-                                            <label className="mb-3 block text-sm font-medium text-center" style={{ color: c.text }}>Jumlah orang</label>
-                                            <div className="flex items-center justify-center gap-4">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleGuestCountChange(totalGuests - 1)}
-                                                    disabled={totalGuests <= 1}
-                                                    className="flex h-12 w-12 items-center justify-center rounded-xl text-lg transition-all hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
-                                                    style={{ backgroundColor: `${c.primary}0c`, color: c.text }}
-                                                >
-                                                    <span className="material-symbols-rounded">remove</span>
-                                                </button>
-                                                <span className="w-14 text-center text-2xl font-extrabold tabular-nums" style={{ color: c.primary }}>{totalGuests}</span>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleGuestCountChange(totalGuests + 1)}
-                                                    disabled={totalGuests >= 50}
-                                                    className="flex h-12 w-12 items-center justify-center rounded-xl text-lg transition-all hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
-                                                    style={{ backgroundColor: `${c.primary}0c`, color: c.text }}
-                                                >
-                                                    <span className="material-symbols-rounded">add</span>
+                                        {/* Group Booking Toggle */}
+                                        {enableGroupBooking && (
+                                            <div className="mb-6">
+                                                <label className="mb-3 flex items-center justify-between rounded-xl border-2 px-4 py-3.5 cursor-pointer transition-all" style={{ borderColor: isGroupBooking ? c.primary : `${c.primary}15`, backgroundColor: isGroupBooking ? `${c.primary}06` : 'transparent' }}>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="material-symbols-rounded text-base" style={{ color: isGroupBooking ? c.primary : c.text_muted }}>groups</span>
+                                                        <div>
+                                                            <span className="text-sm font-medium" style={{ color: c.text }}>Booking Grup / Kelas</span>
+                                                            <p className="text-xs" style={{ color: c.text_muted }}>Untuk kelas, workshop, atau event grup</p>
+                                                        </div>
+                                                    </div>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isGroupBooking}
+                                                        onChange={(e) => { setIsGroupBooking(e.target.checked); if (!e.target.checked) setParticipants([]); }}
+                                                        className="h-5 w-5 rounded accent-current"
+                                                        style={{ accentColor: c.primary }}
+                                                    />
+                                                </label>
+                                            </div>
+                                        )}
+
+                                        {isGroupBooking ? (
+                                            <div className="space-y-4">
+                                                <div className="mb-4">
+                                                    <label className="mb-2 block text-sm font-medium" style={{ color: c.text }}>Maksimal Peserta</label>
+                                                    <input
+                                                        type="number"
+                                                        value={maxParticipants}
+                                                        onChange={(e) => setMaxParticipants(Math.max(2, Math.min(100, parseInt(e.target.value) || 10)))}
+                                                        min={2} max={100}
+                                                        className="block w-full rounded-xl border-2 px-4 py-2.5 text-sm outline-none transition-all"
+                                                        style={{ borderColor: `${c.primary}15`, color: c.text, backgroundColor: 'rgba(255,255,255,0.6)' }}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="mb-2 block text-sm font-medium" style={{ color: c.text }}>Daftar Peserta</label>
+                                                    {participants.map((p, i) => (
+                                                        <div key={i} className="mb-3 rounded-xl border-2 p-3 space-y-2" style={{ borderColor: `${c.primary}10` }}>
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-xs font-bold" style={{ color: c.primary }}>Peserta {i + 1}</span>
+                                                                <button type="button" onClick={() => setParticipants((prev) => prev.filter((_, j) => j !== i))} className="text-xs" style={{ color: c.text_muted }}>
+                                                                    <span className="material-symbols-rounded text-sm">close</span>
+                                                                </button>
+                                                            </div>
+                                                            <input type="text" value={p.name} onChange={(e) => { const next = [...participants]; next[i] = { ...next[i], name: e.target.value }; setParticipants(next); }} placeholder="Nama" className="block w-full rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                            <div className="flex gap-2">
+                                                                <input type="text" value={p.phone} onChange={(e) => { const next = [...participants]; next[i] = { ...next[i], phone: e.target.value }; setParticipants(next); }} placeholder="No. Telepon" className="block w-1/2 rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                                <input type="email" value={p.email} onChange={(e) => { const next = [...participants]; next[i] = { ...next[i], email: e.target.value }; setParticipants(next); }} placeholder="Email" className="block w-1/2 rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                    <button type="button" onClick={() => setParticipants((prev) => [...prev, { name: '', phone: '', email: '', notes: '' }])} className="inline-flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-medium transition-all" style={{ backgroundColor: `${c.primary}0c`, color: c.primary }}>
+                                                        <span className="material-symbols-rounded text-sm">add</span>
+                                                        Tambah Peserta
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="mb-5">
+                                                    <label className="mb-3 block text-sm font-medium text-center" style={{ color: c.text }}>Jumlah orang</label>
+                                                    <div className="flex items-center justify-center gap-4">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleGuestCountChange(totalGuests - 1)}
+                                                            disabled={totalGuests <= 1}
+                                                            className="flex h-12 w-12 items-center justify-center rounded-xl text-lg transition-all hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+                                                            style={{ backgroundColor: `${c.primary}0c`, color: c.text }}
+                                                        >
+                                                            <span className="material-symbols-rounded">remove</span>
+                                                        </button>
+                                                        <span className="w-14 text-center text-2xl font-extrabold tabular-nums" style={{ color: c.primary }}>{totalGuests}</span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleGuestCountChange(totalGuests + 1)}
+                                                            disabled={totalGuests >= 50}
+                                                            className="flex h-12 w-12 items-center justify-center rounded-xl text-lg transition-all hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+                                                            style={{ backgroundColor: `${c.primary}0c`, color: c.text }}
+                                                        >
+                                                            <span className="material-symbols-rounded">add</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                {totalGuests > 1 && (
+                                                    <div className="space-y-3">
+                                                        <label className="block text-sm font-medium" style={{ color: c.text }}>Nama tamu (opsional)</label>
+                                                        {Array.from({ length: totalGuests }).map((_, i) => (
+                                                            <div key={i} className="flex items-center gap-2">
+                                                                <span
+                                                                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold"
+                                                                    style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})`, color: '#fff' }}
+                                                                >
+                                                                    {i + 1}
+                                                                </span>
+                                                                <input
+                                                                    type="text"
+                                                                    value={guestNames[i] || ''}
+                                                                    onChange={(e) => updateGuestName(i, e.target.value)}
+                                                                    placeholder={`Nama tamu ${i + 1}${i === 0 ? ' (Anda)' : ''}`}
+                                                                    className="block w-full rounded-xl border-2 px-4 py-2.5 text-sm outline-none transition-all placeholder:text-neutral-300"
+                                                                    style={{
+                                                                        borderColor: `${c.primary}15`,
+                                                                        color: c.text,
+                                                                        backgroundColor: 'rgba(255,255,255,0.6)',
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* ═══ Step: Ruangan ═══ */}
+                            {step === getStepIndex('Ruangan') && (
+                                <motion.div key="step-ruangan" variants={containerVariants} initial="hidden" animate="visible" exit="exit">
+                                    <div className="text-center mb-8">
+                                        <h2 className="text-2xl font-bold" style={{ color: c.text }}>Pilih Ruangan</h2>
+                                        <p className="mt-1.5 text-sm" style={{ color: c.text_muted }}>Pilih ruangan yang diinginkan (opsional)</p>
+                                    </div>
+
+                                    <div className="glass-card-strong rounded-2xl p-6 max-w-2xl mx-auto">
+                                        {roomsList.length === 0 ? (
+                                            <div className="text-center py-6">
+                                                <span className="material-symbols-rounded text-2xl" style={{ color: c.text_muted }}>meeting_room</span>
+                                                <p className="mt-2 text-sm" style={{ color: c.text_muted }}>Tidak ada ruangan tersedia.</p>
+                                                <button type="button" onClick={() => { setSelectedRoom('-'); nextStep(); }} className="mt-3 inline-flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-medium" style={{ backgroundColor: `${c.primary}0c`, color: c.primary }}>
+                                                    <span className="material-symbols-rounded text-sm">arrow_forward</span>
+                                                    Lewati
                                                 </button>
                                             </div>
-                                        </div>
-
-                                        {totalGuests > 1 && (
-                                            <div className="space-y-3">
-                                                <label className="block text-sm font-medium" style={{ color: c.text }}>Nama tamu (opsional)</label>
-                                                {Array.from({ length: totalGuests }).map((_, i) => (
-                                                    <div key={i} className="flex items-center gap-2">
-                                                        <span
-                                                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold"
-                                                            style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})`, color: '#fff' }}
-                                                        >
-                                                            {i + 1}
-                                                        </span>
-                                                        <input
-                                                            type="text"
-                                                            value={guestNames[i] || ''}
-                                                            onChange={(e) => updateGuestName(i, e.target.value)}
-                                                            placeholder={`Nama tamu ${i + 1}${i === 0 ? ' (Anda)' : ''}`}
-                                                            className="block w-full rounded-xl border-2 px-4 py-2.5 text-sm outline-none transition-all placeholder:text-neutral-300"
+                                        ) : (
+                                            <div className="grid gap-3 sm:grid-cols-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setSelectedRoom('-')}
+                                                    className={cn('rounded-xl border-2 px-4 py-3.5 text-left transition-all', selectedRoom === '-' ? '' : '')}
+                                                    style={{
+                                                        backgroundColor: selectedRoom === '-' ? `${c.primary}12` : 'rgba(255,255,255,0.6)',
+                                                        borderColor: selectedRoom === '-' ? c.primary : `${c.primary}15`,
+                                                        color: selectedRoom === '-' ? c.primary : c.text_muted,
+                                                    }}
+                                                >
+                                                    <span className="text-sm font-medium">Tidak ada ruangan</span>
+                                                </button>
+                                                {roomsList.map((r) => {
+                                                    const isActive = selectedRoom === r.id;
+                                                    return (
+                                                        <button
+                                                            key={r.id}
+                                                            type="button"
+                                                            onClick={() => setSelectedRoom(r.id)}
+                                                            className={cn('rounded-xl border-2 px-4 py-3.5 text-left transition-all')}
                                                             style={{
-                                                                borderColor: `${c.primary}15`,
-                                                                color: c.text,
-                                                                backgroundColor: 'rgba(255,255,255,0.6)',
+                                                                backgroundColor: isActive ? `${c.primary}12` : 'rgba(255,255,255,0.6)',
+                                                                borderColor: isActive ? c.primary : `${c.primary}15`,
+                                                                color: isActive ? c.primary : c.text,
                                                             }}
-                                                        />
-                                                    </div>
-                                                ))}
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: r.color || c.primary }} />
+                                                                <div>
+                                                                    <div className="text-sm font-medium">{r.name}</div>
+                                                                    {r.capacity > 0 && <div className="text-xs opacity-60" style={{ color: c.text_muted }}>Kapasitas: {r.capacity} orang</div>}
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    );
+                                                })}
                                             </div>
                                         )}
                                     </div>
@@ -1284,6 +1466,82 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                         })}
                                                     </div>
                                                 )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* ═══ Step: Berulang ═══ */}
+                            {step === getStepIndex('Berulang') && (
+                                <motion.div key="step-berulang" variants={containerVariants} initial="hidden" animate="visible" exit="exit">
+                                    <div className="text-center mb-8">
+                                        <h2 className="text-2xl font-bold" style={{ color: c.text }}>Booking Berulang</h2>
+                                        <p className="mt-1.5 text-sm" style={{ color: c.text_muted }}>Booking secara otomatis berulang (opsional)</p>
+                                    </div>
+
+                                    <div className="glass-card-strong rounded-2xl p-6 max-w-lg mx-auto space-y-5">
+                                        <label className="flex items-center justify-between rounded-xl border-2 px-4 py-3.5 cursor-pointer transition-all" style={{ borderColor: isRecurring ? c.primary : `${c.primary}15`, backgroundColor: isRecurring ? `${c.primary}06` : 'transparent' }}>
+                                            <div className="flex items-center gap-3">
+                                                <span className="material-symbols-rounded text-base" style={{ color: isRecurring ? c.primary : c.text_muted }}>repeat</span>
+                                                <div>
+                                                    <span className="text-sm font-medium" style={{ color: c.text }}>Aktifkan booking berulang</span>
+                                                    <p className="text-xs" style={{ color: c.text_muted }}>Buat jadwal yang berulang secara otomatis</p>
+                                                </div>
+                                            </div>
+                                            <input type="checkbox" checked={isRecurring} onChange={(e) => setIsRecurring(e.target.checked)} className="h-5 w-5 rounded accent-current" style={{ accentColor: c.primary }} />
+                                        </label>
+
+                                        {isRecurring && (
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="mb-1.5 block text-sm font-medium" style={{ color: c.text }}>Frekuensi</label>
+                                                    <div className="flex gap-2">
+                                                        {(['daily', 'weekly', 'monthly'] as const).map((f) => (
+                                                            <button key={f} type="button" onClick={() => setRecurringFreq(f)} className={cn('flex-1 rounded-xl border-2 px-4 py-2.5 text-sm font-medium transition-all', recurringFreq === f ? '' : '')} style={{
+                                                                backgroundColor: recurringFreq === f ? `${c.primary}12` : 'rgba(255,255,255,0.6)',
+                                                                borderColor: recurringFreq === f ? c.primary : `${c.primary}15`,
+                                                                color: recurringFreq === f ? c.primary : c.text,
+                                                            }}>
+                                                                {f === 'daily' ? 'Harian' : f === 'weekly' ? 'Mingguan' : 'Bulanan'}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1.5 block text-sm font-medium" style={{ color: c.text }}>Ulangi setiap</label>
+                                                    <div className="flex items-center gap-2">
+                                                        <input type="number" value={recurringInterval} onChange={(e) => setRecurringInterval(Math.max(1, parseInt(e.target.value) || 1))} min={1} max={365} className="w-20 rounded-xl border-2 px-3 py-2.5 text-sm text-center outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                        <span className="text-sm" style={{ color: c.text_muted }}>{recurringFreq === 'daily' ? 'hari' : recurringFreq === 'weekly' ? 'minggu' : 'bulan'} sekali</span>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1.5 block text-sm font-medium" style={{ color: c.text }}>Berakhir</label>
+                                                    <div className="space-y-2">
+                                                        {(['after_count', 'until_date', 'never'] as const).map((et) => (
+                                                            <label key={et} className="flex items-center gap-3 rounded-xl border-2 px-4 py-3 cursor-pointer transition-all" style={{ borderColor: recurringEndType === et ? c.primary : `${c.primary}10`, backgroundColor: recurringEndType === et ? `${c.primary}06` : 'transparent' }}>
+                                                                <input type="radio" name="end_type" checked={recurringEndType === et} onChange={() => setRecurringEndType(et)} className="h-4 w-4 accent-current" style={{ accentColor: c.primary }} />
+                                                                <span className="text-sm" style={{ color: c.text }}>
+                                                                    {et === 'after_count' ? 'Setelah sejumlah kali' : et === 'until_date' ? 'Sampai tanggal' : 'Tidak pernah'}
+                                                                </span>
+                                                            </label>
+                                                        ))}
+                                                        {recurringEndType === 'after_count' && (
+                                                            <div className="flex items-center gap-2 pl-8">
+                                                                <span className="text-sm" style={{ color: c.text_muted }}>Setelah</span>
+                                                                <input type="number" value={recurringCount} onChange={(e) => setRecurringCount(Math.max(1, parseInt(e.target.value) || 1))} min={1} max={365} className="w-20 rounded-xl border-2 px-3 py-2 text-sm text-center outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                                <span className="text-sm" style={{ color: c.text_muted }}>kali</span>
+                                                            </div>
+                                                        )}
+                                                        {recurringEndType === 'until_date' && (
+                                                            <div className="pl-8">
+                                                                <input type="date" value={recurringUntilDate} onChange={(e) => setRecurringUntilDate(e.target.value)} className="block w-full rounded-xl border-2 px-4 py-2.5 text-sm outline-none" style={{ borderColor: `${c.primary}15`, color: c.text }} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -1493,16 +1751,18 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                 </span>
                                                 <span className="font-medium" style={{ color: c.text }}>{totalDuration} menit</span>
                                             </div>
-                                            {enableGuests && (
+                                            {(enableGuests || enableGroupBooking) && (
                                                 <div className="flex items-center justify-between">
                                                     <span className="flex items-center gap-1.5" style={{ color: c.text_muted }}>
                                                         <span className="material-symbols-rounded text-sm">group</span>
-                                                        Tamu
+                                                        {isGroupBooking ? 'Peserta' : 'Tamu'}
                                                     </span>
-                                                    <span className="font-medium" style={{ color: c.text }}>{totalGuests} orang</span>
+                                                    <span className="font-medium" style={{ color: c.text }}>
+                                                        {isGroupBooking ? `${participants.filter((p) => p.name.trim()).length} dari ${maxParticipants}` : `${totalGuests} orang`}
+                                                    </span>
                                                 </div>
                                             )}
-                                            {enableGuests && totalGuests > 1 && guestNames.some(Boolean) && (
+                                            {(enableGuests || enableGroupBooking) && !isGroupBooking && totalGuests > 1 && guestNames.some(Boolean) && (
                                                 <div className="flex items-start justify-between">
                                                     <span style={{ color: c.text_muted }}>Nama Tamu</span>
                                                     <div className="text-right font-medium" style={{ color: c.text }}>
@@ -1510,6 +1770,39 @@ export default function PublicBookingPage({ branches, services, settings, colors
                                                             <div key={i}>{n}</div>
                                                         ))}
                                                     </div>
+                                                </div>
+                                            )}
+                                            {isGroupBooking && participants.filter((p) => p.name.trim()).length > 0 && (
+                                                <div className="flex items-start justify-between">
+                                                    <span style={{ color: c.text_muted }}>Peserta</span>
+                                                    <div className="text-right font-medium text-xs" style={{ color: c.text }}>
+                                                        {participants.filter((p) => p.name.trim()).map((p, i) => (
+                                                            <div key={i}>{p.name}{p.phone ? ` (${p.phone})` : ''}</div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {selectedRoom && selectedRoom !== '-' && roomsList.find((r) => r.id === selectedRoom) && (
+                                                <div className="flex items-center justify-between">
+                                                    <span className="flex items-center gap-1.5" style={{ color: c.text_muted }}>
+                                                        <span className="material-symbols-rounded text-sm">meeting_room</span>
+                                                        Ruangan
+                                                    </span>
+                                                    <span className="font-medium" style={{ color: c.text }}>
+                                                        {roomsList.find((r) => r.id === selectedRoom)?.name}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {isRecurring && (
+                                                <div className="flex items-center justify-between">
+                                                    <span className="flex items-center gap-1.5" style={{ color: c.text_muted }}>
+                                                        <span className="material-symbols-rounded text-sm">repeat</span>
+                                                        Berulang
+                                                    </span>
+                                                    <span className="font-medium" style={{ color: c.text }}>
+                                                        Setiap {recurringInterval} {recurringFreq === 'daily' ? 'hari' : recurringFreq === 'weekly' ? 'minggu' : 'bulan'}
+                                                        {recurringEndType === 'after_count' ? ` (${recurringCount}x)` : recurringEndType === 'until_date' ? ` (sampai ${recurringUntilDate})` : ' (selamanya)'}
+                                                    </span>
                                                 </div>
                                             )}
                                             <hr style={{ borderColor: `${c.primary}10` }} />

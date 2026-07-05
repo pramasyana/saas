@@ -6,9 +6,11 @@ namespace App\Modules\Booking\Models;
 
 use App\Modules\Company\Models\Branch;
 use App\Modules\Crm\Models\Customer;
+use App\Modules\Setting\Services\TenantSettingService;
 use App\Modules\Staff\Models\Staff;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -36,6 +38,9 @@ class Booking extends Model
         'booking_code',
         'total_guests',
         'guest_details',
+        'is_group',
+        'max_participants',
+        'recurring_template_id',
     ];
 
     protected static function booted(): void
@@ -45,13 +50,14 @@ class Booking extends Model
                 $model->id = (string) Str::uuid();
             }
             if (empty($model->booking_code)) {
+                $prefix = app(TenantSettingService::class)->get('booking.code_prefix', 'BK-');
                 $today = now()->format('Ymd');
                 $last = static::whereDate('created_at', today())
-                    ->where('booking_code', 'like', "BK-{$today}-%")
+                    ->where('booking_code', 'like', "{$prefix}{$today}-%")
                     ->orderBy('booking_code', 'desc')
                     ->first();
                 $seq = $last ? (int) substr($last->booking_code, -3) + 1 : 1;
-                $model->booking_code = sprintf('BK-%s-%03d', $today, $seq);
+                $model->booking_code = sprintf('%s%s-%03d', $prefix, $today, $seq);
             }
         });
     }
@@ -65,6 +71,8 @@ class Booking extends Model
             'duration_minutes' => 'integer',
             'total_guests' => 'integer',
             'guest_details' => 'array',
+            'is_group' => 'boolean',
+            'max_participants' => 'integer',
         ];
     }
 
@@ -101,5 +109,17 @@ class Booking extends Model
     public function reminders(): HasMany
     {
         return $this->hasMany(BookingReminder::class, 'booking_id');
+    }
+
+    public function participants(): HasMany
+    {
+        return $this->hasMany(BookingParticipant::class, 'booking_id');
+    }
+
+    public function rooms(): BelongsToMany
+    {
+        return $this->belongsToMany(Room::class, 'booking_rooms', 'booking_id', 'room_id')
+            ->withPivot(['start_time', 'end_time'])
+            ->withTimestamps();
     }
 }

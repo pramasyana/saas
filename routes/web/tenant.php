@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use App\Modules\Auth\Http\Controllers\DashboardController;
 use App\Modules\Booking\Http\Controllers\Tenant\BookingController as TenantBookingController;
+use App\Modules\Booking\Http\Controllers\Tenant\RoomController as TenantRoomController;
 use App\Modules\Company\Http\Controllers\Tenant\BranchController;
+use App\Modules\Setting\Http\Controllers\SettingController as TenantSettingController;
 use App\Modules\Company\Http\Controllers\Tenant\HolidayController;
 use App\Modules\Company\Http\Controllers\Tenant\ProfileController;
 use App\Modules\Company\Http\Controllers\Tenant\WorkingHourController;
@@ -45,6 +47,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/holidays', [HolidayController::class, 'store'])->name('holidays.store');
         Route::put('/holidays/{id}', [HolidayController::class, 'update'])->name('holidays.update');
         Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.destroy');
+
+        Route::get('/rooms', [TenantRoomController::class, 'index'])->name('rooms.index');
+        Route::get('/rooms/create', [TenantRoomController::class, 'create'])->name('rooms.create');
+        Route::get('/rooms/{id}/edit', [TenantRoomController::class, 'edit'])->name('rooms.edit');
+
+        Route::get('/settings', [TenantSettingController::class, 'index'])->name('settings');
     });
 
     // Staff pages (Inertia shell)

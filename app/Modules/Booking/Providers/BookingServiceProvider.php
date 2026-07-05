@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Providers;
 
+use App\Modules\Booking\Console\GenerateRecurringBookingsCommand;
 use App\Modules\Booking\Console\SeedAvailabilityCommand;
 use App\Modules\Booking\Console\SendBookingRemindersCommand;
 use App\Modules\Booking\Contracts\BookingReminderRepositoryInterface;
 use App\Modules\Booking\Contracts\BookingRepositoryInterface;
 use App\Modules\Booking\Contracts\BookingStatusLogRepositoryInterface;
+use App\Modules\Booking\Contracts\RoomRepositoryInterface;
 use App\Modules\Booking\Contracts\WaitingListRepositoryInterface;
 use App\Modules\Booking\Events\BookingCancelled;
 use App\Modules\Booking\Events\BookingCheckedIn;
@@ -24,6 +26,7 @@ use App\Modules\Booking\Listeners\UpdateDashboardStats;
 use App\Modules\Booking\Repositories\BookingReminderRepository;
 use App\Modules\Booking\Repositories\BookingRepository;
 use App\Modules\Booking\Repositories\BookingStatusLogRepository;
+use App\Modules\Booking\Repositories\RoomRepository;
 use App\Modules\Booking\Repositories\WaitingListRepository;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -36,10 +39,12 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->bind(WaitingListRepositoryInterface::class, WaitingListRepository::class);
         $this->app->bind(BookingStatusLogRepositoryInterface::class, BookingStatusLogRepository::class);
         $this->app->bind(BookingReminderRepositoryInterface::class, BookingReminderRepository::class);
+        $this->app->bind(RoomRepositoryInterface::class, RoomRepository::class);
 
         $this->commands([
             SeedAvailabilityCommand::class,
             SendBookingRemindersCommand::class,
+            GenerateRecurringBookingsCommand::class,
         ]);
     }
 

@@ -119,6 +119,11 @@ class PublicBookingController
             'total_guests' => (int) ($request->total_guests ?? 1),
             'guest_details' => $request->guest_details,
             'services' => $bookingServices,
+            'rooms' => $request->rooms ?? [],
+            'is_group' => $request->boolean('is_group'),
+            'max_participants' => $request->max_participants,
+            'participants' => $request->participants ?? [],
+            'recurring' => $request->recurring ?? [],
         ], $tenantId);
 
         return response()->json([
@@ -135,7 +140,7 @@ class PublicBookingController
     public function show(string $code): JsonResponse
     {
         $booking = Booking::where('booking_code', $code)
-            ->with(['customer', 'staff', 'branch', 'services.addons'])
+            ->with(['customer', 'staff', 'branch', 'services.addons', 'rooms', 'participants'])
             ->first();
 
         if (! $booking) {
@@ -162,6 +167,8 @@ class PublicBookingController
                 'notes' => $booking->notes,
                 'total_guests' => $booking->total_guests,
                 'guest_details' => $booking->guest_details,
+                'is_group' => $booking->is_group,
+                'max_participants' => $booking->max_participants,
                 'services' => $booking->services->map(fn ($s) => [
                     'name' => $s->name,
                     'price' => $s->price,
@@ -172,6 +179,17 @@ class PublicBookingController
                         'price' => $a->price,
                         'quantity' => $a->quantity,
                     ]),
+                ]),
+                'rooms' => $booking->rooms->map(fn ($r) => [
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'color' => $r->color,
+                ]),
+                'participants' => $booking->participants->map(fn ($p) => [
+                    'name' => $p->name,
+                    'phone' => $p->phone,
+                    'email' => $p->email,
+                    'status' => $p->status,
                 ]),
             ],
         ]);

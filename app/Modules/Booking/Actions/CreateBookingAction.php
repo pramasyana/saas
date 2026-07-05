@@ -8,6 +8,7 @@ use App\Modules\Booking\Contracts\BookingRepositoryInterface;
 use App\Modules\Booking\Contracts\BookingStatusLogRepositoryInterface;
 use App\Modules\Booking\Events\BookingCreated;
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Booking\Models\BookingRecurringTemplate;
 use Illuminate\Support\Facades\DB;
 
 class CreateBookingAction
@@ -25,7 +26,7 @@ class CreateBookingAction
                 $bookingData['tenant_id'] = $tenantId;
             }
 
-            unset($bookingData['services']);
+            unset($bookingData['services'], $bookingData['rooms'], $bookingData['participants'], $bookingData['recurring']);
 
             $bookingData['total_guests'] ??= 1;
 
@@ -37,6 +38,32 @@ class CreateBookingAction
                 'to_status' => $booking->status,
                 'changed_by' => auth()->id() ?? 'system',
             ]);
+
+            if (! empty($data['recurring'])) {
+                $recurringData = $data['recurring'];
+                $template = BookingRecurringTemplate::create([
+                    'tenant_id' => $booking->tenant_id,
+                    'source_booking_id' => $booking->id,
+                    'frequency' => $recurringData['frequency'],
+                    'interval' => $recurringData['interval'] ?? 1,
+                    'days_of_week' => $recurringData['days_of_week'] ?? null,
+                    'end_type' => $recurringData['end_type'],
+                    'count' => $recurringData['count'] ?? null,
+                    'until_date' => $recurringData['until_date'] ?? null,
+                    'next_generation_date' => $booking->start_time->copy()->addDay()->startOfDay(),
+                    'is_active' => true,
+                ]);
+
+                $booking->update(['recurring_template_id' => $template->id]);
+            }
+
+            if (! empty($data['participants'])) {
+                $booking->participants()->createMany($data['participants']);
+            }
+
+            if (! empty($data['rooms'])) {
+                $booking->rooms()->attach($data['rooms']);
+            }
 
             if (! empty($data['services'])) {
                 foreach ($data['services'] as $svcData) {
@@ -53,7 +80,7 @@ class CreateBookingAction
 
             event(new BookingCreated($booking));
 
-            return $booking->load(['customer', 'staff', 'services', 'services.addons']);
+            return $booking->load(['customer', 'staff', 'services', 'services.addons', 'rooms', 'participants']);
         });
     }
 }

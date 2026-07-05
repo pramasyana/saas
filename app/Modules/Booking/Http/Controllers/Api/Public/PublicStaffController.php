@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Http\Controllers\Api\Public;
 
+use App\Modules\Service\Models\Service;
 use App\Modules\Staff\Models\Staff;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,6 +35,14 @@ class PublicStaffController
                 $q->where('day_of_week', $dayOfWeek)
                     ->where('is_active', true);
             });
+        }
+
+        if ($request->filled('service_id')) {
+            $service = Service::with('staff')->find($request->service_id);
+            if ($service && $service->staff->isNotEmpty()) {
+                $capableIds = $service->staff->pluck('id')->toArray();
+                $query->whereIn('id', $capableIds);
+            }
         }
 
         $staff = $query->orderBy('name')->get(['id', 'name', 'email', 'phone', 'position', 'branch_id']);

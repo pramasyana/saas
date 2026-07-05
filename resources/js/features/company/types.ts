@@ -54,6 +54,8 @@ export interface WorkingHour {
     is_open: boolean;
     open_time: string | null;
     close_time: string | null;
+    break_start: string | null;
+    break_end: string | null;
 }
 
 export interface Holiday {

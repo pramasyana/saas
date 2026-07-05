@@ -22,6 +22,8 @@ class WorkingHourResource extends JsonResource
             'is_open' => $this->is_open,
             'open_time' => $this->open_time?->format('H:i'),
             'close_time' => $this->close_time?->format('H:i'),
+            'break_start' => $this->break_start?->format('H:i'),
+            'break_end' => $this->break_end?->format('H:i'),
             'created_at' => $this->created_at?->diffForHumans(),
             'updated_at' => $this->updated_at?->diffForHumans(),
         ];

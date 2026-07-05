@@ -47,19 +47,19 @@ class BookingRepository implements BookingRepositoryInterface
             $query->where('customer_id', $filters['customer_id']);
         }
 
-        return $query->with(['customer', 'staff', 'branch', 'services.addons'])
+        return $query->with(['customer', 'staff', 'branch', 'services.addons', 'rooms', 'participants'])
             ->orderBy('start_time', 'desc')
             ->paginate($perPage);
     }
 
     public function findById(string $id): ?Booking
     {
-        return Booking::with(['customer', 'staff', 'branch', 'services.addons'])->find($id);
+        return Booking::with(['customer', 'staff', 'branch', 'services.addons', 'rooms', 'participants'])->find($id);
     }
 
     public function findOrFail(string $id): Booking
     {
-        return Booking::with(['customer', 'staff', 'branch', 'services.addons', 'reminders', 'statusLogs.changedByUser'])->findOrFail($id);
+        return Booking::with(['customer', 'staff', 'branch', 'services.addons', 'rooms', 'participants', 'reminders', 'statusLogs.changedByUser'])->findOrFail($id);
     }
 
     public function create(array $data): Booking
@@ -99,7 +99,7 @@ class BookingRepository implements BookingRepositoryInterface
             $query->where('staff_id', $staffId);
         }
 
-        return $query->with(['customer:id,name,phone', 'staff:id,name', 'services'])
+        return $query->with(['customer:id,name,phone', 'staff:id,name', 'services', 'rooms', 'participants'])
             ->orderBy('start_time')
             ->get();
     }

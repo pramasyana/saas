@@ -56,7 +56,7 @@ export default function WorkingHourEditor({ hours, saving, errors = {}, onSave }
         });
     }
 
-    function updateTime(index: number, field: 'open_time' | 'close_time', value: string) {
+    function updateTime(index: number, field: 'open_time' | 'close_time' | 'break_start' | 'break_end', value: string) {
         setItems((prev) => {
             const next = [...prev];
             next[index] = { ...next[index], [field]: value };
@@ -159,6 +159,24 @@ export default function WorkingHourEditor({ hours, saving, errors = {}, onSave }
                                         className="block w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900 shadow-sm transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                                     />
                                 </div>
+                                <div>
+                                    <label className="mb-1 block text-xs font-medium text-neutral-500">Istirahat Mulai</label>
+                                    <input
+                                        type="time"
+                                        value={item.break_start ?? ''}
+                                        onChange={(e) => updateTime(index, 'break_start', e.target.value)}
+                                        className="block w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900 shadow-sm transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1 block text-xs font-medium text-neutral-500">Istirahat Selesai</label>
+                                    <input
+                                        type="time"
+                                        value={item.break_end ?? ''}
+                                        onChange={(e) => updateTime(index, 'break_end', e.target.value)}
+                                        className="block w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900 shadow-sm transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                    />
+                                </div>
                             </div>
                         )}
                     </div>
@@ -174,6 +192,8 @@ export default function WorkingHourEditor({ hours, saving, errors = {}, onSave }
                             <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Status</th>
                             <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Jam Buka</th>
                             <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Jam Tutup</th>
+                            <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Istirahat Mulai</th>
+                            <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Istirahat Selesai</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-neutral-100">
@@ -226,6 +246,34 @@ export default function WorkingHourEditor({ hours, saving, errors = {}, onSave }
                                         type="time"
                                         value={item.close_time ?? ''}
                                         onChange={(e) => updateTime(index, 'close_time', e.target.value)}
+                                        disabled={!item.is_open}
+                                        className={cn(
+                                            'block w-32 rounded-xl border px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:outline-none focus:ring-2',
+                                            !item.is_open
+                                                ? 'border-neutral-200 bg-neutral-50 text-neutral-400'
+                                                : 'border-neutral-300 text-neutral-900 focus:border-primary focus:ring-primary/30',
+                                        )}
+                                    />
+                                </td>
+                                <td className="whitespace-nowrap px-6 py-4">
+                                    <input
+                                        type="time"
+                                        value={item.break_start ?? ''}
+                                        onChange={(e) => updateTime(index, 'break_start', e.target.value)}
+                                        disabled={!item.is_open}
+                                        className={cn(
+                                            'block w-32 rounded-xl border px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:outline-none focus:ring-2',
+                                            !item.is_open
+                                                ? 'border-neutral-200 bg-neutral-50 text-neutral-400'
+                                                : 'border-neutral-300 text-neutral-900 focus:border-primary focus:ring-primary/30',
+                                        )}
+                                    />
+                                </td>
+                                <td className="whitespace-nowrap px-6 py-4">
+                                    <input
+                                        type="time"
+                                        value={item.break_end ?? ''}
+                                        onChange={(e) => updateTime(index, 'break_end', e.target.value)}
                                         disabled={!item.is_open}
                                         className={cn(
                                             'block w-32 rounded-xl border px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:outline-none focus:ring-2',

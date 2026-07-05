@@ -91,6 +91,10 @@ class BookingController
                 'enable_addons' => $bookingConfig['enable_addons'] ?? false,
                 'enable_multi_service' => $bookingConfig['enable_multi_service'] ?? false,
                 'enable_guests' => $bookingConfig['enable_guests'] ?? false,
+                'enable_staff_filter' => $bookingConfig['enable_staff_filter'] ?? true,
+                'enable_rooms' => $bookingConfig['enable_rooms'] ?? false,
+                'enable_group_booking' => $bookingConfig['enable_group_booking'] ?? false,
+                'enable_recurring_public' => $bookingConfig['enable_recurring_public'] ?? false,
             ],
             'colors' => $landingConfig['colors'] ?? null,
             'tenant' => [
@@ -121,7 +125,7 @@ class BookingController
         }
 
         $booking = Booking::where('booking_code', $code)
-            ->with(['customer', 'staff', 'branch', 'services.addons'])
+            ->with(['customer', 'staff', 'branch', 'services.addons', 'rooms', 'participants'])
             ->firstOrFail();
 
         return Inertia::render('public/booking/Confirmation', [
@@ -139,6 +143,8 @@ class BookingController
                 'notes' => $booking->notes,
                 'total_guests' => $booking->total_guests,
                 'guest_details' => $booking->guest_details,
+                'is_group' => $booking->is_group,
+                'max_participants' => $booking->max_participants,
                 'services' => $booking->services->map(fn ($s) => [
                     'name' => $s->name,
                     'price' => $s->price,
@@ -149,6 +155,17 @@ class BookingController
                         'price' => $a->price,
                         'quantity' => $a->quantity,
                     ]),
+                ]),
+                'rooms' => $booking->rooms->map(fn ($r) => [
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'color' => $r->color,
+                ]),
+                'participants' => $booking->participants->map(fn ($p) => [
+                    'name' => $p->name,
+                    'phone' => $p->phone,
+                    'email' => $p->email,
+                    'status' => $p->status,
                 ]),
             ],
             'colors' => $landingConfig['colors'] ?? null,

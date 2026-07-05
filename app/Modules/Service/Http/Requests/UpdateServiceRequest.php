@@ -13,6 +13,7 @@ class UpdateServiceRequest extends FormRequest
         return [
             'branch_id' => 'sometimes|string|exists:branches,id',
             'category_id' => 'nullable|string|exists:service_categories,id',
+            'room_id' => 'nullable|string|exists:rooms,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string|max:1000',
             'duration' => 'sometimes|integer|min:1|max:1440',

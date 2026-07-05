@@ -32,7 +32,11 @@ interface BookingData {
     notes: string | null;
     total_guests: number;
     guest_details: string[] | null;
+    is_group?: boolean;
+    max_participants?: number;
     services: BookingServiceItem[];
+    rooms?: { id: string; name: string; color: string | null }[];
+    participants?: { name: string; phone?: string; email?: string; status?: string }[];
 }
 
 interface PageProps {
@@ -229,6 +233,12 @@ export default function ConfirmationPage({ booking, colors: colorsProp, tenant }
                                     <InfoValue icon="people" label="Nama Tamu" value={currentBooking.guest_details.join(', ')} />
                                 </div>
                             )}
+                            {currentBooking.rooms && currentBooking.rooms.length > 0 && (
+                                <InfoValue icon="meeting_room" label="Ruangan" value={currentBooking.rooms.map((r) => r.name).join(', ')} />
+                            )}
+                            {currentBooking.is_group && (
+                                <InfoValue icon="groups" label="Tipe" value="Booking Grup / Kelas" />
+                            )}
                         </div>
                     </div>
 
@@ -278,6 +288,36 @@ export default function ConfirmationPage({ booking, colors: colorsProp, tenant }
                                                 ))}
                                             </div>
                                         )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Participants (group booking) */}
+                    {currentBooking.is_group && currentBooking.participants && currentBooking.participants.length > 0 && (
+                        <div className="rounded-2xl border bg-white p-6 shadow-sm" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+                            <div className="mb-4 flex items-center gap-2">
+                                <span className="material-symbols-rounded text-base" style={{ color: c.primary }}>groups</span>
+                                <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: c.text_muted }}>Daftar Peserta</h2>
+                            </div>
+                            <div className="divide-y" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+                                {currentBooking.participants.map((p, i) => (
+                                    <div key={i} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold text-white" style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}>
+                                                {p.name.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-semibold truncate" style={{ color: c.text }}>{p.name}</p>
+                                                {(p.phone || p.email) && (
+                                                    <p className="text-xs truncate" style={{ color: c.text_muted }}>{[p.phone, p.email].filter(Boolean).join(' · ')}</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <span className={cn('rounded-full px-2.5 py-0.5 text-[10px] font-semibold', p.status === 'attended' ? 'text-green-700 bg-green-100' : p.status === 'cancelled' ? 'text-red-700 bg-red-100' : 'text-yellow-700 bg-yellow-100')}>
+                                            {p.status === 'attended' ? 'Hadir' : p.status === 'cancelled' ? 'Batal' : 'Terdaftar'}
+                                        </span>
                                     </div>
                                 ))}
                             </div>

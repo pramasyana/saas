@@ -136,6 +136,8 @@ class CompanyService
                         'is_open' => $hour['is_open'] ?? true,
                         'open_time' => $hour['open_time'] ?? null,
                         'close_time' => $hour['close_time'] ?? null,
+                        'break_start' => $hour['break_start'] ?? null,
+                        'break_end' => $hour['break_end'] ?? null,
                     ],
                     $branchId,
                 );

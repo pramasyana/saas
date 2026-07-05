@@ -5,6 +5,7 @@ import { useState } from 'react';
 import FadeIn from '@/atoms/FadeIn';
 import { useAllBranches } from '@/features/company/hooks/useBranches';
 import StaffForm from '@/features/staff/components/StaffForm';
+import StaffServiceMapping from '@/features/staff/components/StaffServiceMapping';
 import { useUpdateStaff } from '@/features/staff/hooks/useStaff';
 import type { Staff, StaffFormData } from '@/features/staff/types';
 import TenantLayout from '@/layouts/TenantLayout';
@@ -152,6 +153,12 @@ export default function Edit({ title, staff }: EditPageProps) {
                         errors={errors}
                         onSave={handleSave}
                     />
+                </div>
+            </FadeIn>
+
+            <FadeIn delay={0.09}>
+                <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm lg:p-8">
+                    <StaffServiceMapping staffId={staff.id} />
                 </div>
             </FadeIn>
         </TenantLayout>

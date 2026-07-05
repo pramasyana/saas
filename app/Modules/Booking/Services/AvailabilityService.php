@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace App\Modules\Booking\Services;
 
 use App\Modules\Booking\Contracts\BookingRepositoryInterface;
+use App\Modules\Booking\Contracts\RoomRepositoryInterface;
+use App\Modules\Booking\Models\Room;
 use App\Modules\Company\Contracts\HolidayRepositoryInterface;
 use App\Modules\Company\Contracts\WorkingHourRepositoryInterface;
+use App\Modules\Setting\Services\TenantSettingService;
 use App\Modules\Staff\Contracts\LeaveRepositoryInterface;
 use App\Modules\Staff\Contracts\ScheduleRepositoryInterface;
 use App\Modules\Staff\Contracts\StaffRepositoryInterface;
 use Illuminate\Support\Collection;
+
+use App\Modules\Service\Models\Service;
 
 class AvailabilityService
 {
@@ -21,6 +26,8 @@ class AvailabilityService
         private readonly StaffRepositoryInterface $staffRepository,
         private readonly ScheduleRepositoryInterface $scheduleRepository,
         private readonly LeaveRepositoryInterface $leaveRepository,
+        private readonly RoomRepositoryInterface $roomRepository,
+        private readonly TenantSettingService $settingService,
     ) {}
 
     public function getTenantId(): string
@@ -45,7 +52,7 @@ class AvailabilityService
             return ['date' => $date, 'available' => false, 'reason' => 'Day off', 'slots' => []];
         }
 
-        $staffCollection = $this->getAvailableStaff($tenantId, $date, $dayOfWeek, $branchId, $staffId);
+        $staffCollection = $this->getAvailableStaff($tenantId, $date, $dayOfWeek, $branchId, $staffId, $serviceId);
         if ($staffCollection->isEmpty()) {
             return ['date' => $date, 'available' => false, 'reason' => 'No available staff', 'slots' => []];
         }
@@ -57,6 +64,8 @@ class AvailabilityService
             $dayWh->close_time instanceof \Carbon\CarbonImmutable ? $dayWh->close_time->format('H:i') : $dayWh->close_time,
             $duration,
             $staffCollection,
+            $dayWh->break_start instanceof \Carbon\CarbonImmutable ? $dayWh->break_start->format('H:i') : $dayWh->break_start,
+            $dayWh->break_end instanceof \Carbon\CarbonImmutable ? $dayWh->break_end->format('H:i') : $dayWh->break_end,
         );
 
         return [
@@ -66,7 +75,7 @@ class AvailabilityService
         ];
     }
 
-    private function getAvailableStaff(string $tenantId, string $date, int $dayOfWeek, ?string $branchId = null, ?string $staffId = null): Collection
+    private function getAvailableStaff(string $tenantId, string $date, int $dayOfWeek, ?string $branchId = null, ?string $staffId = null, ?string $serviceId = null): Collection
     {
         $allStaff = $this->staffRepository->findAllByTenant($tenantId);
 
@@ -76,6 +85,15 @@ class AvailabilityService
 
         if ($staffId !== null) {
             $allStaff = $allStaff->where('id', $staffId);
+        }
+
+        // Filter staff by service capability
+        if ($serviceId !== null) {
+            $service = Service::with('staff')->find($serviceId);
+            if ($service && $service->staff->isNotEmpty()) {
+                $capableStaffIds = $service->staff->pluck('id')->toArray();
+                $allStaff = $allStaff->whereIn('id', $capableStaffIds);
+            }
         }
 
         $schedules = $this->scheduleRepository->findByTenant($tenantId);
@@ -97,16 +115,46 @@ class AvailabilityService
         })->values();
     }
 
-    private function generateTimeSlots(string $tenantId, string $date, string $openTime, string $closeTime, int $duration, Collection $staffList): array
+    public function getAvailableRooms(string $date, string $startTime, string $endTime, ?string $branchId = null, ?string $excludeBookingId = null): array
+    {
+        $tenantId = $this->getTenantId();
+        $rooms = $this->roomRepository->findAllByTenant($tenantId, $branchId);
+
+        return $rooms->filter(function (Room $room) use ($tenantId, $startTime, $endTime, $excludeBookingId) {
+            $overlaps = $this->roomRepository->getOverlappingBookings(
+                $tenantId,
+                $room->id,
+                $startTime,
+                $endTime,
+                $excludeBookingId,
+            );
+
+            return $overlaps->isEmpty();
+        })->values()->toArray();
+    }
+
+    private function generateTimeSlots(string $tenantId, string $date, string $openTime, string $closeTime, int $duration, Collection $staffList, ?string $breakStart = null, ?string $breakEnd = null): array
     {
         $open = strtotime("$date $openTime");
         $close = strtotime("$date $closeTime");
-        $interval = 30;
+        $interval = (int) $this->settingService->get('booking.slot_interval', 30);
         $slots = [];
+
+        $breakStartTs = $breakStart ? strtotime("$date $breakStart") : null;
+        $breakEndTs = $breakEnd ? strtotime("$date $breakEnd") : null;
 
         for ($time = $open; $time + ($duration * 60) <= $close; $time += $interval * 60) {
             $startSlot = date('Y-m-d H:i:s', $time);
             $endSlot = date('Y-m-d H:i:s', $time + ($duration * 60));
+
+            if ($breakStartTs !== null && $breakEndTs !== null) {
+                $slotStart = $time;
+                $slotEnd = $time + ($duration * 60);
+
+                if ($slotStart < $breakEndTs && $slotEnd > $breakStartTs) {
+                    continue;
+                }
+            }
 
             $availableStaff = $staffList->filter(function ($staff) use ($tenantId, $startSlot, $endSlot) {
                 $overlaps = $this->bookingRepository->getOverlappingBookings(
@@ -117,7 +165,7 @@ class AvailabilityService
                 );
 
                 return $overlaps->isEmpty();
-            });
+            })->values();
 
             if ($availableStaff->isNotEmpty()) {
                 $slots[] = [

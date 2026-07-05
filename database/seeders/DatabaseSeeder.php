@@ -9,6 +9,7 @@ use App\Modules\Company\Models\Branch;
 use App\Modules\Pricing\Database\Seeders\FeatureDefinitionSeeder;
 use App\Modules\Pricing\Database\Seeders\PlanSeeder;
 use App\Modules\Pricing\Models\Plan;
+use App\Modules\Setting\Database\Seeders\TenantSettingSeeder;
 use App\Modules\Subscription\Services\SubscriptionService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -79,6 +80,8 @@ class DatabaseSeeder extends Seeder
                     'tenantId' => $tenant->id,
                     'branchId' => $branch->id,
                 ]);
+
+                $this->call(TenantSettingSeeder::class);
             }
         });
     }

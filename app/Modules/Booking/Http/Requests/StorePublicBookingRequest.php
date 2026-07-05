@@ -40,6 +40,23 @@ class StorePublicBookingRequest extends FormRequest
             'total_guests' => 'nullable|integer|min:1|max:50',
             'guest_details' => 'nullable|array',
             'guest_details.*' => 'string|max:255',
+            'rooms' => 'nullable|array',
+            'rooms.*.room_id' => 'required|uuid|exists:rooms,id',
+            'rooms.*.start_time' => 'required|date',
+            'rooms.*.end_time' => 'required|date|after:rooms.*.start_time',
+            'is_group' => 'nullable|boolean',
+            'max_participants' => 'nullable|integer|min:2|max:100',
+            'participants' => 'nullable|array',
+            'participants.*.name' => 'required_with:participants|string|max:255',
+            'participants.*.phone' => 'nullable|string|max:20',
+            'participants.*.email' => 'nullable|email|max:255',
+            'participants.*.notes' => 'nullable|string|max:500',
+            'recurring' => 'nullable|array',
+            'recurring.frequency' => 'required_with:recurring|string|in:daily,weekly,monthly',
+            'recurring.interval' => 'nullable|integer|min:1|max:365',
+            'recurring.end_type' => 'required_with:recurring|string|in:after_count,until_date,never',
+            'recurring.count' => 'nullable|integer|min:1|max:365',
+            'recurring.until_date' => 'nullable|date',
         ];
     }
 

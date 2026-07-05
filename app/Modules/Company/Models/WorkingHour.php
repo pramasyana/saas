@@ -23,6 +23,8 @@ class WorkingHour extends Model
         'is_open',
         'open_time',
         'close_time',
+        'break_start',
+        'break_end',
     ];
 
     protected static function booted(): void
@@ -43,6 +45,8 @@ class WorkingHour extends Model
             'day_of_week' => 'integer',
             'open_time' => 'datetime:H:i',
             'close_time' => 'datetime:H:i',
+            'break_start' => 'datetime:H:i',
+            'break_end' => 'datetime:H:i',
         ];
     }
 }

@@ -7,6 +7,7 @@ use App\Modules\Staff\Http\Controllers\Api\CommissionController;
 use App\Modules\Staff\Http\Controllers\Api\LeaveController;
 use App\Modules\Staff\Http\Controllers\Api\ScheduleController;
 use App\Modules\Staff\Http\Controllers\Api\StaffController;
+use App\Modules\Staff\Http\Controllers\Api\StaffServiceController;
 use App\Modules\Staff\Http\Controllers\Api\StaffUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/staff/commissions', [CommissionController::class, 'store']);
     Route::put('/staff/commissions/{id}', [CommissionController::class, 'update']);
     Route::delete('/staff/commissions/{id}', [CommissionController::class, 'destroy']);
+
+    // Staff-Service Mapping
+    Route::get('/staff/{staff}/services', [StaffServiceController::class, 'index']);
+    Route::put('/staff/{staff}/services', [StaffServiceController::class, 'sync']);
 
     // Staff CRUD (MUST be last to avoid shadowing literal sub-routes like /staff/leaves)
     Route::get('/staff', [StaffController::class, 'index']);

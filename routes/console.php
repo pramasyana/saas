@@ -12,6 +12,10 @@ Schedule::command('bookings:send-reminders')
     ->everyMinute()
     ->description('Send pending booking reminders');
 
+Schedule::command('booking:generate-recurring')
+    ->everyMinute()
+    ->description('Generate recurring bookings from active templates');
+
 Schedule::command('email-logs:clear-old')
     ->monthlyOn(1, '00:00')
     ->description('Hapus email logs yang lebih dari 3 bulan');

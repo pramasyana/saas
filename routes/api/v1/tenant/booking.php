@@ -7,6 +7,7 @@ use App\Modules\Booking\Http\Controllers\Api\BookingController;
 use App\Modules\Booking\Http\Controllers\Api\CalendarController;
 use App\Modules\Booking\Http\Controllers\Api\LandingSettingsController;
 use App\Modules\Booking\Http\Controllers\Api\ReminderController;
+use App\Modules\Booking\Http\Controllers\Api\RoomController;
 use App\Modules\Booking\Http\Controllers\Api\WaitingListController;
 use App\Modules\Booking\Http\Controllers\Api\WalkInController;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,10 @@ Route::middleware('auth')->group(function () {
 
     // Reminders
     Route::get('/booking/reminders', [ReminderController::class, 'index']);
+
+    // Rooms
+    Route::get('/booking/rooms/all', [RoomController::class, 'all']);
+    Route::apiResource('/booking/rooms', RoomController::class)->except(['edit', 'create']);
 
     // Landing Page Settings
     Route::get('/booking/landing', [LandingSettingsController::class, 'index']);

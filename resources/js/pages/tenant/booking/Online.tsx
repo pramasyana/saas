@@ -16,6 +16,7 @@ interface OnlinePageProps {
         enable_addons: boolean;
         enable_multi_service: boolean;
         enable_guests: boolean;
+        enable_rooms: boolean;
     };
     publicUrl: string;
 }
@@ -67,10 +68,11 @@ export default function Online({ title, settings: initialSettings, publicUrl }: 
     const [enableAddons, setEnableAddons] = useState(currentSettings.enable_addons);
     const [enableMultiService, setEnableMultiService] = useState(currentSettings.enable_multi_service);
     const [enableGuests, setEnableGuests] = useState(currentSettings.enable_guests);
+    const [enableRooms, setEnableRooms] = useState(currentSettings.enable_rooms);
 
     function handleSave() {
         updateSettings.mutate(
-            { enabled, show_prices: showPrices, auto_confirm: autoConfirm, enable_addons: enableAddons, enable_multi_service: enableMultiService, enable_guests: enableGuests },
+            { enabled, show_prices: showPrices, auto_confirm: autoConfirm, enable_addons: enableAddons, enable_multi_service: enableMultiService, enable_guests: enableGuests, enable_rooms: enableRooms },
             {
                 onSuccess: () => {
                     addToast('success', 'Pengaturan online booking berhasil disimpan.');
@@ -87,7 +89,8 @@ export default function Online({ title, settings: initialSettings, publicUrl }: 
         || autoConfirm !== currentSettings.auto_confirm
         || enableAddons !== currentSettings.enable_addons
         || enableMultiService !== currentSettings.enable_multi_service
-        || enableGuests !== currentSettings.enable_guests;
+        || enableGuests !== currentSettings.enable_guests
+        || enableRooms !== currentSettings.enable_rooms;
 
     return (
         <TenantLayout>
@@ -199,6 +202,13 @@ export default function Online({ title, settings: initialSettings, publicUrl }: 
                                         description="Pelanggan bisa menentukan jumlah tamu dan nama tamu saat booking."
                                         value={enableGuests}
                                         onChange={setEnableGuests}
+                                        disabled={updateSettings.isPending}
+                                    />
+                                    <Toggle
+                                        label="Pemilihan Ruangan"
+                                        description="Pelanggan bisa memilih ruangan yang tersedia saat booking."
+                                        value={enableRooms}
+                                        onChange={setEnableRooms}
                                         disabled={updateSettings.isPending}
                                     />
                                 </>

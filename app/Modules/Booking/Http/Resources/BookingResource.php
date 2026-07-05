@@ -31,6 +31,25 @@ class BookingResource extends JsonResource
             'notes' => $this->notes,
             'total_guests' => $this->total_guests ?? 1,
             'guest_details' => $this->guest_details,
+            'is_group' => $this->is_group ?? false,
+            'max_participants' => $this->max_participants,
+            'participants' => $this->whenLoaded('participants', fn () => $this->participants->map(fn ($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'phone' => $p->phone,
+                'email' => $p->email,
+                'notes' => $p->notes,
+                'status' => $p->status,
+            ])),
+            'rooms' => $this->whenLoaded('rooms', fn () => $this->rooms->map(fn ($room) => [
+                'id' => $room->id,
+                'name' => $room->name,
+                'color' => $room->color,
+                'pivot' => [
+                    'start_time' => $room->pivot->start_time?->format('Y-m-d H:i:s'),
+                    'end_time' => $room->pivot->end_time?->format('Y-m-d H:i:s'),
+                ],
+            ])),
             'services' => BookingServiceResource::collection($this->whenLoaded('services')),
             'reminders' => ReminderResource::collection($this->whenLoaded('reminders')),
             'status_logs' => $this->whenLoaded('statusLogs', fn () => $this->statusLogs->map(fn ($log) => [

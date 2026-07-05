@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Service\Models;
 
+use App\Modules\Booking\Models\Room;
 use App\Modules\Company\Models\Branch;
+use App\Modules\Staff\Models\Staff;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -24,6 +26,7 @@ class Service extends Model
         'tenant_id',
         'branch_id',
         'category_id',
+        'room_id',
         'name',
         'description',
         'duration',
@@ -61,10 +64,21 @@ class Service extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function room(): BelongsTo
+    {
+        return $this->belongsTo(Room::class, 'room_id');
+    }
+
     public function packages(): BelongsToMany
     {
         return $this->belongsToMany(Package::class, 'package_service', 'service_id', 'package_id')
             ->withPivot(['quantity', 'sort_order'])
             ->withTimestamps();
+    }
+
+    public function staff(): BelongsToMany
+    {
+        return $this->belongsToMany(Staff::class, 'staff_service', 'service_id', 'staff_id')
+            ->withPivot('is_primary');
     }
 }

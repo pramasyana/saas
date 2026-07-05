@@ -170,6 +170,10 @@ type BookingSettings = {
     enable_addons: boolean;
     enable_multi_service: boolean;
     enable_guests: boolean;
+    enable_rooms: boolean;
+    enable_staff_filter: boolean;
+    enable_group_booking: boolean;
+    enable_recurring_public: boolean;
 };
 
 function getBookingSettings(): Promise<{ data: BookingSettings }> {

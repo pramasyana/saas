@@ -13,6 +13,7 @@ class StoreServiceRequest extends FormRequest
         return [
             'branch_id' => 'required|string|exists:branches,id',
             'category_id' => 'nullable|string|exists:service_categories,id',
+            'room_id' => 'nullable|string|exists:rooms,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'duration' => 'required|integer|min:1|max:1440',

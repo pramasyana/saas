@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Modules\Staff\Models;
 
 use App\Modules\Company\Models\Branch;
+use App\Modules\Service\Models\Service;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -68,6 +70,12 @@ class Staff extends Model
     public function commissions(): HasMany
     {
         return $this->hasMany(Commission::class, 'staff_id');
+    }
+
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class, 'staff_service', 'staff_id', 'service_id')
+            ->withPivot('is_primary');
     }
 
     public function branch(): BelongsTo

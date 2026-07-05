@@ -21,6 +21,8 @@ class UpdateWorkingHoursRequest extends FormRequest
             'hours.*.is_open' => 'required|boolean',
             'hours.*.open_time' => 'nullable|date_format:H:i',
             'hours.*.close_time' => 'nullable|date_format:H:i',
+            'hours.*.break_start' => 'nullable|date_format:H:i',
+            'hours.*.break_end' => 'nullable|date_format:H:i',
         ];
     }
 }

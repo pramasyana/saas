@@ -8,6 +8,7 @@ use App\Modules\Crm\Providers\CrmServiceProvider;
 use App\Modules\Notification\Providers\NotificationServiceProvider;
 use App\Modules\Pricing\Providers\PricingServiceProvider;
 use App\Modules\Service\Providers\ServiceServiceProvider;
+use App\Modules\Setting\Providers\SettingServiceProvider;
 use App\Modules\Staff\Providers\StaffServiceProvider;
 use App\Modules\Subscription\Providers\SubscriptionServiceProvider;
 use App\Modules\Tenant\Providers\TenantServiceProvider;
@@ -23,6 +24,7 @@ return [
     NotificationServiceProvider::class,
     PricingServiceProvider::class,
     ServiceServiceProvider::class,
+    SettingServiceProvider::class,
     StaffServiceProvider::class,
     SubscriptionServiceProvider::class,
     TenantServiceProvider::class,
