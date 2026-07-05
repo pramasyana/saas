@@ -24,7 +24,7 @@ class BookingController extends Controller
         $branchId = $request->input('branch_id');
 
         $bookings = $this->bookingService->paginate(
-            $request->only(['search', 'status', 'date', 'staff_id', 'source']),
+            $request->only(['search', 'status', 'date', 'staff_id', 'source', 'customer_id']),
             $branchId,
             (int) $request->input('per_page', 15),
         );
@@ -172,6 +172,9 @@ class BookingController extends Controller
                 'enabled' => $config['enabled'] ?? false,
                 'show_prices' => $config['show_prices'] ?? true,
                 'auto_confirm' => $config['auto_confirm'] ?? false,
+                'enable_addons' => $config['enable_addons'] ?? false,
+                'enable_multi_service' => $config['enable_multi_service'] ?? false,
+                'enable_guests' => $config['enable_guests'] ?? false,
             ],
         ]);
     }
@@ -182,6 +185,9 @@ class BookingController extends Controller
             'enabled' => 'boolean',
             'show_prices' => 'boolean',
             'auto_confirm' => 'boolean',
+            'enable_addons' => 'boolean',
+            'enable_multi_service' => 'boolean',
+            'enable_guests' => 'boolean',
         ]);
 
         $tenant = tenant();

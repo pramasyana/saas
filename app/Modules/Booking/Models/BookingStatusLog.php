@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -43,5 +44,10 @@ class BookingStatusLog extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class, 'booking_id');
+    }
+
+    public function changedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'changed_by');
     }
 }

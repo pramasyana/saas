@@ -14,6 +14,8 @@ export interface Booking {
     status: BookingStatus;
     source: 'online' | 'walk_in' | 'phone';
     notes: string | null;
+    total_guests: number;
+    guest_details: string[] | null;
     services: BookingServiceItem[];
     reminders: ReminderItem[];
     status_logs: StatusLogItem[];
@@ -34,6 +36,7 @@ export interface StatusLogItem {
     from_status: string | null;
     to_status: string;
     changed_by: string;
+    changed_by_name: string | null;
     notes: string | null;
     created_at: string;
 }
@@ -46,6 +49,7 @@ export interface BookingServiceItem {
     duration: number;
     quantity: number;
     sort_order: number;
+    addons?: { name: string; price: number; quantity: number }[];
 }
 
 export interface BookingFormData {

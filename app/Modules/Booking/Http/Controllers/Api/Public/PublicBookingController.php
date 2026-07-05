@@ -46,18 +46,17 @@ class PublicBookingController
             ]);
         }
 
-        $serviceId = $request->service_id;
         $duration = (int) $request->duration_minutes;
         $bookingServices = [];
 
-        if ($request->filled('package_id')) {
+        if ($request->filled('services')) {
+            $bookingServices = $request->services;
+        } elseif ($request->filled('package_id')) {
             $package = Package::with('services')->findOrFail($request->package_id);
-            $serviceId = $package->services->first()?->id ?? $serviceId;
             $duration = (int) $package->duration;
 
             foreach ($package->services as $svc) {
                 $bookingServices[] = [
-                    'tenant_id' => $tenantId,
                     'service_id' => $svc->id,
                     'name' => $svc->name,
                     'price' => (float) $svc->price,
@@ -65,6 +64,19 @@ class PublicBookingController
                     'quantity' => $svc->pivot->quantity ?? 1,
                 ];
             }
+        } elseif ($request->filled('service_id')) {
+            $bookingServices[] = [
+                'service_id' => $request->service_id,
+                'name' => '',
+                'price' => 0,
+                'duration' => $duration,
+                'quantity' => 1,
+            ];
+        }
+
+        $firstServiceId = null;
+        if (! empty($bookingServices)) {
+            $firstServiceId = $bookingServices[0]['service_id'] ?? null;
         }
 
         $staffId = $request->staff_id;
@@ -73,7 +85,7 @@ class PublicBookingController
             $startDate = Carbon::parse($request->start_time)->format('Y-m-d');
             $slots = $this->availabilityService->getAvailableSlots(
                 date: $startDate,
-                serviceId: $serviceId,
+                serviceId: $firstServiceId ?? '',
                 duration: $duration,
                 branchId: $request->branch_id,
             );
@@ -104,6 +116,8 @@ class PublicBookingController
             'status' => ($config['auto_confirm'] ?? false) ? 'confirmed' : 'pending',
             'source' => 'online',
             'notes' => $request->notes,
+            'total_guests' => (int) ($request->total_guests ?? 1),
+            'guest_details' => $request->guest_details,
             'services' => $bookingServices,
         ], $tenantId);
 
@@ -121,7 +135,7 @@ class PublicBookingController
     public function show(string $code): JsonResponse
     {
         $booking = Booking::where('booking_code', $code)
-            ->with(['customer', 'staff', 'branch', 'services'])
+            ->with(['customer', 'staff', 'branch', 'services.addons'])
             ->first();
 
         if (! $booking) {
@@ -146,11 +160,18 @@ class PublicBookingController
                 'duration_minutes' => $booking->duration_minutes,
                 'source' => $booking->source,
                 'notes' => $booking->notes,
+                'total_guests' => $booking->total_guests,
+                'guest_details' => $booking->guest_details,
                 'services' => $booking->services->map(fn ($s) => [
                     'name' => $s->name,
                     'price' => $s->price,
                     'duration' => $s->duration,
                     'quantity' => $s->quantity,
+                    'addons' => $s->addons->map(fn ($a) => [
+                        'name' => $a->name,
+                        'price' => $a->price,
+                        'quantity' => $a->quantity,
+                    ]),
                 ]),
             ],
         ]);

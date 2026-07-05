@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
 
-interface Branch {
+export interface Branch {
     id: string;
     name: string;
     slug: string;
@@ -9,7 +9,7 @@ interface Branch {
     phone: string | null;
 }
 
-interface ServiceItem {
+export interface ServiceItem {
     id: string;
     name: string;
     description: string | null;
@@ -19,23 +19,31 @@ interface ServiceItem {
     category_id: string | null;
 }
 
-interface PackageItem {
+export interface PackageItem {
     id: string;
     name: string;
     description: string | null;
     price: number;
     duration: number;
     branch_id: string;
-    services: { id: string; name: string; pivot: { quantity: number } }[];
+    services: { id: string; name: string; quantity: number }[];
 }
 
-interface StaffMember {
+export interface StaffMember {
     id: string;
     name: string;
     email: string | null;
     phone: string | null;
     position: string | null;
     branch_id: string | null;
+}
+
+export interface AddonItem {
+    id: string;
+    name: string;
+    description: string | null;
+    price: number;
+    duration: number | null;
 }
 
 interface AvailabilitySlot {
@@ -58,7 +66,21 @@ interface BookingResult {
     status: string;
 }
 
-interface BookingDetail {
+interface ServiceAddon {
+    name: string;
+    price: number;
+    quantity: number;
+}
+
+interface BookingServiceItem {
+    name: string;
+    price: number;
+    duration: number;
+    quantity: number;
+    addons?: ServiceAddon[];
+}
+
+export interface BookingDetail {
     id: string;
     booking_code: string;
     status: string;
@@ -71,24 +93,47 @@ interface BookingDetail {
     duration_minutes: number;
     source: string;
     notes: string | null;
-    services: { name: string; price: number; duration: number; quantity: number }[];
+    total_guests: number;
+    guest_details: string[] | null;
+    services: BookingServiceItem[];
 }
 
-interface CreateBookingPayload {
+export interface CreateBookingServiceItem {
+    service_id?: string;
+    name: string;
+    price: number;
+    duration: number;
+    quantity: number;
+    addons?: {
+        addon_id?: string;
+        name: string;
+        price: number;
+        quantity: number;
+    }[];
+}
+
+export interface CreateBookingPayload {
     customer_name: string;
     customer_email: string;
     customer_phone: string;
     service_id?: string;
     package_id?: string;
+    services?: CreateBookingServiceItem[];
     staff_id?: string;
     branch_id: string;
     start_time: string;
     duration_minutes: number;
     notes?: string;
+    total_guests?: number;
+    guest_details?: string[];
 }
 
 function getBranches(): Promise<{ data: Branch[] }> {
     return api.get('/api/v1/booking/branches').then((r) => r.data);
+}
+
+function getAddons(params: { branch_id?: string }): Promise<{ data: AddonItem[] }> {
+    return api.get('/api/v1/booking/addons', { params }).then((r) => r.data);
 }
 
 function getPackages(params: { branch_id?: string }): Promise<{ data: PackageItem[] }> {
@@ -126,6 +171,15 @@ export function usePublicBranches() {
         queryKey: ['public-booking', 'branches'],
         queryFn: getBranches,
         staleTime: 1000 * 60 * 10,
+    });
+}
+
+export function usePublicAddons(params: { branch_id?: string }) {
+    return useQuery({
+        queryKey: ['public-booking', 'addons', params],
+        queryFn: () => getAddons(params),
+        staleTime: 1000 * 60 * 10,
+        enabled: !!params.branch_id,
     });
 }
 
@@ -192,8 +246,8 @@ export function usePublicBooking(code: string | undefined) {
             const data = query.state.data?.data;
 
             if (data && data.status !== 'pending') {
-return false;
-}
+                return false;
+            }
 
             return 30_000;
         },

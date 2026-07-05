@@ -25,6 +25,10 @@ class CreateBookingAction
                 $bookingData['tenant_id'] = $tenantId;
             }
 
+            unset($bookingData['services']);
+
+            $bookingData['total_guests'] ??= 1;
+
             $booking = $this->bookingRepository->create($bookingData);
 
             $this->statusLogRepository->create([
@@ -35,12 +39,21 @@ class CreateBookingAction
             ]);
 
             if (! empty($data['services'])) {
-                $booking->services()->createMany($data['services']);
+                foreach ($data['services'] as $svcData) {
+                    $addons = $svcData['addons'] ?? [];
+                    unset($svcData['addons']);
+
+                    $bookingService = $booking->services()->create($svcData);
+
+                    if (! empty($addons)) {
+                        $bookingService->addons()->createMany($addons);
+                    }
+                }
             }
 
             event(new BookingCreated($booking));
 
-            return $booking->load(['customer', 'staff', 'services']);
+            return $booking->load(['customer', 'staff', 'services', 'services.addons']);
         });
     }
 }

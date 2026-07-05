@@ -34,6 +34,8 @@ class Booking extends Model
         'source',
         'notes',
         'booking_code',
+        'total_guests',
+        'guest_details',
     ];
 
     protected static function booted(): void
@@ -61,6 +63,8 @@ class Booking extends Model
             'start_time' => 'datetime',
             'end_time' => 'datetime',
             'duration_minutes' => 'integer',
+            'total_guests' => 'integer',
+            'guest_details' => 'array',
         ];
     }
 

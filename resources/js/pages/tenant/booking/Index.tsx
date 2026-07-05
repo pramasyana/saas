@@ -66,13 +66,20 @@ function isSameDay(a: Date, b: Date): boolean {
         && a.getDate() === b.getDate();
 }
 
+function localDateStr(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+}
+
 export default function BookingIndex({ title, stats }: BookingPageProps) {
     const today = useMemo(() => new Date(), []);
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     const [branchId, setBranchId] = useState('');
     const [staffId, setStaffId] = useState('');
-    const [selectedDate, setSelectedDate] = useState<string | null>(today.toISOString().split('T')[0]);
+    const [selectedDate, setSelectedDate] = useState<string | null>(localDateStr(today));
     const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
 
     const { data: branchesData } = useAllBranches();
@@ -111,7 +118,7 @@ return [];
     function goToToday() {
         setCurrentMonth(today.getMonth());
         setCurrentYear(today.getFullYear());
-        setSelectedDate(today.toISOString().split('T')[0]);
+        setSelectedDate(localDateStr(today));
     }
 
     function prevMonth() {
@@ -151,8 +158,8 @@ return [];
 
         for (let d = 1; d <= daysInMonth; d++) {
             const date = new Date(currentYear, currentMonth, d);
-            const dateStr = date.toISOString().split('T')[0];
-            const todayStr = today.toISOString().split('T')[0];
+            const dateStr = localDateStr(date);
+            const todayStr = localDateStr(today);
             days.push({
                 date,
                 dateStr,

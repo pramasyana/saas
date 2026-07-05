@@ -8,7 +8,7 @@ import NoteList from '@/features/crm/components/NoteList';
 import ReferralList from '@/features/crm/components/ReferralList';
 import ReviewList from '@/features/crm/components/ReviewList';
 import TagList from '@/features/crm/components/TagList';
-import TimelineList from '@/features/crm/components/TimelineList';
+import TransactionHistory from '@/features/crm/components/TransactionHistory';
 import { useCustomer } from '@/features/crm/hooks/useCustomers';
 import type { Customer } from '@/features/crm/types';
 import TenantLayout from '@/layouts/TenantLayout';
@@ -150,7 +150,7 @@ export default function Show({ title, customer }: ShowPageProps) {
                 )}
 
                 {activeTab === 'riwayat' && (
-                    <TimelineList customerId={currentCustomer.id} />
+                    <TransactionHistory customerId={currentCustomer.id} />
                 )}
 
                 {activeTab === 'membership' && (

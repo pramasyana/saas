@@ -9,6 +9,7 @@ interface Filters {
     date?: string;
     staff_id?: string;
     source?: string;
+    customer_id?: string;
     page?: number;
     per_page?: number;
 }
@@ -162,11 +163,20 @@ export function useWalkIn() {
     });
 }
 
-function getBookingSettings(): Promise<{ data: { enabled: boolean; show_prices: boolean; auto_confirm: boolean } }> {
+type BookingSettings = {
+    enabled: boolean;
+    show_prices: boolean;
+    auto_confirm: boolean;
+    enable_addons: boolean;
+    enable_multi_service: boolean;
+    enable_guests: boolean;
+};
+
+function getBookingSettings(): Promise<{ data: BookingSettings }> {
     return api.get('/api/v1/booking/settings').then((r) => r.data);
 }
 
-function updateBookingSettings(data: { enabled?: boolean; show_prices?: boolean; auto_confirm?: boolean }): Promise<{ data: Record<string, unknown> }> {
+function updateBookingSettings(data: Partial<BookingSettings>): Promise<{ data: Record<string, unknown> }> {
     return api.put('/api/v1/booking/settings', data).then((r) => r.data);
 }
 

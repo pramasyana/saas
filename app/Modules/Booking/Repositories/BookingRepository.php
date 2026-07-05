@@ -43,7 +43,11 @@ class BookingRepository implements BookingRepositoryInterface
             $query->where('source', $filters['source']);
         }
 
-        return $query->with(['customer', 'staff', 'branch', 'services'])
+        if (! empty($filters['customer_id'])) {
+            $query->where('customer_id', $filters['customer_id']);
+        }
+
+        return $query->with(['customer', 'staff', 'branch', 'services.addons'])
             ->orderBy('start_time', 'desc')
             ->paginate($perPage);
     }
@@ -55,7 +59,7 @@ class BookingRepository implements BookingRepositoryInterface
 
     public function findOrFail(string $id): Booking
     {
-        return Booking::with(['customer', 'staff', 'branch', 'services.addons', 'reminders', 'statusLogs'])->findOrFail($id);
+        return Booking::with(['customer', 'staff', 'branch', 'services.addons', 'reminders', 'statusLogs.changedByUser'])->findOrFail($id);
     }
 
     public function create(array $data): Booking

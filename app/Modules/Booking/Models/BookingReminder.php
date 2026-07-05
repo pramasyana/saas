@@ -20,6 +20,7 @@ class BookingReminder extends Model
         'booking_id',
         'type',
         'status',
+        'scheduled_at',
         'sent_at',
         'error_message',
     ];
@@ -37,6 +38,7 @@ class BookingReminder extends Model
     {
         return [
             'id' => 'string',
+            'scheduled_at' => 'datetime',
             'sent_at' => 'datetime',
         ];
     }

@@ -13,13 +13,13 @@ interface BookingDetailModalProps {
     onClose: () => void;
 }
 
-const statusConfig: Record<BookingStatus, { label: string; variant: 'default' | 'success' | 'warning' | 'danger' | 'new' }> = {
-    pending: { label: 'Pending', variant: 'warning' },
-    confirmed: { label: 'Dikonfirmasi', variant: 'success' },
-    in_progress: { label: 'Berlangsung', variant: 'new' },
-    completed: { label: 'Selesai', variant: 'default' },
-    cancelled: { label: 'Dibatalkan', variant: 'danger' },
-    no_show: { label: 'No Show', variant: 'danger' },
+const statusConfig: Record<BookingStatus, { label: string; variant: 'default' | 'success' | 'warning' | 'danger' | 'new'; icon: string }> = {
+    pending: { label: 'Pending', variant: 'warning', icon: 'hourglass' },
+    confirmed: { label: 'Dikonfirmasi', variant: 'success', icon: 'check_circle' },
+    in_progress: { label: 'Berlangsung', variant: 'new', icon: 'progress_activity' },
+    completed: { label: 'Selesai', variant: 'default', icon: 'verified' },
+    cancelled: { label: 'Dibatalkan', variant: 'danger', icon: 'cancel' },
+    no_show: { label: 'No Show', variant: 'danger', icon: 'person_off' },
 };
 
 const reminderBadge: Record<string, 'default' | 'success' | 'warning' | 'danger' | 'new'> = {
@@ -54,23 +54,24 @@ function getInitials(name: string): string {
 
 function getAvatarColor(name: string): string {
     const colors = [
-        'bg-primary text-white', 'bg-emerald-500 text-white', 'bg-amber-500 text-white',
-        'bg-rose-500 text-white', 'bg-sky-500 text-white', 'bg-violet-500 text-white',
+        'from-primary to-primary-dark', 'from-emerald-500 to-emerald-600', 'from-amber-500 to-amber-600',
+        'from-rose-500 to-rose-600', 'from-sky-500 to-sky-600', 'from-violet-500 to-violet-600',
     ];
     let hash = 0;
-
     for (let i = 0; i < name.length; i++) {
-hash = name.charCodeAt(i) + ((hash << 5) - hash);
-}
-
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
     return colors[Math.abs(hash) % colors.length];
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
+function InfoCard({ icon, label, value }: { icon: string; label: string; value: string }) {
     return (
-        <div>
-            <p className="text-xs font-medium text-neutral-400">{label}</p>
-            <p className="mt-0.5 text-sm font-medium text-neutral-900">{value}</p>
+        <div className="flex items-start gap-3 rounded-xl border p-3.5 transition-colors hover:border-neutral-300" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+            <span className="material-symbols-rounded mt-0.5 text-lg shrink-0 !text-primary">{icon}</span>
+            <div className="min-w-0">
+                <p className="text-[11px] font-medium text-neutral-400">{label}</p>
+                <p className="mt-0.5 text-sm font-semibold text-neutral-900">{value}</p>
+            </div>
         </div>
     );
 }
@@ -85,17 +86,17 @@ function StatusTimeline({ logs }: { logs: StatusLogItem[] }) {
         no_show: 'No Show',
     };
 
-    if (logs.length === 0) {
-return null;
-}
+    if (logs.length === 0) return null;
 
     return (
         <div>
-            <p className="mb-3 text-xs font-medium text-neutral-400">RIWAYAT STATUS</p>
-            <div className="space-y-3">
+            <p className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-400">
+                <span className="material-symbols-rounded text-sm">history</span>
+                Riwayat Status
+            </p>
+            <div className="space-y-0">
                 {[...logs].reverse().map((log, i) => {
                     const isLast = i === logs.length - 1;
-
                     return (
                         <div key={i} className="flex gap-3">
                             <div className="flex flex-col items-center">
@@ -103,16 +104,17 @@ return null;
                                     'h-2.5 w-2.5 rounded-full ring-2 ring-white',
                                     isLast ? 'bg-primary' : 'bg-neutral-300',
                                 )} />
-                                {!isLast && <div className="mt-1 h-full w-px bg-neutral-200" />}
+                                {!isLast && <div className="h-full w-px bg-neutral-200" />}
                             </div>
-                            <div className="pb-3">
+                            <div className={cn('pb-4', isLast && 'pb-0')}>
                                 <p className="text-sm font-medium text-neutral-900">
                                     {log.from_status ? `${statusLabels[log.from_status] ?? log.from_status} → ` : ''}
                                     {statusLabels[log.to_status] ?? log.to_status}
                                 </p>
                                 <p className="text-xs text-neutral-400">
                                     {log.created_at ? formatShortDate(log.created_at) : ''}
-                                    {log.changed_by !== 'system' && ` oleh ${log.changed_by}`}
+                                    {log.changed_by !== 'system' && log.changed_by_name ? ` oleh ${log.changed_by_name}` : ''}
+                                    {log.changed_by !== 'system' && !log.changed_by_name && log.changed_by ? ` oleh ${log.changed_by}` : ''}
                                 </p>
                                 {log.notes && <p className="mt-0.5 text-xs text-neutral-500">{log.notes}</p>}
                             </div>
@@ -151,27 +153,18 @@ export default function BookingDetailModal({ bookingId, onClose }: BookingDetail
     const noShowMut = useMarkNoShow();
 
     async function doAction(action: string) {
-        if (!booking) {
-return;
-}
-
+        if (!booking) return;
         if (action === 'cancel' || action === 'no_show') {
             setConfirmAction(action);
-
             return;
         }
-
         await executeAction(action);
     }
 
     async function executeAction(action: string) {
-        if (!booking) {
-return;
-}
-
+        if (!booking) return;
         setLoadingAction(action);
         setConfirmAction(null);
-
         try {
             const actions: Record<string, () => Promise<unknown>> = {
                 confirm: () => confirmMut.mutateAsync(booking.id),
@@ -223,9 +216,13 @@ return;
                 </div>
             ) : (
                 <FadeIn>
+                    {/* ── Header ── */}
                     <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4">
                         <div className="flex items-center gap-3">
-                            <h2 className="text-lg font-semibold text-neutral-900">Detail Booking</h2>
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg" style={{ backgroundColor: 'rgba(107,56,212,0.1)' }}>
+                                <span className="material-symbols-rounded text-base !text-primary">description</span>
+                            </div>
+                            <h2 className="text-lg font-bold text-neutral-900">Detail Booking</h2>
                             {config && <Badge variant={config.variant}>{config.label}</Badge>}
                         </div>
                         <button onClick={onClose} className="rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600">
@@ -235,71 +232,144 @@ return;
                         </button>
                     </div>
 
-                    <div className="max-h-[70vh] overflow-y-auto px-6 py-5">
-                        {/* Customer Info */}
-                        <div className="mb-6 flex items-center gap-4">
-                            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${getAvatarColor(booking.customer_name)}`}>
+                    <div className="max-h-[70vh] overflow-y-auto px-6 py-5 space-y-5">
+                        {/* ── Customer Header ── */}
+                        <div className="flex items-center gap-4 rounded-2xl border bg-white p-4 shadow-sm" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+                            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-sm font-bold text-white shadow-sm ${getAvatarColor(booking.customer_name)}`}>
                                 {getInitials(booking.customer_name)}
                             </div>
                             <div className="min-w-0 flex-1">
-                                <p className="text-base font-semibold text-neutral-900">{booking.customer_name}</p>
+                                <p className="text-base font-bold text-neutral-900">{booking.customer_name}</p>
                                 {booking.customer_phone && <p className="text-sm text-neutral-500">{booking.customer_phone}</p>}
                             </div>
                             <div className="shrink-0 text-right">
-                                <p className="text-xs text-neutral-400">Kode Booking</p>
-                                <p className="text-sm font-bold text-primary">{booking.booking_code}</p>
+                                <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">Kode Booking</p>
+                                <p className="mt-0.5 text-sm font-bold tracking-wide text-primary" style={{ fontFamily: 'ui-monospace, SFMono-Regular, monospace' }}>{booking.booking_code}</p>
                             </div>
                         </div>
 
-                        {/* Booking Info Grid */}
-                        <div className="mb-6 grid grid-cols-2 gap-4 rounded-xl bg-neutral-50 p-4 sm:grid-cols-3">
-                            <InfoRow label="Tanggal" value={formatDate(booking.start_time)} />
-                            <InfoRow label="Waktu" value={`${formatTime(booking.start_time)} - ${formatTime(booking.end_time)}`} />
-                            <InfoRow label="Durasi" value={`${booking.duration_minutes} menit`} />
-                            <InfoRow label="Staff" value={booking.staff_name ?? '-'} />
-                            <InfoRow label="Cabang" value={booking.branch_name ?? '-'} />
-                            <InfoRow label="Sumber" value={booking.source === 'walk_in' ? 'Walk In' : booking.source === 'online' ? 'Online' : 'Telepon'} />
+                        {/* ── Booking Info Grid ── */}
+                        <div>
+                            <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-400">
+                                <span className="material-symbols-rounded text-sm">event_note</span>
+                                Informasi Booking
+                            </p>
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                <InfoCard icon="event" label="Tanggal" value={formatDate(booking.start_time)} />
+                                <InfoCard icon="schedule" label="Waktu" value={`${formatTime(booking.start_time)} - ${formatTime(booking.end_time)}`} />
+                                <InfoCard icon="timer" label="Durasi" value={`${booking.duration_minutes} menit`} />
+                                <InfoCard icon="badge" label="Staff" value={booking.staff_name ?? '-'} />
+                                <InfoCard icon="store" label="Cabang" value={booking.branch_name ?? '-'} />
+                                <InfoCard icon="travel_explore" label="Sumber" value={booking.source === 'walk_in' ? 'Walk In' : booking.source === 'online' ? 'Online' : 'Telepon'} />
+                                <InfoCard icon="group" label="Jumlah Tamu" value={`${booking.total_guests} orang`} />
+                                {booking.guest_details && booking.guest_details.length > 0 && (
+                                    <div className="col-span-full">
+                                        <InfoCard icon="people" label="Nama Tamu" value={booking.guest_details.join(', ')} />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Layanan */}
+                        {/* ── Services ── */}
                         {booking.services && booking.services.length > 0 && (
-                            <div className="mb-6">
-                                <p className="mb-2 text-xs font-medium text-neutral-400">LAYANAN</p>
-                                <div className="divide-y divide-neutral-100 rounded-xl border border-neutral-200">
-                                    {booking.services.map((s) => (
-                                        <div key={s.id} className="flex items-center justify-between px-4 py-3">
-                                            <div className="min-w-0 flex-1">
-                                                <p className="text-sm font-medium text-neutral-900">{s.name}</p>
-                                                {s.quantity > 1 && <p className="text-xs text-neutral-400">{s.quantity}x</p>}
+                            <div>
+                                <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-400">
+                                    <span className="material-symbols-rounded text-sm">spa</span>
+                                    Layanan
+                                </p>
+                                <div className="divide-y rounded-xl border shadow-sm" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+                                    {booking.services.map((s) => {
+                                        const pax = Math.max(1, booking.total_guests ?? 1);
+                                        return (
+                                            <div key={s.id} className="px-4 py-3.5 first:rounded-t-xl last:rounded-b-xl hover:bg-neutral-50/50">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="min-w-0 flex-1 flex items-center gap-2.5">
+                                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: 'rgba(107,56,212,0.08)' }}>
+                                                            <span className="material-symbols-rounded text-sm !text-primary">check</span>
+                                                        </span>
+                                                        <div>
+                                                            <p className="text-sm font-semibold text-neutral-900">{s.name}</p>
+                                                            {s.quantity > 1 && <p className="text-xs text-neutral-400">{s.quantity}x</p>}
+                                                        </div>
+                                                    </div>
+                                                    {s.price > 0 && (
+                                                        <div className="text-right shrink-0 ml-3">
+                                                            <p className="text-sm font-bold text-neutral-900">
+                                                                Rp {(s.price * pax).toLocaleString('id-ID')}
+                                                            </p>
+                                                            {pax > 1 && (
+                                                                <p className="text-[10px] text-neutral-400 leading-tight">
+                                                                    Rp {s.price.toLocaleString('id-ID')} × {pax} pax
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {s.addons && s.addons.length > 0 && (
+                                                    <div className="mt-2 space-y-1 pl-9">
+                                                        {s.addons.map((a, j) => (
+                                                            <div key={j} className="flex items-center justify-between text-xs text-neutral-400">
+                                                                <span className="flex items-center gap-1.5">
+                                                                    <span className="material-symbols-rounded text-[10px]">add_circle</span>
+                                                                    {a.quantity > 1 && <span className="font-semibold text-neutral-700">{a.quantity}x </span>}
+                                                                    {a.name}
+                                                                </span>
+                                                                {a.price > 0 && <span className="font-medium text-neutral-700">Rp {(a.price * a.quantity).toLocaleString('id-ID')}</span>}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
-                                            {s.price > 0 && (
-                                                <p className="text-sm font-semibold text-neutral-900">
-                                                    Rp {s.price.toLocaleString('id-ID')}
-                                                </p>
-                                            )}
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}
 
-                        {/* Notes */}
-                        {booking.notes && (
-                            <div className="mb-6">
-                                <p className="mb-1.5 text-xs font-medium text-neutral-400">CATATAN</p>
-                                <p className="rounded-xl bg-neutral-50 px-4 py-3 text-sm text-neutral-700">{booking.notes}</p>
+                        {/* ── Total Price ── */}
+                        {booking.services && booking.services.length > 0 && (
+                            <div className="flex items-center justify-between rounded-2xl border bg-white p-4 shadow-sm" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl" style={{ backgroundColor: 'rgba(107,56,212,0.08)' }}>
+                                        <span className="material-symbols-rounded text-base !text-primary">payments</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-neutral-900">Total Harga</p>
+                                        <p className="text-xs text-neutral-400">Sudah termasuk layanan</p>
+                                    </div>
+                                </div>
+                                <span className="text-xl font-extrabold text-primary">
+                                    Rp {booking.services.reduce((sum, s) => {
+                                        const pax = Math.max(1, booking.total_guests ?? 1);
+                                        const svcTotal = Number(s.price) * Number(s.quantity) * pax;
+                                        const addonTotal = (s.addons || []).reduce((a, b) => a + Number(b.price) * Number(b.quantity), 0);
+                                        return sum + svcTotal + addonTotal;
+                                    }, 0).toLocaleString('id-ID')}
+                                </span>
                             </div>
                         )}
 
-                        {/* Reminder Status */}
+                        {/* ── Notes ── */}
+                        {booking.notes && (
+                            <div className="rounded-2xl border bg-white p-4 shadow-sm" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+                                <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-400">
+                                    <span className="material-symbols-rounded text-sm">notes</span>
+                                    Catatan
+                                </p>
+                                <p className="rounded-xl px-4 py-3 text-sm leading-relaxed text-neutral-700" style={{ backgroundColor: 'rgba(107,56,212,0.04)' }}>{booking.notes}</p>
+                            </div>
+                        )}
+
+                        {/* ── Reminder ── */}
                         {reminder && (
-                            <div className="mb-6">
-                                <p className="mb-2 text-xs font-medium text-neutral-400">REMINDER</p>
-                                <div className="flex items-center gap-3 rounded-xl border border-neutral-200 px-4 py-3">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100">
-                                        <svg className="h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                                        </svg>
+                            <div className="rounded-2xl border bg-white p-4 shadow-sm" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+                                <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-400">
+                                    <span className="material-symbols-rounded text-sm">notifications</span>
+                                    Reminder
+                                </p>
+                                <div className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ backgroundColor: 'rgba(107,56,212,0.04)' }}>
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm">
+                                        <span className="material-symbols-rounded text-sm !text-primary">notifications_active</span>
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <p className="text-sm font-medium text-neutral-900 capitalize">{reminder.type}</p>
@@ -317,16 +387,16 @@ return;
                             </div>
                         )}
 
-                        {/* Status Timeline */}
+                        {/* ── Status Timeline ── */}
                         {booking.status_logs && booking.status_logs.length > 0 && (
-                            <div className="mb-2">
+                            <div className="rounded-2xl border bg-white p-4 shadow-sm" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
                                 <StatusTimeline logs={booking.status_logs} />
                             </div>
                         )}
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex flex-wrap items-center justify-end gap-2 border-t border-neutral-200 px-6 py-4">
+                    {/* ── Actions ── */}
+                    <div className="flex flex-wrap items-center justify-end gap-2 border-t border-neutral-200 bg-neutral-50/50 px-6 py-4">
                         {booking.status === 'pending' && (
                             <>
                                 <Button size="sm" variant="danger" onClick={() => doAction('cancel')} disabled={!!loadingAction}>
@@ -366,7 +436,6 @@ return;
             <Modal open={!!confirmAction} onClose={() => setConfirmAction(null)} size="sm">
                 {confirmAction && (() => {
                     const cfg = confirmConfig[confirmAction];
-
                     return (
                         <div className="p-6">
                             <div className="flex flex-col items-center gap-4 text-center">
@@ -381,19 +450,8 @@ return;
                                 </div>
                             </div>
                             <div className="mt-6 flex justify-center gap-3">
-                                <Button
-                                    variant="secondary"
-                                    onClick={() => setConfirmAction(null)}
-                                    disabled={!!loadingAction}
-                                >
-                                    Batal
-                                </Button>
-                                <Button
-                                    variant={confirmAction === 'cancel' ? 'danger' : 'danger'}
-                                    onClick={() => executeAction(confirmAction)}
-                                    disabled={!!loadingAction}
-                                    className="min-w-[120px]"
-                                >
+                                <Button variant="secondary" onClick={() => setConfirmAction(null)} disabled={!!loadingAction}>Batal</Button>
+                                <Button variant={confirmAction === 'cancel' ? 'danger' : 'danger'} onClick={() => executeAction(confirmAction)} disabled={!!loadingAction} className="min-w-[120px]">
                                     {loadingAction ? 'Memproses...' : cfg.confirmLabel}
                                 </Button>
                             </div>

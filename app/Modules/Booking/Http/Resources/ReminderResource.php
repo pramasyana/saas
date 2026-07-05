@@ -17,7 +17,7 @@ class ReminderResource extends JsonResource
             'id' => $this->id,
             'booking_id' => $this->booking_id,
             'booking_code' => $this->whenLoaded('booking', fn () => $this->booking->booking_code),
-            'customer_name' => $this->whenLoaded('booking.customer', fn () => $this->booking->customer?->name),
+            'customer_name' => $this->booking?->customer?->name,
             'type' => $this->type,
             'status' => $this->status,
             'scheduled_at' => $this->scheduled_at?->format('Y-m-d H:i:s'),

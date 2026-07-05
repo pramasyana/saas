@@ -21,6 +21,11 @@ class BookingServiceResource extends JsonResource
             'duration' => $this->duration,
             'quantity' => $this->quantity,
             'sort_order' => $this->sort_order,
+            'addons' => $this->whenLoaded('addons', fn () => $this->addons->map(fn ($a) => [
+                'name' => $a->name,
+                'price' => (float) $a->price,
+                'quantity' => $a->quantity,
+            ])),
         ];
     }
 }

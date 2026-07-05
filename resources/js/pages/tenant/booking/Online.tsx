@@ -13,6 +13,9 @@ interface OnlinePageProps {
         enabled: boolean;
         show_prices: boolean;
         auto_confirm: boolean;
+        enable_addons: boolean;
+        enable_multi_service: boolean;
+        enable_guests: boolean;
     };
     publicUrl: string;
 }
@@ -61,10 +64,13 @@ export default function Online({ title, settings: initialSettings, publicUrl }: 
     const [enabled, setEnabled] = useState(currentSettings.enabled);
     const [showPrices, setShowPrices] = useState(currentSettings.show_prices);
     const [autoConfirm, setAutoConfirm] = useState(currentSettings.auto_confirm);
+    const [enableAddons, setEnableAddons] = useState(currentSettings.enable_addons);
+    const [enableMultiService, setEnableMultiService] = useState(currentSettings.enable_multi_service);
+    const [enableGuests, setEnableGuests] = useState(currentSettings.enable_guests);
 
     function handleSave() {
         updateSettings.mutate(
-            { enabled, show_prices: showPrices, auto_confirm: autoConfirm },
+            { enabled, show_prices: showPrices, auto_confirm: autoConfirm, enable_addons: enableAddons, enable_multi_service: enableMultiService, enable_guests: enableGuests },
             {
                 onSuccess: () => {
                     addToast('success', 'Pengaturan online booking berhasil disimpan.');
@@ -78,7 +84,10 @@ export default function Online({ title, settings: initialSettings, publicUrl }: 
 
     const hasChanges = enabled !== currentSettings.enabled
         || showPrices !== currentSettings.show_prices
-        || autoConfirm !== currentSettings.auto_confirm;
+        || autoConfirm !== currentSettings.auto_confirm
+        || enableAddons !== currentSettings.enable_addons
+        || enableMultiService !== currentSettings.enable_multi_service
+        || enableGuests !== currentSettings.enable_guests;
 
     return (
         <TenantLayout>
@@ -169,6 +178,27 @@ export default function Online({ title, settings: initialSettings, publicUrl }: 
                                         description="Booking langsung confirmed tanpa perlu persetujuan admin."
                                         value={autoConfirm}
                                         onChange={setAutoConfirm}
+                                        disabled={updateSettings.isPending}
+                                    />
+                                    <Toggle
+                                        label="Multi Service"
+                                        description="Pelanggan bisa pilih lebih dari satu layanan dalam satu booking."
+                                        value={enableMultiService}
+                                        onChange={setEnableMultiService}
+                                        disabled={updateSettings.isPending}
+                                    />
+                                    <Toggle
+                                        label="Add-ons"
+                                        description="Pelanggan bisa menambahkan layanan tambahan (add-on) ke booking."
+                                        value={enableAddons}
+                                        onChange={setEnableAddons}
+                                        disabled={updateSettings.isPending}
+                                    />
+                                    <Toggle
+                                        label="Tamu"
+                                        description="Pelanggan bisa menentukan jumlah tamu dan nama tamu saat booking."
+                                        value={enableGuests}
+                                        onChange={setEnableGuests}
                                         disabled={updateSettings.isPending}
                                     />
                                 </>

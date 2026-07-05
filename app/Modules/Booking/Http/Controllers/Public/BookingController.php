@@ -6,6 +6,7 @@ namespace App\Modules\Booking\Http\Controllers\Public;
 
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Company\Models\Branch;
+use App\Modules\Service\Models\Addon;
 use App\Modules\Service\Models\Category;
 use App\Modules\Service\Models\Package;
 use App\Modules\Service\Models\Service;
@@ -18,8 +19,6 @@ class BookingController
 {
     public function index(Request $request): Response|RedirectResponse
     {
-        // If the user is already authenticated (e.g. staff logged in on central),
-        // redirect to the admin booking page instead of showing the public one.
         if ($request->user()) {
             return redirect()->route('tenant.booking.index');
         }
@@ -77,13 +76,21 @@ class BookingController
                 ]),
             ]);
 
+        $addons = Addon::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'description', 'price', 'duration']);
+
         return Inertia::render('public/booking/index', [
             'branches' => $branches,
             'services' => $services,
             'packages' => $packages,
             'categories' => $categories,
+            'addons' => $addons,
             'settings' => [
                 'show_prices' => $bookingConfig['show_prices'] ?? true,
+                'enable_addons' => $bookingConfig['enable_addons'] ?? false,
+                'enable_multi_service' => $bookingConfig['enable_multi_service'] ?? false,
+                'enable_guests' => $bookingConfig['enable_guests'] ?? false,
             ],
             'colors' => $landingConfig['colors'] ?? null,
             'tenant' => [
@@ -114,7 +121,7 @@ class BookingController
         }
 
         $booking = Booking::where('booking_code', $code)
-            ->with(['customer', 'staff', 'branch', 'services'])
+            ->with(['customer', 'staff', 'branch', 'services.addons'])
             ->firstOrFail();
 
         return Inertia::render('public/booking/Confirmation', [
@@ -130,11 +137,18 @@ class BookingController
                 'duration_minutes' => $booking->duration_minutes,
                 'source' => $booking->source,
                 'notes' => $booking->notes,
+                'total_guests' => $booking->total_guests,
+                'guest_details' => $booking->guest_details,
                 'services' => $booking->services->map(fn ($s) => [
                     'name' => $s->name,
                     'price' => $s->price,
                     'duration' => $s->duration,
                     'quantity' => $s->quantity,
+                    'addons' => $s->addons->map(fn ($a) => [
+                        'name' => $a->name,
+                        'price' => $a->price,
+                        'quantity' => $a->quantity,
+                    ]),
                 ]),
             ],
             'colors' => $landingConfig['colors'] ?? null,

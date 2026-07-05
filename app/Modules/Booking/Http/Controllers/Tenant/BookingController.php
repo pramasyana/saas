@@ -59,6 +59,9 @@ class BookingController extends Controller
                 'enabled' => $config['enabled'] ?? false,
                 'show_prices' => $config['show_prices'] ?? true,
                 'auto_confirm' => $config['auto_confirm'] ?? false,
+                'enable_addons' => $config['enable_addons'] ?? false,
+                'enable_multi_service' => $config['enable_multi_service'] ?? false,
+                'enable_guests' => $config['enable_guests'] ?? false,
             ],
             'publicUrl' => 'https://'.$domain.'/booking',
         ]);
