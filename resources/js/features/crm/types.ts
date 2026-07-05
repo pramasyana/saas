@@ -191,6 +191,55 @@ export interface ReferralFormData {
     referred_email?: string;
 }
 
+export interface CustomerMembershipPlan {
+    id: string;
+    name: string;
+    description: string | null;
+    price: number;
+    billing_interval: 'monthly' | 'yearly';
+    duration_months: number;
+    benefits: string[] | null;
+    is_active: boolean;
+    sort_order: number;
+    created_at: string;
+    subscriptions_count?: number;
+}
+
+export interface CustomerMembershipPlanFormData {
+    name: string;
+    description?: string;
+    price?: number;
+    billing_interval: 'monthly' | 'yearly';
+    duration_months?: number;
+    benefits?: string[];
+    is_active?: boolean;
+    sort_order?: number;
+}
+
+export interface CustomerSubscription {
+    id: string;
+    customer_id: string;
+    customer: { id: string; name: string; phone: string | null } | null;
+    plan_id: string | null;
+    plan: { id: string; name: string } | null;
+    plan_name: string;
+    price_amount: number;
+    billing_interval: string;
+    benefits_snapshot: string[] | null;
+    status: 'active' | 'expired' | 'cancelled' | 'pending';
+    start_date: string | null;
+    end_date: string | null;
+    cancelled_at: string | null;
+    created_at: string;
+}
+
+export interface CustomerSubscriptionFormData {
+    customer_id: string;
+    plan_id: string;
+    start_date?: string;
+    end_date?: string;
+}
+
 export interface PaginationMeta {
     current_page: number;
     last_page: number;

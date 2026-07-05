@@ -89,4 +89,9 @@ class Customer extends Model
     {
         return $this->hasMany(Referral::class, 'referrer_customer_id');
     }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(CustomerSubscription::class, 'customer_id');
+    }
 }

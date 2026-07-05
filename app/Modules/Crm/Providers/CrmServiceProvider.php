@@ -4,8 +4,17 @@ declare(strict_types=1);
 
 namespace App\Modules\Crm\Providers;
 
+use App\Modules\Booking\Events\BookingCancelled;
+use App\Modules\Booking\Events\BookingCheckedIn;
+use App\Modules\Booking\Events\BookingCompleted;
+use App\Modules\Booking\Events\BookingConfirmed;
+use App\Modules\Booking\Events\BookingCreated;
+use App\Modules\Booking\Events\BookingNoShow;
+use App\Modules\Booking\Events\BookingRescheduled;
+use App\Modules\Crm\Contracts\CustomerMembershipPlanRepositoryInterface;
 use App\Modules\Crm\Contracts\CustomerNoteRepositoryInterface;
 use App\Modules\Crm\Contracts\CustomerRepositoryInterface;
+use App\Modules\Crm\Contracts\CustomerSubscriptionRepositoryInterface;
 use App\Modules\Crm\Contracts\LoyaltyTransactionRepositoryInterface;
 use App\Modules\Crm\Contracts\MembershipRepositoryInterface;
 use App\Modules\Crm\Contracts\MembershipTierRepositoryInterface;
@@ -15,23 +24,18 @@ use App\Modules\Crm\Contracts\RewardRedemptionRepositoryInterface;
 use App\Modules\Crm\Contracts\RewardRepositoryInterface;
 use App\Modules\Crm\Contracts\TagRepositoryInterface;
 use App\Modules\Crm\Contracts\TimelineEventRepositoryInterface;
+use App\Modules\Crm\Listeners\AwardBookingPoints;
+use App\Modules\Crm\Listeners\RecordBookingTimeline;
+use App\Modules\Crm\Repositories\CustomerMembershipPlanRepository;
 use App\Modules\Crm\Repositories\CustomerNoteRepository;
 use App\Modules\Crm\Repositories\CustomerRepository;
+use App\Modules\Crm\Repositories\CustomerSubscriptionRepository;
 use App\Modules\Crm\Repositories\LoyaltyTransactionRepository;
 use App\Modules\Crm\Repositories\MembershipRepository;
 use App\Modules\Crm\Repositories\MembershipTierRepository;
 use App\Modules\Crm\Repositories\ReferralRepository;
 use App\Modules\Crm\Repositories\ReviewRepository;
 use App\Modules\Crm\Repositories\RewardRedemptionRepository;
-use App\Modules\Booking\Events\BookingCancelled;
-use App\Modules\Booking\Events\BookingCheckedIn;
-use App\Modules\Booking\Events\BookingCompleted;
-use App\Modules\Booking\Events\BookingConfirmed;
-use App\Modules\Booking\Events\BookingCreated;
-use App\Modules\Booking\Events\BookingNoShow;
-use App\Modules\Booking\Events\BookingRescheduled;
-use App\Modules\Crm\Listeners\AwardBookingPoints;
-use App\Modules\Crm\Listeners\RecordBookingTimeline;
 use App\Modules\Crm\Repositories\RewardRepository;
 use App\Modules\Crm\Repositories\TagRepository;
 use App\Modules\Crm\Repositories\TimelineEventRepository;
@@ -53,6 +57,8 @@ class CrmServiceProvider extends ServiceProvider
         $this->app->bind(RewardRepositoryInterface::class, RewardRepository::class);
         $this->app->bind(TagRepositoryInterface::class, TagRepository::class);
         $this->app->bind(TimelineEventRepositoryInterface::class, TimelineEventRepository::class);
+        $this->app->bind(CustomerMembershipPlanRepositoryInterface::class, CustomerMembershipPlanRepository::class);
+        $this->app->bind(CustomerSubscriptionRepositoryInterface::class, CustomerSubscriptionRepository::class);
     }
 
     public function boot(): void

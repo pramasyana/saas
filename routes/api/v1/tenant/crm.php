@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Modules\Crm\Http\Controllers\Api\CustomerController;
+use App\Modules\Crm\Http\Controllers\Api\CustomerMembershipPlanController;
+use App\Modules\Crm\Http\Controllers\Api\CustomerSubscriptionController;
 use App\Modules\Crm\Http\Controllers\Api\LoyaltyController;
 use App\Modules\Crm\Http\Controllers\Api\LoyaltySettingsController;
 use App\Modules\Crm\Http\Controllers\Api\MembershipController;
@@ -86,4 +88,23 @@ Route::middleware('auth')->group(function () {
     // Loyalty Config
     Route::get('/crm/loyalty/config', [LoyaltySettingsController::class, 'show']);
     Route::put('/crm/loyalty/config', [LoyaltySettingsController::class, 'update']);
+
+    // Customer Membership Plans (standalone)
+    Route::get('/crm/membership-plans/stats', [CustomerMembershipPlanController::class, 'stats']);
+    Route::get('/crm/membership-plans/all', [CustomerMembershipPlanController::class, 'all']);
+    Route::get('/crm/membership-plans', [CustomerMembershipPlanController::class, 'index']);
+    Route::post('/crm/membership-plans', [CustomerMembershipPlanController::class, 'store']);
+    Route::get('/crm/membership-plans/{id}', [CustomerMembershipPlanController::class, 'show']);
+    Route::put('/crm/membership-plans/{id}', [CustomerMembershipPlanController::class, 'update']);
+    Route::delete('/crm/membership-plans/{id}', [CustomerMembershipPlanController::class, 'destroy']);
+
+    // Customer Subscriptions
+    Route::get('/crm/subscriptions/stats', [CustomerSubscriptionController::class, 'stats']);
+    Route::get('/crm/subscriptions', [CustomerSubscriptionController::class, 'index']);
+    Route::post('/crm/subscriptions', [CustomerSubscriptionController::class, 'store']);
+    Route::get('/crm/subscriptions/{id}', [CustomerSubscriptionController::class, 'show']);
+    Route::post('/crm/subscriptions/{id}/cancel', [CustomerSubscriptionController::class, 'cancel']);
+
+    // Customer Subscriptions (nested under customer)
+    Route::get('/crm/customers/{customerId}/subscriptions', [CustomerSubscriptionController::class, 'customerSubscriptions']);
 });
