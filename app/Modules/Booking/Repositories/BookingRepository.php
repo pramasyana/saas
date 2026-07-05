@@ -8,6 +8,7 @@ use App\Modules\Booking\Contracts\BookingRepositoryInterface;
 use App\Modules\Booking\Models\Booking;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class BookingRepository implements BookingRepositoryInterface
 {
@@ -122,5 +123,83 @@ class BookingRepository implements BookingRepositoryInterface
     public function countByStatus(string $tenantId, string $status): int
     {
         return Booking::where('tenant_id', $tenantId)->where('status', $status)->count();
+    }
+
+    public function getDailyBookingCounts(string $tenantId, int $days = 7): Collection
+    {
+        $startDate = now()->subDays($days - 1)->startOfDay();
+
+        return Booking::where('tenant_id', $tenantId)
+            ->where('start_time', '>=', $startDate)
+            ->whereNotIn('status', ['cancelled', 'no_show'])
+            ->select(DB::raw('DATE(start_time) as date'), DB::raw('COUNT(*) as count'))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+    }
+
+    public function getRevenueByDateRange(string $tenantId, string $startDate, string $endDate): float
+    {
+        return (float) DB::table('bookings')
+            ->join('booking_services', 'bookings.id', '=', 'booking_services.booking_id')
+            ->where('bookings.tenant_id', $tenantId)
+            ->whereIn('bookings.status', ['completed', 'in_progress'])
+            ->where('bookings.start_time', '>=', $startDate)
+            ->where('bookings.start_time', '<=', $endDate)
+            ->select(DB::raw('COALESCE(SUM(booking_services.price * booking_services.quantity), 0) as total'))
+            ->value('total');
+    }
+
+    public function getTopServices(string $tenantId, int $limit = 5, ?string $startDate = null, ?string $endDate = null): Collection
+    {
+        $query = DB::table('bookings')
+            ->join('booking_services', 'bookings.id', '=', 'booking_services.booking_id')
+            ->where('bookings.tenant_id', $tenantId)
+            ->whereIn('bookings.status', ['completed', 'confirmed', 'in_progress']);
+
+        if ($startDate) {
+            $query->where('bookings.start_time', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->where('bookings.start_time', '<=', $endDate);
+        }
+
+        return $query->select(
+            'booking_services.name',
+            DB::raw('COUNT(*) as total_bookings'),
+            DB::raw('COALESCE(SUM(booking_services.price * booking_services.quantity), 0) as total_revenue'),
+        )
+            ->groupBy('booking_services.name')
+            ->orderByDesc('total_revenue')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getStaffPerformance(string $tenantId, ?string $startDate = null, ?string $endDate = null): Collection
+    {
+        $query = Booking::where('bookings.tenant_id', $tenantId)
+            ->whereIn('bookings.status', ['completed', 'confirmed', 'in_progress'])
+            ->join('staff', 'bookings.staff_id', '=', 'staff.id')
+            ->leftJoin('booking_services', 'bookings.id', '=', 'booking_services.booking_id');
+
+        if ($startDate) {
+            $query->where('bookings.start_time', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->where('bookings.start_time', '<=', $endDate);
+        }
+
+        return $query->select(
+            'staff.id',
+            'staff.name',
+            DB::raw('COUNT(DISTINCT bookings.id) as total_bookings'),
+            DB::raw('COALESCE(SUM(booking_services.price * booking_services.quantity), 0) as total_revenue'),
+        )
+            ->groupBy('staff.id', 'staff.name')
+            ->orderByDesc('total_bookings')
+            ->get();
     }
 }

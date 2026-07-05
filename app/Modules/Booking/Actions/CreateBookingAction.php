@@ -9,6 +9,7 @@ use App\Modules\Booking\Contracts\BookingStatusLogRepositoryInterface;
 use App\Modules\Booking\Events\BookingCreated;
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Models\BookingRecurringTemplate;
+use App\Modules\Crm\Services\MembershipBenefitService;
 use Illuminate\Support\Facades\DB;
 
 class CreateBookingAction
@@ -16,6 +17,7 @@ class CreateBookingAction
     public function __construct(
         private readonly BookingRepositoryInterface $bookingRepository,
         private readonly BookingStatusLogRepositoryInterface $statusLogRepository,
+        private readonly MembershipBenefitService $benefitService,
     ) {}
 
     public function execute(array $data, ?string $tenantId = null): Booking
@@ -66,14 +68,38 @@ class CreateBookingAction
             }
 
             if (! empty($data['services'])) {
+                $benefits = $this->benefitService->getCustomerBenefits($data['customer_id']);
+
                 foreach ($data['services'] as $svcData) {
                     $addons = $svcData['addons'] ?? [];
                     unset($svcData['addons']);
 
+                    if ($benefits['discount_percent'] > 0) {
+                        $svcData['price'] = round(
+                            (float) $svcData['price'] * (1 - $benefits['discount_percent'] / 100),
+                            2,
+                        );
+                    }
+
                     $bookingService = $booking->services()->create($svcData);
 
                     if (! empty($addons)) {
-                        $bookingService->addons()->createMany($addons);
+                        $addonDataWithBenefits = array_map(
+                            fn (array $addon) => [
+                                ...$addon,
+                                'price' => $benefits['free_add_on']
+                                    ? 0
+                                    : ($benefits['discount_percent'] > 0
+                                        ? round(
+                                            (float) ($addon['price'] ?? 0) * (1 - $benefits['discount_percent'] / 100),
+                                            2,
+                                        )
+                                        : ($addon['price'] ?? 0)),
+                            ],
+                            $addons,
+                        );
+
+                        $bookingService->addons()->createMany($addonDataWithBenefits);
                     }
                 }
             }

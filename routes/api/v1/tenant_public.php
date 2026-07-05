@@ -23,3 +23,5 @@ Route::get('/booking/rooms/available', [PublicRoomController::class, 'available'
 Route::get('/booking/bookings/{code}', [PublicBookingController::class, 'show']);
 
 Route::middleware('throttle:5,60')->post('/booking/bookings', [PublicBookingController::class, 'store']);
+
+

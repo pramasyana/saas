@@ -29,4 +29,12 @@ interface BookingRepositoryInterface
     public function getOverlappingBookings(string $tenantId, string $staffId, string $startTime, string $endTime, ?string $excludeId = null): Collection;
 
     public function countByStatus(string $tenantId, string $status): int;
+
+    public function getDailyBookingCounts(string $tenantId, int $days = 7): Collection;
+
+    public function getRevenueByDateRange(string $tenantId, string $startDate, string $endDate): float;
+
+    public function getTopServices(string $tenantId, int $limit = 5, ?string $startDate = null, ?string $endDate = null): Collection;
+
+    public function getStaffPerformance(string $tenantId, ?string $startDate = null, ?string $endDate = null): Collection;
 }

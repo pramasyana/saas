@@ -169,4 +169,39 @@ class BookingService
             'no_show' => $this->bookingRepository->countByStatus($tenantId, 'no_show'),
         ];
     }
+
+    public function getAnalytics(): array
+    {
+        $tenantId = $this->getTenantId();
+        $today = now()->format('Y-m-d');
+        $weekAgo = now()->subDays(6)->format('Y-m-d');
+        $monthStart = now()->startOfMonth()->format('Y-m-d');
+        $monthEnd = now()->endOfMonth()->format('Y-m-d');
+
+        $dailyCounts = $this->bookingRepository->getDailyBookingCounts($tenantId, 7);
+        $chartData = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $dayLabel = now()->subDays($i)->isoFormat('dd');
+            $chartData[] = [
+                'day' => $dayLabel,
+                'date' => $date,
+                'count' => (int) ($dailyCounts[$date]->count ?? 0),
+            ];
+        }
+
+        $revenueMonth = $this->bookingRepository->getRevenueByDateRange($tenantId, $monthStart, $monthEnd);
+        $revenueWeek = $this->bookingRepository->getRevenueByDateRange($tenantId, $weekAgo, $today);
+        $topServices = $this->bookingRepository->getTopServices($tenantId, 5, $monthStart, $monthEnd);
+        $staffPerformance = $this->bookingRepository->getStaffPerformance($tenantId, $monthStart, $monthEnd);
+
+        return [
+            'booking_chart' => $chartData,
+            'revenue_month' => $revenueMonth,
+            'revenue_week' => $revenueWeek,
+            'top_services' => $topServices,
+            'staff_performance' => $staffPerformance,
+        ];
+    }
 }

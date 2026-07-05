@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Auth\Http\Controllers\DashboardController;
+use App\Modules\Booking\Http\Controllers\Tenant\AnalyticsController as TenantAnalyticsController;
 use App\Modules\Booking\Http\Controllers\Tenant\BookingController as TenantBookingController;
 use App\Modules\Booking\Http\Controllers\Tenant\RoomController as TenantRoomController;
 use App\Modules\Company\Http\Controllers\Tenant\BranchController;
@@ -73,6 +74,7 @@ Route::middleware('auth')->group(function () {
 
     // Booking pages
     Route::prefix('booking')->name('tenant.booking.')->group(function () {
+        Route::get('/analytics', [TenantAnalyticsController::class, 'index'])->name('analytics');
         Route::get('/', [TenantBookingController::class, 'index'])->name('index');
         Route::get('/walk-in', [TenantBookingController::class, 'walkIn'])->name('walk-in');
         Route::get('/waiting-list', [TenantBookingController::class, 'waitingList'])->name('waiting-list');

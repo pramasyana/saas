@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Booking\Http\Controllers\Api\AnalyticsController;
 use App\Modules\Booking\Http\Controllers\Api\AvailabilityController;
 use App\Modules\Booking\Http\Controllers\Api\BookingController;
 use App\Modules\Booking\Http\Controllers\Api\CalendarController;
@@ -13,6 +14,8 @@ use App\Modules\Booking\Http\Controllers\Api\WalkInController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
+    // Analytics
+    Route::get('/booking/analytics/overview', [AnalyticsController::class, 'overview']);
     // Calendar
     Route::get('/booking/calendar', [CalendarController::class, 'index']);
 

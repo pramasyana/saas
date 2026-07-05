@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import Badge from '@/atoms/Badge';
 import { useCustomerSubscriptions, useCustomerSubscriptionStats } from '@/features/crm/hooks/useCustomerSubscriptions';
+import CreateSubscriptionDialog from '@/features/crm/components/CreateSubscriptionDialog';
 import TenantLayout from '@/layouts/TenantLayout';
 
 const statusLabels: Record<string, { label: string; variant: 'success' | 'danger' | 'warning' | 'neutral' }> = {
@@ -16,6 +17,7 @@ export default function CustomerSubscriptionsIndexPage() {
     const [search, setSearch] = useState('');
     const [perPage, setPerPage] = useState(15);
     const [statusFilter, setStatusFilter] = useState('');
+    const [showCreate, setShowCreate] = useState(false);
 
     const { data, isLoading, isError, error } = useCustomerSubscriptions({
         page,
@@ -111,6 +113,15 @@ export default function CustomerSubscriptionsIndexPage() {
                     <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Langganan Customer</h1>
                     <p className="mt-1 text-sm text-neutral-500">Daftar subscription membership pelanggan.</p>
                 </div>
+                <button
+                    onClick={() => setShowCreate(true)}
+                    className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-dark"
+                >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Tambah Langganan
+                </button>
             </div>
 
             {/* Filter */}
@@ -320,6 +331,8 @@ export default function CustomerSubscriptionsIndexPage() {
                     </div>
                 </div>
             )}
+
+            <CreateSubscriptionDialog open={showCreate} onClose={() => setShowCreate(false)} />
         </TenantLayout>
     );
 }
