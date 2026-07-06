@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Auth\Http\Controllers\DashboardController;
+use App\Modules\Auth\Http\Controllers\ProfilePageController;
 use App\Modules\Booking\Http\Controllers\Tenant\AnalyticsController as TenantAnalyticsController;
 use App\Modules\Booking\Http\Controllers\Tenant\BookingController as TenantBookingController;
 use App\Modules\Booking\Http\Controllers\Tenant\RoomController as TenantRoomController;
@@ -32,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('tenant.dashboard');
+    Route::get('/account/profile', [ProfilePageController::class, 'index'])->name('tenant.account.profile');
 
     Route::prefix('company')->name('tenant.company.')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -1,8 +1,8 @@
 import { Head, router } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useMemo } from 'react';
-import { useAdminProfile, useUpdateAdminProfile } from '@/features/admin/hooks/useAdminProfile';
-import AdminLayout from '@/layouts/AdminLayout';
+import { useTenantProfile, useUpdateTenantProfile } from '@/features/tenant/hooks/useTenantProfile';
+import TenantLayout from '@/layouts/TenantLayout';
 import Card from '@/molecules/Card';
 import Input from '@/atoms/Input';
 import Button from '@/atoms/Button';
@@ -181,10 +181,10 @@ function getInitials(name: string) {
     return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 }
 
-export default function AdminProfile() {
-    const { data: res, isLoading } = useAdminProfile();
+export default function TenantAccountProfile() {
+    const { data: res, isLoading } = useTenantProfile();
     const profile = res?.data;
-    const mutation = useUpdateAdminProfile();
+    const mutation = useUpdateTenantProfile();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -249,7 +249,7 @@ export default function AdminProfile() {
         : null;
 
     return (
-        <AdminLayout>
+        <TenantLayout>
             <Head title="Account Settings" />
 
             <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
@@ -386,7 +386,7 @@ export default function AdminProfile() {
                                 </div>
                             )}
                             <div className="ml-auto flex gap-3">
-                                <Button type="button" variant="secondary" onClick={() => router.get('/admin/dashboard')}>
+                                <Button type="button" variant="secondary" onClick={() => router.get('/dashboard')}>
                                     Cancel
                                 </Button>
                                 <Button type="submit" disabled={mutation.isPending}>
@@ -412,6 +412,6 @@ export default function AdminProfile() {
                     </form>
                 )}
             </motion.div>
-        </AdminLayout>
+        </TenantLayout>
     );
 }

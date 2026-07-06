@@ -2,6 +2,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
 import ToastContainer from '@/atoms/Toast';
 import TenantNotificationBell from '@/molecules/TenantNotificationBell';
+import UserDropdown from '@/molecules/UserDropdown';
 import { cn } from '@/lib/utils';
 import { useSidebarStore } from '@/stores/sidebar';
 
@@ -331,14 +332,9 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
         return url === href;
     }
 
-    const { auth, impersonating } = usePage().props as {
-        auth?: { user?: { name?: string } };
+    const { impersonating } = usePage().props as {
         impersonating?: boolean;
     };
-    const user = auth?.user;
-    const initials = user?.name
-        ? user.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
-        : 'U';
 
     return (
         <div className="flex min-h-screen bg-neutral-50">
@@ -551,9 +547,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                     <div className="flex-1" />
                     <div className="flex items-center gap-3">
                         <TenantNotificationBell />
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-sm font-semibold text-primary">
-                            {initials}
-                        </div>
+                        <UserDropdown profileHref="/account/profile" logoutAction="/logout" />
                     </div>
                 </header>
 

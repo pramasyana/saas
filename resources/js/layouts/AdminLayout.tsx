@@ -4,6 +4,7 @@ import ToastContainer from '@/atoms/Toast';
 import { cn } from '@/lib/utils';
 import { useSidebarStore } from '@/stores/sidebar';
 import AdminNotificationBell from '@/molecules/AdminNotificationBell';
+import UserDropdown from '@/molecules/UserDropdown';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -475,13 +476,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
                     <div className="flex items-center gap-3">
                         <AdminNotificationBell />
-                        <Link
-                            href="/admin/profile"
-                            className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-sm font-semibold text-primary transition-colors hover:bg-primary-light"
-                            title="Profil Saya"
-                        >
-                            SA
-                        </Link>
+                        <UserDropdown profileHref="/admin/profile" logoutAction="/admin/logout" />
                     </div>
                 </header>
 
