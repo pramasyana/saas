@@ -2,6 +2,7 @@
 
 namespace App\Modules\Subscription\Services;
 
+use App\Modules\Pricing\Contracts\PlanRepositoryInterface;
 use App\Modules\Pricing\Models\Plan;
 use App\Modules\Subscription\Contracts\SubscriptionRepositoryInterface;
 use App\Modules\Subscription\Models\Subscription;
@@ -15,6 +16,7 @@ class SubscriptionService
     public function __construct(
         private readonly SubscriptionRepositoryInterface $subscriptionRepository,
         private readonly InvoiceService $invoiceService,
+        private readonly PlanRepositoryInterface $planRepository,
     ) {}
 
     public function paginate(array $filters = [], int $perPage = 15): mixed
@@ -109,5 +111,71 @@ class SubscriptionService
 
             return $subscription;
         });
+    }
+
+    public function changePlan(string $id, string $newPlanId, ?string $billingInterval = null): Subscription
+    {
+        return DB::transaction(function () use ($id, $newPlanId, $billingInterval) {
+            $subscription = $this->findById($id);
+
+            if ($subscription->status !== 'active') {
+                throw new RuntimeException('Hanya subscription aktif yang bisa diubah plan-nya.');
+            }
+
+            $plan = $this->planRepository->findById($newPlanId);
+            if (! $plan) {
+                throw new RuntimeException('Plan tidak ditemukan.');
+            }
+
+            if (! $plan->is_active) {
+                throw new RuntimeException('Plan yang dipilih tidak aktif.');
+            }
+
+            $oldPlanId = $subscription->plan_id;
+
+            $snapshot = [];
+            foreach ($plan->features as $feature) {
+                $snapshot[] = [
+                    'key' => $feature->definition->key,
+                    'label' => $feature->definition->label,
+                    'type' => $feature->definition->type,
+                    'value' => $feature->value,
+                ];
+            }
+
+            $interval = $billingInterval ?? $subscription->billing_interval;
+            $priceAmount = $interval === 'yearly' && $plan->price_yearly
+                ? $plan->price_yearly
+                : $plan->price_monthly;
+
+            $subscription = $this->subscriptionRepository->update($subscription, [
+                'plan_id' => $plan->id,
+                'price_amount' => $priceAmount,
+                'billing_interval' => $interval,
+                'features_snapshot' => $snapshot,
+            ]);
+
+            $this->invoiceService->generate($subscription);
+
+            Log::info('Subscription plan changed', [
+                'subscription_id' => $subscription->id,
+                'old_plan_id' => $oldPlanId,
+                'new_plan_id' => $plan->id,
+                'price_amount' => $priceAmount,
+                'interval' => $interval,
+            ]);
+
+            return $subscription;
+        });
+    }
+
+    public function findByTenantId(string $tenantId): ?Subscription
+    {
+        return $this->subscriptionRepository->findByTenantId($tenantId);
+    }
+
+    public function getAllActivePlans(): mixed
+    {
+        return $this->planRepository->getAllActive();
     }
 }

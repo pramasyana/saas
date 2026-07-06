@@ -26,6 +26,10 @@ function cancelSubscription({ id, reason }: { id: string; reason?: string }): Pr
     return api.put(`/api/v1/admin/subscriptions/${id}/cancel`, { reason }).then((res) => res.data);
 }
 
+function changePlanRequest({ id, plan_id, billing_interval }: { id: string; plan_id: string; billing_interval?: string }): Promise<SubscriptionResponse> {
+    return api.put(`/api/v1/admin/subscriptions/${id}/change-plan`, { plan_id, billing_interval }).then((res) => res.data);
+}
+
 export function useSubscriptions(filters: SubscriptionFilters) {
     return useQuery({
         queryKey: ['subscriptions', filters],
@@ -48,6 +52,18 @@ export function useCancelSubscription() {
 
     return useMutation({
         mutationFn: ({ id, reason }: { id: string; reason?: string }) => cancelSubscription({ id, reason }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
+        },
+    });
+}
+
+export function useChangePlan() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, plan_id, billing_interval }: { id: string; plan_id: string; billing_interval?: string }) =>
+            changePlanRequest({ id, plan_id, billing_interval }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
         },

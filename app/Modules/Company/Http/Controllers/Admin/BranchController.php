@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Company\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Modules\Company\Http\Requests\StoreBranchRequest;
 use App\Modules\Company\Http\Requests\UpdateBranchRequest;
 use App\Modules\Company\Services\CompanyService;
@@ -21,6 +22,8 @@ class BranchController extends Controller
 
     public function index(string $tenantId, Request $request): Response
     {
+        $tenant = Tenant::find($tenantId);
+
         tenancy()->initialize($tenantId);
 
         $branches = $this->companyService->getBranches($tenantId, $request->only(['search', 'is_active', 'sort', 'direction', 'per_page']));
@@ -29,6 +32,8 @@ class BranchController extends Controller
 
         return Inertia::render('admin/tenants/company/Branches', [
             'tenant_id' => $tenantId,
+            'tenant_name' => $tenant?->getCompanyNameAttribute(),
+            'tenant_email' => $tenant?->getCompanyEmailAttribute(),
             'branches' => $branches,
         ]);
     }

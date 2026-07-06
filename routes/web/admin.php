@@ -3,6 +3,8 @@
 use App\Modules\Admin\Http\Controllers\AuthController;
 use App\Modules\Admin\Http\Controllers\DashboardController;
 use App\Modules\Admin\Http\Controllers\EmailLogController;
+use App\Modules\Admin\Http\Controllers\ImpersonationController;
+use App\Modules\Admin\Http\Controllers\RevenueController;
 use App\Modules\Admin\Http\Controllers\SettingsController;
 use App\Modules\Admin\Http\Controllers\UserController;
 use App\Modules\Admin\Http\Controllers\VerificationController;
@@ -13,6 +15,7 @@ use App\Modules\Company\Http\Controllers\Admin\ProfileController;
 use App\Modules\Company\Http\Controllers\Admin\WorkingHourController;
 use App\Modules\Pricing\Http\Controllers\PlanController;
 use App\Modules\Subscription\Http\Controllers\SubscriptionController as SubscriptionPageController;
+use App\Modules\Subscription\Http\Controllers\TenantSubscriptionController;
 use App\Modules\Tenant\Http\Controllers\TenantController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,9 +38,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/pricing', [PlanController::class, 'index'])->name('admin.pricing');
     Route::get('/admin/pricing/create', [PlanController::class, 'create'])->name('admin.pricing.create');
     Route::get('/admin/pricing/{id}/edit', [PlanController::class, 'edit'])->name('admin.pricing.edit');
+    Route::get('/admin/revenue', [RevenueController::class, 'index'])->name('admin.revenue');
     Route::get('/admin/subscriptions', [SubscriptionPageController::class, 'index'])->name('admin.subscriptions');
+    Route::get('/admin/tenants/{tenantId}/subscription', [TenantSubscriptionController::class, 'show'])->name('admin.tenants.subscription');
     Route::get('/admin/tenants', [TenantController::class, 'index'])->name('admin.tenants');
     Route::get('/admin/tenants/create', [TenantController::class, 'create'])->name('admin.tenants.create');
+    Route::get('/admin/tenants/{id}', [TenantController::class, 'show'])->name('admin.tenants.show');
     Route::get('/admin/tenants/{id}/edit', [TenantController::class, 'edit'])->name('admin.tenants.edit');
     Route::get('/admin/tenants/{tenantId}/company/profile', [ProfileController::class, 'edit'])->name('admin.tenants.company.profile.edit');
     Route::put('/admin/tenants/{tenantId}/company/profile', [ProfileController::class, 'update'])->name('admin.tenants.company.profile.update');
@@ -53,5 +59,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/tenants/{tenantId}/company/holidays', [HolidayController::class, 'store'])->name('admin.tenants.company.holidays.store');
     Route::put('/admin/tenants/{tenantId}/company/holidays/{id}', [HolidayController::class, 'update'])->name('admin.tenants.company.holidays.update');
     Route::delete('/admin/tenants/{tenantId}/company/holidays/{id}', [HolidayController::class, 'destroy'])->name('admin.tenants.company.holidays.destroy');
+    Route::post('/admin/tenants/{tenantId}/impersonate', [ImpersonationController::class, 'store'])->name('admin.tenants.impersonate');
     Route::post('/admin/logout', [AuthController::class, 'destroy'])->name('admin.logout');
 });
+
+Route::middleware('auth')->post('/admin/impersonate/leave', [ImpersonationController::class, 'leave'])->name('admin.impersonate.leave');

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Company\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Modules\Company\Http\Requests\UpdateCompanyProfileRequest;
 use App\Modules\Company\Services\CompanyService;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,8 @@ class ProfileController extends Controller
 
     public function edit(string $tenantId): Response
     {
+        $tenant = Tenant::find($tenantId);
+
         tenancy()->initialize($tenantId);
 
         $data = $this->companyService->getProfile($tenantId);
@@ -27,7 +30,11 @@ class ProfileController extends Controller
 
         return Inertia::render('admin/tenants/company/Profile', array_merge(
             $data,
-            ['tenant_id' => $tenantId],
+            [
+                'tenant_id' => $tenantId,
+                'tenant_name' => $tenant?->getCompanyNameAttribute(),
+                'tenant_email' => $tenant?->getCompanyEmailAttribute(),
+            ],
         ));
     }
 

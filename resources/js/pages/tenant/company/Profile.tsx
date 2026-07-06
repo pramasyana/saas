@@ -4,7 +4,6 @@ import { useEffect, useState  } from 'react';
 import type {FormEvent} from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
-import { useCompanyBranding } from '@/features/company/hooks/useCompanyBranding';
 import { useCompanyProfile, useUpdateCompanyProfile } from '@/features/company/hooks/useCompanyProfile';
 import type { CompanyProfile as CompanyProfileType } from '@/features/company/types';
 import TenantLayout from '@/layouts/TenantLayout';
@@ -53,7 +52,6 @@ function getInitials(name: string): string {
 export default function CompanyProfilePage() {
     const addToast = useToastStore((s) => s.addToast);
     const { data: profile, isLoading } = useCompanyProfile();
-    const { data: branding } = useCompanyBranding();
     const mutation = useUpdateCompanyProfile();
     const [saving, setSaving] = useState(false);
     const errors = extractErrors(mutation.error);
@@ -182,10 +180,7 @@ payload[key] = null;
             {/* Summary Card */}
             <FadeIn delay={0.03}>
                 <div className="mb-8 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
-                    <div
-                        className="bg-gradient-to-r from-primary via-primary-dark to-primary p-6 sm:p-8"
-                        style={branding?.primary_color ? { background: `linear-gradient(135deg, ${branding.primary_color}, ${branding.primary_color}dd)` } : undefined}
-                    >
+                    <div className="bg-gradient-to-r from-primary via-primary-dark to-primary p-6 sm:p-8">
                         <div className="flex items-center gap-5">
                             <div className={cn(
                                 'flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-xl font-bold shadow-lg ring-4 ring-white/20',

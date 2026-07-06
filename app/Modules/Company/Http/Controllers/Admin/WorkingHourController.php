@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Company\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Modules\Company\Http\Requests\UpdateWorkingHoursRequest;
 use App\Modules\Company\Services\CompanyService;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,8 @@ class WorkingHourController extends Controller
 
     public function edit(string $tenantId): Response
     {
+        $tenant = Tenant::find($tenantId);
+
         tenancy()->initialize($tenantId);
 
         $hours = $this->companyService->getWorkingHours($tenantId, null);
@@ -27,6 +30,8 @@ class WorkingHourController extends Controller
 
         return Inertia::render('admin/tenants/company/WorkingHours', [
             'tenant_id' => $tenantId,
+            'tenant_name' => $tenant?->getCompanyNameAttribute(),
+            'tenant_email' => $tenant?->getCompanyEmailAttribute(),
             'hours' => $hours,
         ]);
     }

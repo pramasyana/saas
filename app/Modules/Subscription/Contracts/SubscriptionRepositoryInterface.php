@@ -22,4 +22,6 @@ interface SubscriptionRepositoryInterface
 
     /** @return array{active: int, cancelled: int, total_revenue: float} */
     public function getStatsByTenant(string $tenantId): array;
+
+    public function findByTenantId(string $tenantId): ?Subscription;
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Company\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Modules\Company\Http\Requests\StoreHolidayRequest;
 use App\Modules\Company\Http\Requests\UpdateHolidayRequest;
 use App\Modules\Company\Services\CompanyService;
@@ -21,6 +22,8 @@ class HolidayController extends Controller
 
     public function index(string $tenantId, Request $request): Response
     {
+        $tenant = Tenant::find($tenantId);
+
         tenancy()->initialize($tenantId);
 
         $holidays = $this->companyService->getHolidays($tenantId, $request->only(['search', 'branch_id', 'year', 'upcoming', 'sort', 'direction', 'per_page']));
@@ -29,6 +32,8 @@ class HolidayController extends Controller
 
         return Inertia::render('admin/tenants/company/Holidays', [
             'tenant_id' => $tenantId,
+            'tenant_name' => $tenant?->getCompanyNameAttribute(),
+            'tenant_email' => $tenant?->getCompanyEmailAttribute(),
             'holidays' => $holidays,
         ]);
     }

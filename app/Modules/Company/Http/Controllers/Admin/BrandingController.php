@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Company\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Modules\Company\Http\Requests\UpdateCompanyBrandingRequest;
 use App\Modules\Company\Services\CompanyService;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,8 @@ class BrandingController extends Controller
 
     public function edit(string $tenantId): Response
     {
+        $tenant = Tenant::find($tenantId);
+
         tenancy()->initialize($tenantId);
 
         $data = $this->companyService->getBranding($tenantId);
@@ -27,7 +30,11 @@ class BrandingController extends Controller
 
         return Inertia::render('admin/tenants/company/Branding', array_merge(
             $data,
-            ['tenant_id' => $tenantId],
+            [
+                'tenant_id' => $tenantId,
+                'tenant_name' => $tenant?->getCompanyNameAttribute(),
+                'tenant_email' => $tenant?->getCompanyEmailAttribute(),
+            ],
         ));
     }
 

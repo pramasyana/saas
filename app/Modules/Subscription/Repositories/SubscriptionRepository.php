@@ -74,4 +74,12 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             'total_revenue' => (float) Subscription::where('tenant_id', $tenantId)->where('status', 'active')->sum('price_amount'),
         ];
     }
+
+    public function findByTenantId(string $tenantId): ?Subscription
+    {
+        return Subscription::with(['user', 'plan', 'invoices'])
+            ->where('tenant_id', $tenantId)
+            ->where('status', 'active')
+            ->first();
+    }
 }

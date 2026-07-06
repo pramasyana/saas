@@ -4,6 +4,7 @@ namespace App\Modules\Subscription\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Subscription\Http\Requests\CancelSubscriptionRequest;
+use App\Modules\Subscription\Http\Requests\ChangePlanRequest;
 use App\Modules\Subscription\Http\Requests\StoreSubscriptionRequest;
 use App\Modules\Subscription\Http\Resources\SubscriptionResource;
 use App\Modules\Subscription\Services\SubscriptionService;
@@ -66,6 +67,28 @@ class SubscriptionController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Subscription berhasil dibatalkan.',
+                'data' => new SubscriptionResource($subscription),
+            ]);
+        } catch (\RuntimeException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    public function changePlan(string $id, ChangePlanRequest $request): JsonResponse
+    {
+        try {
+            $subscription = $this->subscriptionService->changePlan(
+                $id,
+                $request->input('plan_id'),
+                $request->input('billing_interval'),
+            );
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Subscription berhasil diubah.',
                 'data' => new SubscriptionResource($subscription),
             ]);
         } catch (\RuntimeException $e) {

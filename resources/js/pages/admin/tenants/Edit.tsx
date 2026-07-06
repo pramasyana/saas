@@ -7,6 +7,7 @@ import TenantForm from '@/features/tenants/components/TenantForm';
 import { useUpdateTenant } from '@/features/tenants/hooks/useTenants';
 import type { TenantFormData } from '@/features/tenants/types';
 import AdminLayout from '@/layouts/AdminLayout';
+import TenantSubNav from '@/molecules/TenantSubNav';
 import { cn } from '@/lib/utils';
 import { useToastStore } from '@/stores/toast';
 
@@ -91,7 +92,7 @@ export default function EditTenant({ title, tenant }: EditTenantPageProps) {
         <AdminLayout>
             <Head title={title} />
 
-            <nav className="mb-5 flex items-center gap-2 text-sm text-neutral-500">
+            <nav className="mb-6 flex items-center gap-2 text-sm text-neutral-500">
                 <Link href="/admin/dashboard" className="transition-colors hover:text-neutral-700">Dashboard</Link>
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -103,60 +104,44 @@ export default function EditTenant({ title, tenant }: EditTenantPageProps) {
                 <span className="font-medium text-neutral-900">Edit Tenant</span>
             </nav>
 
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Edit Tenant</h1>
-                <p className="mt-1.5 text-sm text-neutral-500">
-                    Perbarui informasi perusahaan yang sudah terdaftar.
-                </p>
+            <TenantSubNav tenantId={tenant.id} tenantName={tenant.name} tenantEmail={tenant.email} />
+
+            <div className="mt-6 mb-6 flex items-center justify-between">
+                <div>
+                    <h1 className="text-xl font-bold tracking-tight text-neutral-900">Informasi Tenant</h1>
+                    <p className="mt-1 text-sm text-neutral-500">
+                        Perbarui informasi perusahaan yang sudah terdaftar.
+                    </p>
+                </div>
+                <Link
+                    href={`/admin/tenants/${tenant.id}`}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary-dark"
+                >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                    </svg>
+                    Kembali ke Detail
+                </Link>
             </div>
 
             <FadeIn delay={0.03}>
-                <div className="mb-8 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
-                    <div className="bg-gradient-to-r from-primary via-primary-dark to-primary p-6 sm:p-8">
-                        <div className="flex items-center gap-5">
-                            <div className={cn(
-                                'flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-xl font-bold shadow-lg ring-4 ring-white/20',
-                                getAvatarColor(tenant.name ?? ''),
-                            )}>
-                                {getInitials(tenant.name)}
-                            </div>
-                            <div className="min-w-0 text-white">
-                                <h2 className="text-xl font-bold truncate">{tenant.name || 'Tanpa Nama'}</h2>
-                                <p className="mt-1 text-sm text-white/80">{tenant.email || 'Email tidak tersedia'}</p>
-                            </div>
+                <div className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm lg:p-8">
+                    <div className="mb-6 flex items-center gap-4 pb-6 border-b border-neutral-100">
+                        <div className={cn(
+                            'flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-lg font-bold shadow-sm',
+                            getAvatarColor(tenant.name ?? ''),
+                        )}>
+                            {getInitials(tenant.name)}
                         </div>
-                    </div>
-                    <div className="grid grid-cols-2 divide-x divide-neutral-200 border-t border-neutral-200 sm:grid-cols-4">
-                        <div className="px-5 py-4">
-                            <p className="text-xs font-medium text-neutral-400">Domain</p>
-                            <p className="mt-1 text-sm font-semibold text-neutral-900 truncate">
-                                {tenant.domains?.[0] || '-'}
-                            </p>
-                        </div>
-                        <div className="px-5 py-4">
-                            <p className="text-xs font-medium text-neutral-400">Telepon</p>
-                            <p className="mt-1 text-sm font-semibold text-neutral-900">
-                                {tenant.phone || '-'}
-                            </p>
-                        </div>
-                        <div className="px-5 py-4">
-                            <p className="text-xs font-medium text-neutral-400">Pemilik</p>
-                            <p className="mt-1 text-sm font-semibold text-neutral-900 truncate">
-                                {tenant.user?.name || '-'}
-                            </p>
-                        </div>
-                        <div className="px-5 py-4">
-                            <p className="text-xs font-medium text-neutral-400">Email Pemilik</p>
-                            <p className="mt-1 text-sm font-semibold text-neutral-900 truncate">
-                                {tenant.user?.email || '-'}
+                        <div>
+                            <p className="text-base font-semibold text-neutral-900">{tenant.name || 'Tanpa Nama'}</p>
+                            <p className="mt-0.5 text-sm text-neutral-500">{tenant.email || 'Email tidak tersedia'}</p>
+                            <p className="mt-0.5 text-xs text-neutral-400">
+                                Domain: {tenant.domains?.[0] || '-'} · Telepon: {tenant.phone || '-'} · Pemilik: {tenant.user?.name || '-'}
                             </p>
                         </div>
                     </div>
-                </div>
-            </FadeIn>
 
-            <FadeIn delay={0.06}>
-                <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm lg:p-8">
                     <TenantForm
                         tenant={tenant}
                         saving={saving}

@@ -330,7 +330,11 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
         return url === href;
     }
 
-    const user = usePage().props.auth?.user as { name?: string } | undefined;
+    const { auth, impersonating } = usePage().props as {
+        auth?: { user?: { name?: string } };
+        impersonating?: boolean;
+    };
+    const user = auth?.user;
     const initials = user?.name
         ? user.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
         : 'U';
@@ -550,6 +554,22 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                     </div>
                 </header>
 
+                {impersonating && (
+                    <div className="flex items-center justify-between gap-3 bg-amber-500 px-4 py-2.5 sm:px-6 lg:px-8">
+                        <div className="flex items-center gap-2 text-sm font-medium text-white">
+                            <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                            </svg>
+                            Anda sedang login sebagai tenant ini
+                        </div>
+                        <button
+                            onClick={() => router.post('/admin/impersonate/leave')}
+                            className="rounded-lg bg-white/20 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/30"
+                        >
+                            Kembali ke Admin
+                        </button>
+                    </div>
+                )}
                 <main className="flex-1 overflow-y-auto p-6 lg:p-8">
                     {children}
                 </main>
