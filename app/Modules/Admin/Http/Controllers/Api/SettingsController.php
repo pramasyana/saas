@@ -6,11 +6,16 @@ namespace App\Modules\Admin\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CentralSetting;
+use App\Modules\Admin\Services\ActivityLogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
+    public function __construct(
+        private readonly ActivityLogService $logService,
+    ) {}
+
     public function index(): JsonResponse
     {
         $baseDomain = CentralSetting::get('base_domain', config('app.domain', 'localhost'));
@@ -31,6 +36,8 @@ class SettingsController extends Controller
         ]);
 
         CentralSetting::set('base_domain', $validated['base_domain']);
+
+        $this->logService->logFromRequest($request, 'updated', 'Mengubah pengaturan: base_domain = '.$validated['base_domain'], 'settings');
 
         return response()->json([
             'status' => 'success',

@@ -1,6 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
 import ToastContainer from '@/atoms/Toast';
+import TenantNotificationBell from '@/molecules/TenantNotificationBell';
 import { cn } from '@/lib/utils';
 import { useSidebarStore } from '@/stores/sidebar';
 
@@ -537,7 +538,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
             </aside>
 
             <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
-                <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-border bg-white px-4 sm:px-6">
+                <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-white px-4 sm:px-6">
                     <button
                         onClick={() => setMobileOpen(true)}
                         className="flex h-9 w-9 items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 lg:hidden"
@@ -547,7 +548,9 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     </button>
+                    <div className="flex-1" />
                     <div className="flex items-center gap-3">
+                        <TenantNotificationBell />
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-sm font-semibold text-primary">
                             {initials}
                         </div>

@@ -5,6 +5,7 @@ namespace App\Modules\Admin\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Modules\Admin\Services\ActivityLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Session;
 
 class ImpersonationController extends Controller
 {
+    public function __construct(
+        private readonly ActivityLogService $logService,
+    ) {}
+
     public function store(Request $request, string $tenantId): RedirectResponse
     {
         $request->validate([
@@ -41,6 +46,8 @@ class ImpersonationController extends Controller
         Session::put('impersonator_tenant_id', $tenantId);
 
         Auth::login($targetUser);
+
+        $this->logService->logFromRequest($request, 'impersonated', 'Login sebagai tenant: '.$tenant->getInternal('name'), 'tenant', $tenantId);
 
         return redirect()->route('tenant.dashboard');
     }

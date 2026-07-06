@@ -55,6 +55,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/tenant/setting.php'));
 
+            Route::middleware(['web', 'auth', 'tenant'])
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/tenant/notification.php'));
+
             // Public tenant routes — registered AFTER auth routes so they take
             // priority on tenant domains. The public controller handles
             // redirecting authenticated users to the admin booking page.
@@ -110,6 +114,14 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware('web')
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/admin/notifications.php'));
+
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/audit-logs.php'));
+
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/tenant-notifications.php'));
 
             Route::middleware('api')
                 ->prefix('api/v1')

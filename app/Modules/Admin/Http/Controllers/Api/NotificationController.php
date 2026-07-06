@@ -23,6 +23,14 @@ class NotificationController extends Controller
     public function active(): JsonResponse
     {
         $notifications = AdminNotification::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('active_from')
+                  ->orWhere('active_from', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('active_until')
+                  ->orWhere('active_until', '>=', now());
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -40,6 +48,8 @@ class NotificationController extends Controller
             'message' => 'required|string',
             'type' => 'required|in:info,warning,success,danger',
             'is_active' => 'boolean',
+            'active_from' => 'nullable|date',
+            'active_until' => 'nullable|date|after_or_equal:active_from',
         ]);
 
         $notification = AdminNotification::create($validated);
@@ -60,6 +70,8 @@ class NotificationController extends Controller
             'message' => 'required|string',
             'type' => 'required|in:info,warning,success,danger',
             'is_active' => 'boolean',
+            'active_from' => 'nullable|date',
+            'active_until' => 'nullable|date|after_or_equal:active_from',
         ]);
 
         $notification->update($validated);
@@ -90,6 +102,24 @@ class NotificationController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => $notification->is_active ? 'Notifikasi diaktifkan.' : 'Notifikasi dinonaktifkan.',
+            'data' => $notification,
+        ]);
+    }
+
+    public function markAsRead(Request $request, string $id): JsonResponse
+    {
+        $notification = AdminNotification::findOrFail($id);
+        $userId = $request->user()->id;
+        $readBy = $notification->read_by ?? [];
+
+        if (! in_array($userId, $readBy)) {
+            $readBy[] = $userId;
+            $notification->update(['read_by' => $readBy]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Notifikasi ditandai sudah dibaca.',
             'data' => $notification,
         ]);
     }

@@ -5,6 +5,7 @@ import FadeIn from '@/atoms/FadeIn';
 import Card from '@/molecules/Card';
 import TenantLayout from '@/layouts/TenantLayout';
 import { cn, formatNumber } from '@/lib/utils';
+import { useTenantNotifications } from '@/features/tenant/hooks/useTenantNotifications';
 
 interface UserInfo {
     name: string;
@@ -202,6 +203,9 @@ export default function TenantDashboard({ user, subscription, stats, urgent_book
         },
     ];
 
+    const { data: notifData } = useTenantNotifications();
+    const notifications = notifData?.data ?? [];
+
     const maxChartValue = Math.max(...booking_chart.map((w) => w.count), 1);
     const maxTopService = Math.max(...top_services.map((s) => s.total_revenue), 1);
 
@@ -242,6 +246,37 @@ export default function TenantDashboard({ user, subscription, stats, urgent_book
                     </div>
                 </div>
             </FadeIn>
+
+            {/* ── Notifications ── */}
+            {notifications.length > 0 && (
+                <FadeIn delay={0.04}>
+                    <div className="mb-6 space-y-3">
+                        {notifications.map((n) => {
+                            const borderMap: Record<string, string> = {
+                                info: 'border-blue-200 bg-blue-50',
+                                warning: 'border-amber-200 bg-amber-50',
+                                success: 'border-green-200 bg-green-50',
+                                danger: 'border-red-200 bg-red-50',
+                            };
+                            const dotMap: Record<string, string> = {
+                                info: 'bg-blue-500',
+                                warning: 'bg-amber-500',
+                                success: 'bg-green-500',
+                                danger: 'bg-red-500',
+                            };
+                            return (
+                                <div key={n.id} className={`flex items-start gap-3 rounded-xl border p-4 ${borderMap[n.type] || borderMap.info}`}>
+                                    <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${dotMap[n.type] || dotMap.info}`} />
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-sm font-semibold text-neutral-900">{n.title}</p>
+                                        <p className="mt-0.5 text-sm text-neutral-700">{n.message}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </FadeIn>
+            )}
 
             {/* ── Stat Cards ── */}
             <FadeIn delay={0.05}>

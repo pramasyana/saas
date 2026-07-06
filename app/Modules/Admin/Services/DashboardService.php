@@ -2,9 +2,12 @@
 
 namespace App\Modules\Admin\Services;
 
+use App\Models\Tenant;
 use App\Modules\Admin\Contracts\TenantStatsRepositoryInterface;
 use App\Modules\Admin\Contracts\UserRepositoryInterface;
 use App\Modules\Admin\DTOs\DashboardStatsDTO;
+use App\Modules\Subscription\Models\Invoice;
+use App\Modules\Subscription\Models\Subscription;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -83,5 +86,96 @@ class DashboardService
         }
 
         return $result;
+    }
+
+    public function getRevenueOverview(): array
+    {
+        $mrr = (float) Subscription::where('status', 'active')->sum('price_amount');
+        $activeSubs = Subscription::where('status', 'active')->count();
+        $totalRevenue = (float) Invoice::where('status', 'paid')->sum('amount');
+        $pendingInvoices = Invoice::where('status', 'pending')->count();
+
+        return [
+            'mrr' => $mrr,
+            'active_subscriptions' => $activeSubs,
+            'total_revenue' => $totalRevenue,
+            'pending_invoices' => $pendingInvoices,
+        ];
+    }
+
+    public function getMonthlyRevenue(int $months = 12): array
+    {
+        $start = CarbonImmutable::now()->subMonths($months - 1)->startOfMonth();
+
+        $paidInvoices = Invoice::where('status', 'paid')
+            ->where('paid_at', '>=', $start)
+            ->get(['paid_at', 'amount']);
+
+        $pendingInvoices = Invoice::where('status', 'pending')
+            ->where('created_at', '>=', $start)
+            ->get(['created_at', 'amount']);
+
+        $paidByMonth = [];
+        $pendingByMonth = [];
+
+        foreach ($paidInvoices as $inv) {
+            $key = $inv->paid_at->format('Y-m');
+            $paidByMonth[$key] = ($paidByMonth[$key] ?? 0) + (float) $inv->amount;
+        }
+
+        foreach ($pendingInvoices as $inv) {
+            $key = $inv->created_at->format('Y-m');
+            $pendingByMonth[$key] = ($pendingByMonth[$key] ?? 0) + (float) $inv->amount;
+        }
+
+        $labels = [];
+        $paid = [];
+        $pending = [];
+
+        for ($i = 0; $i < $months; $i++) {
+            $date = $start->addMonthsNoOverflow($i);
+            $key = $date->format('Y-m');
+            $label = $date->isoFormat('MMM Y');
+
+            $labels[] = $label;
+            $paid[] = $paidByMonth[$key] ?? 0;
+            $pending[] = $pendingByMonth[$key] ?? 0;
+        }
+
+        return compact('labels', 'paid', 'pending');
+    }
+
+    /** @return Collection<int, array> */
+    public function getRecentSubscriptions(int $limit = 5): Collection
+    {
+        return Subscription::with(['user', 'plan', 'tenant'])
+            ->latest()
+            ->limit($limit)
+            ->get()
+            ->map(fn ($sub) => [
+                'id' => $sub->id,
+                'tenant_name' => $sub->tenant->getInternal('name') ?? ($sub->user?->name ?? '-'),
+                'plan_name' => $sub->plan?->name ?? '-',
+                'price_amount' => (float) $sub->price_amount,
+                'status' => $sub->status,
+                'created_at' => $sub->created_at?->diffForHumans(),
+            ]);
+    }
+
+    /** @return Collection<int, array> */
+    public function getRecentTenants(int $limit = 5): Collection
+    {
+        return Tenant::with(['user', 'domains'])
+            ->latest()
+            ->limit($limit)
+            ->get()
+            ->map(fn ($tenant) => [
+                'id' => $tenant->id,
+                'name' => $tenant->getInternal('name'),
+                'email' => $tenant->getInternal('email'),
+                'owner_name' => $tenant->user?->name,
+                'domain' => $tenant->domains->first()?->domain,
+                'created_at' => $tenant->created_at?->diffForHumans(),
+            ]);
     }
 }

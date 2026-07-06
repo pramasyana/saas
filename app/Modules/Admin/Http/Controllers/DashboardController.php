@@ -19,6 +19,10 @@ class DashboardController extends Controller
             'stats' => $this->dashboardService->getStats()->toArray(),
             'recent_users' => $this->dashboardService->getRecentUsers(),
             'weekly_signups' => $this->dashboardService->getWeeklySignups(),
+            'revenue_overview' => $this->dashboardService->getRevenueOverview(),
+            'monthly_revenue' => $this->dashboardService->getMonthlyRevenue(),
+            'recent_subscriptions' => $this->dashboardService->getRecentSubscriptions(),
+            'recent_tenants' => $this->dashboardService->getRecentTenants(),
         ]);
     }
 }

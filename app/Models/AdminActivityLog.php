@@ -3,31 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
-class AdminNotification extends Model
+class AdminActivityLog extends Model
 {
     protected $keyType = 'string';
 
     public $incrementing = false;
 
     protected $fillable = [
-        'title',
-        'message',
-        'type',
-        'is_active',
-        'read_by',
-        'active_from',
-        'active_until',
+        'user_id',
+        'action',
+        'subject_type',
+        'subject_id',
+        'description',
+        'metadata',
+        'ip_address',
+        'user_agent',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
-            'read_by' => 'array',
-            'active_from' => 'datetime',
-            'active_until' => 'datetime',
+            'metadata' => 'array',
         ];
     }
 
@@ -38,5 +37,10 @@ class AdminNotification extends Model
                 $model->id = (string) Str::uuid();
             }
         });
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -1,16 +1,19 @@
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import Select from '@/atoms/Select';
+import Pagination from '@/molecules/Pagination';
 import {
-    useAdminNotifications,
-    useCreateNotification,
-    useUpdateNotification,
-    useDeleteNotification,
-    useToggleNotification,
-} from '@/features/admin/hooks/useAdminNotifications';
-import type { AdminNotification } from '@/features/admin/hooks/useAdminNotifications';
+    useAdminTenantNotifications,
+    useCreateTenantNotification,
+    useUpdateTenantNotification,
+    useDeleteTenantNotification,
+    useToggleTenantNotification,
+} from '@/features/admin/hooks/useAdminTenantNotifications';
+import type { AdminTenantNotification } from '@/features/admin/hooks/useAdminTenantNotifications';
 import AdminLayout from '@/layouts/AdminLayout';
+import TenantSelectModal from './TenantSelectModal';
 
-interface NotificationsPageProps {
+interface TenantNotificationsPageProps {
     title: string;
 }
 
@@ -28,21 +31,24 @@ const typeIcons: Record<string, string> = {
     danger: 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z',
 };
 
-const emptyForm = { title: '', message: '', type: 'info' as const, active_from: '', active_until: '' };
+const emptyForm = { title: '', message: '', type: 'info' as const, target_type: 'all' as const, target_tenant_ids: [] as string[], active_from: '', active_until: '' };
 
-export default function AdminNotifications({ title }: NotificationsPageProps) {
-    const { data, isLoading, isError } = useAdminNotifications();
-    const createMutation = useCreateNotification();
-    const updateMutation = useUpdateNotification();
-    const deleteMutation = useDeleteNotification();
-    const toggleMutation = useToggleNotification();
+export default function TenantNotifications({ title }: TenantNotificationsPageProps) {
+    const [params, setParams] = useState({ page: 1, per_page: 15, search: '', type: '' });
+    const { data, isLoading, isError } = useAdminTenantNotifications(params);
+    const createMutation = useCreateTenantNotification();
+    const updateMutation = useUpdateTenantNotification();
+    const deleteMutation = useDeleteTenantNotification();
+    const toggleMutation = useToggleTenantNotification();
 
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [form, setForm] = useState<{ title: string; message: string; type: 'info' | 'warning' | 'success' | 'danger'; active_from: string; active_until: string }>(emptyForm);
+    const [form, setForm] = useState<{ title: string; message: string; type: 'info' | 'warning' | 'success' | 'danger'; target_type: 'all' | 'specific'; target_tenant_ids: string[]; active_from: string; active_until: string }>(emptyForm);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [showTenantModal, setShowTenantModal] = useState(false);
 
     const notifications = data?.data ?? [];
+    const meta = data?.meta;
 
     function resetForm() {
         setForm(emptyForm);
@@ -51,12 +57,24 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
         setErrors({});
     }
 
-    function openEdit(n: AdminNotification) {
-        setForm({ title: n.title, message: n.message, type: n.type, active_from: n.active_from ?? '', active_until: n.active_until ?? '' });
+    function openEdit(n: AdminTenantNotification) {
+        setForm({
+            title: n.title,
+            message: n.message,
+            type: n.type,
+            target_type: n.target_type,
+            target_tenant_ids: n.target_tenant_ids ?? [],
+            active_from: n.active_from ?? '',
+            active_until: n.active_until ?? '',
+        });
         setEditingId(n.id);
         setShowForm(true);
         setErrors({});
     }
+
+    const handleTenantSelect = useCallback((ids: string[]) => {
+        setForm((p) => ({ ...p, target_tenant_ids: ids }));
+    }, []);
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -64,8 +82,10 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
 
         const payload = {
             ...form,
+            is_active: true,
             active_from: form.active_from || null,
             active_until: form.active_until || null,
+            target_tenant_ids: form.target_type === 'specific' ? form.target_tenant_ids : undefined,
         };
 
         if (editingId) {
@@ -86,7 +106,7 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
             );
         } else {
             createMutation.mutate(
-                { ...payload, is_active: true },
+                payload,
                 {
                     onSuccess: () => resetForm(),
                     onError: (err: any) => {
@@ -103,14 +123,18 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
         }
     }
 
+    function handlePage(page: number) {
+        setParams((prev) => ({ ...prev, page }));
+    }
+
     return (
         <AdminLayout>
             <Head title={title} />
 
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">Notifikasi</h1>
-                    <p className="mt-1 text-sm text-neutral-500">Broadcast notifikasi ke semua tenant.</p>
+                    <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">Notifikasi Tenant</h1>
+                    <p className="mt-1 text-sm text-neutral-500">Broadcast notifikasi ke tenant.</p>
                 </div>
                 <button
                     onClick={() => { resetForm(); setShowForm(!showForm); }}
@@ -123,10 +147,43 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                 </button>
             </div>
 
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row">
+                <input
+                    type="text"
+                    placeholder="Cari notifikasi..."
+                    value={params.search}
+                    onChange={(e) => setParams((prev) => ({ ...prev, search: e.target.value, page: 1 }))}
+                    className="w-full max-w-xs rounded-xl border border-neutral-300 px-4 py-2 text-sm shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+                <Select
+                    value={params.type}
+                    onChange={(v) => setParams((prev) => ({ ...prev, type: v, page: 1 }))}
+                    options={[
+                        { value: '', label: 'Semua Tipe' },
+                        { value: 'info', label: 'Info' },
+                        { value: 'warning', label: 'Warning' },
+                        { value: 'success', label: 'Success' },
+                        { value: 'danger', label: 'Danger' },
+                    ]}
+                    placeholder="Filter tipe"
+                />
+                <Select
+                    value={String(params.per_page)}
+                    onChange={(v) => setParams((prev) => ({ ...prev, per_page: Number(v), page: 1 }))}
+                    options={[
+                        { value: '10', label: '10' },
+                        { value: '15', label: '15' },
+                        { value: '25', label: '25' },
+                        { value: '50', label: '50' },
+                    ]}
+                    placeholder="15"
+                />
+            </div>
+
             {showForm && (
                 <form onSubmit={handleSubmit} className="mb-8 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
                     <h2 className="mb-5 text-base font-semibold text-neutral-900">
-                        {editingId ? 'Edit Notifikasi' : 'Notifikasi Baru'}
+                        {editingId ? 'Edit Notifikasi Tenant' : 'Notifikasi Tenant Baru'}
                     </h2>
                     <div className="space-y-5">
                         <div>
@@ -135,7 +192,7 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                                 type="text"
                                 value={form.title}
                                 onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-                                className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm text-neutral-900 shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                                 required
                             />
                             {errors.title && <p className="mt-1 text-xs text-danger">{errors.title}</p>}
@@ -146,7 +203,7 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                                 value={form.message}
                                 onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
                                 rows={4}
-                                className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm text-neutral-900 shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                                 required
                             />
                             {errors.message && <p className="mt-1 text-xs text-danger">{errors.message}</p>}
@@ -170,6 +227,66 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                                 ))}
                             </div>
                         </div>
+                        <div>
+                            <label className="mb-1.5 block text-sm font-medium text-neutral-700">Target</label>
+                            <div className="flex gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setForm((p) => ({ ...p, target_type: 'all', target_tenant_ids: [] }))}
+                                    className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${
+                                        form.target_type === 'all'
+                                            ? 'bg-neutral-900 text-white border-neutral-900'
+                                            : 'border-neutral-200 text-neutral-600 hover:bg-neutral-50'
+                                    }`}
+                                >
+                                    Semua Tenant
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setForm((p) => ({ ...p, target_type: 'specific' }))}
+                                    className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${
+                                        form.target_type === 'specific'
+                                            ? 'bg-neutral-900 text-white border-neutral-900'
+                                            : 'border-neutral-200 text-neutral-600 hover:bg-neutral-50'
+                                    }`}
+                                >
+                                    Tenant Tertentu
+                                </button>
+                            </div>
+                        </div>
+                        {form.target_type === 'specific' && (
+                            <div>
+                                <label className="mb-1.5 block text-sm font-medium text-neutral-700">Pilih Tenant</label>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowTenantModal(true)}
+                                    className="w-full rounded-xl border border-neutral-300 px-4 py-2.5 text-sm text-left shadow-sm transition-all hover:border-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                >
+                                    {form.target_tenant_ids.length === 0 ? (
+                                        <span className="text-neutral-400">Klik untuk memilih tenant...</span>
+                                    ) : (
+                                        <span className="text-neutral-900">{form.target_tenant_ids.length} tenant dipilih</span>
+                                    )}
+                                </button>
+                                {form.target_tenant_ids.length > 0 && (
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {form.target_tenant_ids.map((id) => (
+                                            <span key={id} className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                                                {id.slice(0, 8)}...
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setForm((p) => ({ ...p, target_tenant_ids: p.target_tenant_ids.filter((i) => i !== id) }))}
+                                                    className="ml-0.5 text-primary/60 hover:text-primary"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                                {errors.target_tenant_ids && <p className="mt-1 text-xs text-danger">{errors.target_tenant_ids}</p>}
+                            </div>
+                        )}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="mb-1.5 block text-sm font-medium text-neutral-700">Mulai</label>
@@ -214,9 +331,16 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                 </form>
             )}
 
+            <TenantSelectModal
+                open={showTenantModal}
+                selectedIds={form.target_tenant_ids}
+                onSelect={handleTenantSelect}
+                onClose={() => setShowTenantModal(false)}
+            />
+
             {isLoading ? (
                 <div className="animate-pulse space-y-4">
-                    {[1, 2].map((i) => (
+                    {[1, 2, 3].map((i) => (
                         <div key={i} className="h-28 rounded-2xl bg-neutral-100" />
                     ))}
                 </div>
@@ -226,7 +350,7 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                 </div>
             ) : notifications.length === 0 ? (
                 <div className="flex flex-col items-center gap-5 rounded-2xl border border-neutral-200 bg-white px-6 py-20 shadow-sm">
-                    <p className="text-base font-semibold text-neutral-900">Belum ada notifikasi</p>
+                    <p className="text-base font-semibold text-neutral-900">Belum ada notifikasi tenant</p>
                     <p className="text-sm text-neutral-500">Buat notifikasi pertama untuk tenant Anda.</p>
                 </div>
             ) : (
@@ -239,14 +363,14 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                             }`}
                         >
                             <div className="flex items-start justify-between gap-4">
-                                <div className="flex items-start gap-3">
+                                <div className="flex items-start gap-3 min-w-0">
                                     <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${typeStyles[n.type].split(' ')[0]} ${typeStyles[n.type].split(' ')[1]}`}>
                                         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d={typeIcons[n.type]} />
                                         </svg>
                                     </div>
-                                    <div>
-                                        <div className="flex items-center gap-2">
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
                                             <h3 className="text-sm font-semibold text-neutral-900">{n.title}</h3>
                                             <span className={`rounded-full px-2 py-0.5 text-xs font-medium capitalize ${
                                                 n.is_active
@@ -257,6 +381,9 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                                             </span>
                                             <span className={`rounded-full px-2 py-0.5 text-xs font-medium capitalize ${typeStyles[n.type]}`}>
                                                 {n.type}
+                                            </span>
+                                            <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-500">
+                                                {n.target_type === 'specific' ? `${n.target_tenant_ids?.length ?? 0} tenant` : 'Semua'}
                                             </span>
                                         </div>
                                         <p className="mt-1 text-sm text-neutral-600 whitespace-pre-wrap">{n.message}</p>
@@ -308,6 +435,8 @@ export default function AdminNotifications({ title }: NotificationsPageProps) {
                     ))}
                 </div>
             )}
+
+            {meta && <Pagination meta={meta} onPageChange={handlePage} />}
         </AdminLayout>
     );
 }

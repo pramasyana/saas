@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Tenant\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Admin\Services\ActivityLogService;
 use App\Modules\Tenant\Http\Requests\StoreTenantRequest;
 use App\Modules\Tenant\Http\Requests\UpdateTenantRequest;
 use App\Modules\Tenant\Http\Resources\TenantResource;
@@ -16,6 +17,7 @@ class TenantController extends Controller
 {
     public function __construct(
         private readonly TenantService $tenantService,
+        private readonly ActivityLogService $logService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -42,6 +44,8 @@ class TenantController extends Controller
     {
         $tenant = $this->tenantService->create($request->validated());
 
+        $this->logService->logFromRequest($request, 'created', 'Membuat tenant: '.($tenant->getInternal('name') ?? $tenant->id), 'tenant', $tenant->id);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Tenant berhasil dibuat.',
@@ -64,6 +68,8 @@ class TenantController extends Controller
     {
         $tenant = $this->tenantService->update($id, $request->validated());
 
+        $this->logService->logFromRequest($request, 'updated', 'Mengupdate tenant: '.($tenant->getInternal('name') ?? $tenant->id), 'tenant', $tenant->id);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Tenant berhasil diupdate.',
@@ -71,10 +77,15 @@ class TenantController extends Controller
         ]);
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(Request $request, string $id): JsonResponse
     {
         try {
+            $tenant = $this->tenantService->findById($id);
+            $tenantName = $tenant->getInternal('name') ?? $tenant->id;
+
             $this->tenantService->delete($id);
+
+            $this->logService->logFromRequest($request, 'deleted', 'Menghapus tenant: '.$tenantName, 'tenant', $id);
 
             return response()->json([
                 'status' => 'success',

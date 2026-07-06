@@ -3,6 +3,7 @@
 namespace App\Modules\Subscription\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Admin\Services\ActivityLogService;
 use App\Modules\Subscription\Http\Requests\CancelSubscriptionRequest;
 use App\Modules\Subscription\Http\Requests\ChangePlanRequest;
 use App\Modules\Subscription\Http\Requests\StoreSubscriptionRequest;
@@ -15,6 +16,7 @@ class SubscriptionController extends Controller
 {
     public function __construct(
         private readonly SubscriptionService $subscriptionService,
+        private readonly ActivityLogService $logService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -52,6 +54,8 @@ class SubscriptionController extends Controller
     {
         $subscription = $this->subscriptionService->subscribe($request->validated());
 
+        $this->logService->logFromRequest($request, 'created', 'Membuat subscription untuk tenant: '.($subscription->tenant->getInternal('name') ?? $subscription->tenant_id), 'subscription', $subscription->id);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Subscription berhasil dibuat.',
@@ -63,6 +67,8 @@ class SubscriptionController extends Controller
     {
         try {
             $subscription = $this->subscriptionService->cancel($id, $request->input('reason'));
+
+            $this->logService->logFromRequest($request, 'cancelled', 'Membatalkan subscription: '.$subscription->id.' (tenant: '.($subscription->tenant->getInternal('name') ?? $subscription->tenant_id).')', 'subscription', $subscription->id);
 
             return response()->json([
                 'status' => 'success',
@@ -85,6 +91,8 @@ class SubscriptionController extends Controller
                 $request->input('plan_id'),
                 $request->input('billing_interval'),
             );
+
+            $this->logService->logFromRequest($request, 'updated', 'Mengubah plan subscription: '.$subscription->id, 'subscription', $subscription->id);
 
             return response()->json([
                 'status' => 'success',

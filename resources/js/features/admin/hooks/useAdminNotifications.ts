@@ -7,6 +7,9 @@ export interface AdminNotification {
     message: string;
     type: 'info' | 'warning' | 'success' | 'danger';
     is_active: boolean;
+    read_by: string[] | null;
+    active_from: string | null;
+    active_until: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -21,6 +24,8 @@ interface NotificationFormData {
     message: string;
     type: 'info' | 'warning' | 'success' | 'danger';
     is_active?: boolean;
+    active_from?: string | null;
+    active_until?: string | null;
 }
 
 function getNotifications(): Promise<NotificationsResponse> {
@@ -89,6 +94,17 @@ export function useToggleNotification() {
 
     return useMutation({
         mutationFn: (id: string) => toggleNotification(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+        },
+    });
+}
+
+export function useMarkNotificationRead() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => api.put(`/api/v1/admin/notifications/${id}/read`).then((res) => res.data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
         },

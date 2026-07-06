@@ -8,6 +8,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/notifications', [NotificationController::class, 'store']);
     Route::put('/admin/notifications/{id}', [NotificationController::class, 'update']);
     Route::put('/admin/notifications/{id}/toggle-active', [NotificationController::class, 'toggleActive']);
+    Route::put('/admin/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::delete('/admin/notifications/{id}', [NotificationController::class, 'destroy']);
 });
 

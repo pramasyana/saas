@@ -3,6 +3,7 @@
 namespace App\Modules\Pricing\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Admin\Services\ActivityLogService;
 use App\Modules\Pricing\Http\Requests\StorePlanRequest;
 use App\Modules\Pricing\Http\Requests\UpdatePlanRequest;
 use App\Modules\Pricing\Http\Resources\PlanResource;
@@ -14,6 +15,7 @@ class PlanController extends Controller
 {
     public function __construct(
         private readonly PlanService $planService,
+        private readonly ActivityLogService $logService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -51,6 +53,8 @@ class PlanController extends Controller
     {
         $plan = $this->planService->create($request->validated());
 
+        $this->logService->logFromRequest($request, 'created', 'Membuat plan: '.$plan->name, 'plan', $plan->id);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Plan berhasil dibuat.',
@@ -62,6 +66,8 @@ class PlanController extends Controller
     {
         $plan = $this->planService->update($id, $request->validated());
 
+        $this->logService->logFromRequest($request, 'updated', 'Mengupdate plan: '.$plan->name, 'plan', $plan->id);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Plan berhasil diupdate.',
@@ -69,9 +75,11 @@ class PlanController extends Controller
         ]);
     }
 
-    public function togglePopular(string $id): JsonResponse
+    public function togglePopular(Request $request, string $id): JsonResponse
     {
         $plan = $this->planService->togglePopular($id);
+
+        $this->logService->logFromRequest($request, 'updated', ($plan->is_popular ? 'Menandai' : 'Menghapus tanda').' plan populer: '.$plan->name, 'plan', $plan->id);
 
         return response()->json([
             'status' => 'success',
@@ -80,10 +88,15 @@ class PlanController extends Controller
         ]);
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(Request $request, string $id): JsonResponse
     {
         try {
+            $plan = $this->planService->findById($id);
+            $planName = $plan->name;
+
             $this->planService->delete($id);
+
+            $this->logService->logFromRequest($request, 'deleted', 'Menghapus plan: '.$planName, 'plan', $id);
 
             return response()->json([
                 'status' => 'success',

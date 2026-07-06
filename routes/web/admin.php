@@ -1,15 +1,17 @@
 <?php
 
 use App\Modules\Admin\Http\Controllers\ActivityPageController;
+use App\Modules\Admin\Http\Controllers\AuditLogPageController;
 use App\Modules\Admin\Http\Controllers\AuthController;
-use App\Modules\Admin\Http\Controllers\NotificationPageController;
 use App\Modules\Admin\Http\Controllers\ExportController;
 use App\Modules\Admin\Http\Controllers\SystemPageController;
 use App\Modules\Admin\Http\Controllers\DashboardController;
 use App\Modules\Admin\Http\Controllers\EmailLogController;
 use App\Modules\Admin\Http\Controllers\ImpersonationController;
 use App\Modules\Admin\Http\Controllers\InvoicePageController;
+use App\Modules\Admin\Http\Controllers\NotificationPageController;
 use App\Modules\Admin\Http\Controllers\ProfilePageController;
+use App\Modules\Admin\Http\Controllers\TenantNotificationPageController;
 use App\Modules\Admin\Http\Controllers\RevenueController;
 use App\Modules\Admin\Http\Controllers\SettingsController;
 use App\Modules\Admin\Http\Controllers\UserController;
@@ -48,7 +50,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/profile', [ProfilePageController::class, 'index'])->name('admin.profile');
     Route::get('/admin/activity', [ActivityPageController::class, 'index'])->name('admin.activity');
     Route::get('/admin/system', [SystemPageController::class, 'index'])->name('admin.system');
+    Route::get('/admin/audit-logs', [AuditLogPageController::class, 'index'])->name('admin.audit-logs');
     Route::get('/admin/notifications', [NotificationPageController::class, 'index'])->name('admin.notifications');
+    Route::get('/admin/tenant-notifications', [TenantNotificationPageController::class, 'index'])->name('admin.tenant-notifications');
     Route::get('/admin/subscriptions', [SubscriptionPageController::class, 'index'])->name('admin.subscriptions');
     Route::get('/admin/invoices', [InvoicePageController::class, 'index'])->name('admin.invoices');
     Route::get('/admin/tenants/{tenantId}/subscription', [TenantSubscriptionController::class, 'show'])->name('admin.tenants.subscription');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Admin\Http\Requests\User\StoreUserRequest;
 use App\Modules\Admin\Http\Requests\User\UpdateUserRequest;
 use App\Modules\Admin\Http\Resources\UserResource;
+use App\Modules\Admin\Services\ActivityLogService;
 use App\Modules\Admin\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ class UserController extends Controller
 {
     public function __construct(
         private readonly UserService $userService,
+        private readonly ActivityLogService $logService,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -40,6 +42,8 @@ class UserController extends Controller
     {
         $user = $this->userService->create($request->validated());
 
+        $this->logService->logFromRequest($request, 'created', 'Membuat user baru: '.$user->name, 'user', $user->id);
+
         return response()->json([
             'status' => 'success',
             'message' => 'User berhasil dibuat.',
@@ -62,6 +66,8 @@ class UserController extends Controller
     {
         $user = $this->userService->update($id, $request->validated());
 
+        $this->logService->logFromRequest($request, 'updated', 'Mengupdate user: '.$user->name, 'user', $user->id);
+
         return response()->json([
             'status' => 'success',
             'message' => 'User berhasil diupdate.',
@@ -69,9 +75,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function toggleActive(string $id): JsonResponse
+    public function toggleActive(Request $request, string $id): JsonResponse
     {
         $user = $this->userService->toggleActive($id);
+
+        $this->logService->logFromRequest($request, 'toggled-active', ($user->is_active ? 'Mengaktifkan' : 'Menonaktifkan').' user: '.$user->name, 'user', $user->id);
 
         return response()->json([
             'status' => 'success',
@@ -108,10 +116,15 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(Request $request, string $id): JsonResponse
     {
         try {
+            $user = $this->userService->findById($id);
+            $userName = $user->name;
+
             $this->userService->delete($id);
+
+            $this->logService->logFromRequest($request, 'deleted', 'Menghapus user: '.$userName, 'user', $id);
 
             return response()->json([
                 'status' => 'success',
