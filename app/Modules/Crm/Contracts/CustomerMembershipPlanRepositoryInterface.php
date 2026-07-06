@@ -27,4 +27,8 @@ interface CustomerMembershipPlanRepositoryInterface
     public function countByTenant(string $tenantId): int;
 
     public function countActiveByTenant(string $tenantId): int;
+
+    public function countInactiveByTenant(string $tenantId): int;
+
+    public function countSubscribersByTenant(string $tenantId): int;
 }

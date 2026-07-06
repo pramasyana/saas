@@ -34,7 +34,7 @@ function deletePlan(id: string): Promise<void> {
     return api.delete(`/api/v1/crm/membership-plans/${id}`).then((r) => r.data);
 }
 
-function getPlanStats(): Promise<{ data: { total_plans: number; active_plans: number } }> {
+function getPlanStats(): Promise<{ data: { total_plans: number; active_plans: number; inactive_plans: number; total_subscribers: number } }> {
     return api.get('/api/v1/crm/membership-plans/stats').then((r) => r.data);
 }
 

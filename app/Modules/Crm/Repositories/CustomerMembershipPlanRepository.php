@@ -13,7 +13,8 @@ class CustomerMembershipPlanRepository implements CustomerMembershipPlanReposito
 {
     public function paginate(string $tenantId, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = CustomerMembershipPlan::where('tenant_id', $tenantId);
+        $query = CustomerMembershipPlan::where('tenant_id', $tenantId)
+            ->withCount('subscriptions');
 
         if (! empty($filters['search'])) {
             $query->where('name', 'like', "%{$filters['search']}%");
@@ -74,5 +75,18 @@ class CustomerMembershipPlanRepository implements CustomerMembershipPlanReposito
     public function countActiveByTenant(string $tenantId): int
     {
         return CustomerMembershipPlan::where('tenant_id', $tenantId)->where('is_active', true)->count();
+    }
+
+    public function countInactiveByTenant(string $tenantId): int
+    {
+        return CustomerMembershipPlan::where('tenant_id', $tenantId)->where('is_active', false)->count();
+    }
+
+    public function countSubscribersByTenant(string $tenantId): int
+    {
+        return CustomerMembershipPlan::where('tenant_id', $tenantId)
+            ->withCount('subscriptions')
+            ->get()
+            ->sum('subscriptions_count');
     }
 }

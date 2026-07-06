@@ -113,6 +113,8 @@ class CustomerMembershipPlanController extends Controller
             'data' => [
                 'total_plans' => $this->planRepository->countByTenant($tenantId),
                 'active_plans' => $this->planRepository->countActiveByTenant($tenantId),
+                'inactive_plans' => $this->planRepository->countInactiveByTenant($tenantId),
+                'total_subscribers' => $this->planRepository->countSubscribersByTenant($tenantId),
             ],
         ]);
     }
