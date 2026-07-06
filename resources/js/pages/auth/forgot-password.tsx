@@ -2,10 +2,20 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-interface LoginForm {
-    email: string;
-    password: string;
-    remember: boolean;
+interface Props {
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+}
+
+function Spinner() {
+    return (
+        <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+    );
 }
 
 const containerVariants = {
@@ -21,23 +31,17 @@ const itemVariants = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } },
 };
 
-export default function TenantLogin() {
-    const { data, setData, post, processing, errors, reset } = useForm<LoginForm>({
-        email: '',
-        password: '',
-        remember: false,
-    });
+export default function TenantForgotPassword({ flash }: Props) {
+    const { data, setData, post, processing, errors } = useForm({ email: '' });
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        post('/login', {
-            onSuccess: () => reset('password'),
-        });
+        post('/forgot-password');
     }
 
     return (
         <>
-            <Head title="Masuk ke Akun" />
+            <Head title="Lupa Password" />
 
             <div className="flex min-h-screen w-full bg-[#faf8ff]">
                 {/* Left — Mesh Gradient + Glass Cards */}
@@ -79,9 +83,9 @@ export default function TenantLogin() {
                             transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
                             className="mb-6 text-5xl font-extrabold leading-[1.1] tracking-tight text-white"
                         >
-                            Manage your business
+                            Forgot your
                             <br />
-                            with intelligence.
+                            password?
                         </motion.h1>
 
                         <motion.p
@@ -90,10 +94,9 @@ export default function TenantLogin() {
                             transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
                             className="mb-16 max-w-md text-lg leading-relaxed text-white/80"
                         >
-                            The next-generation booking platform designed for growth, automation, and seamless customer experiences.
+                            Don't worry, we've got you covered. Enter your email and we'll send you a reset link in seconds.
                         </motion.p>
 
-                        {/* Glass Mockup Cards */}
                         <motion.div
                             initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -109,14 +112,15 @@ export default function TenantLogin() {
                                 }}
                             >
                                 <div className="mb-4 flex items-center justify-between">
-                                    <span className="text-sm text-white/60">Revenue</span>
+                                    <span className="text-sm text-white/60">Email Sent</span>
                                     <svg className="h-5 w-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                                     </svg>
                                 </div>
-                                <div className="text-3xl font-bold tracking-tight">$12,480.00</div>
+                                <div className="text-lg font-semibold tracking-tight">Reset link sent!</div>
+                                <div className="mt-2 text-sm text-white/70">Check your inbox for the password reset instructions.</div>
                                 <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-white/20">
-                                    <div className="h-full w-2/3 rounded-full bg-white" />
+                                    <div className="h-full w-full rounded-full bg-white" />
                                 </div>
                             </div>
 
@@ -129,16 +133,16 @@ export default function TenantLogin() {
                                 }}
                             >
                                 <div className="mb-4 flex items-center justify-between">
-                                    <span className="text-sm text-white/60">New Bookings</span>
+                                    <span className="text-sm text-white/60">Security</span>
                                     <svg className="h-5 w-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                                     </svg>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/40 bg-white/10 text-xs font-bold text-white">
-                                        JD
+                                        SP
                                     </div>
-                                    <span className="text-base text-white">+48 since yesterday</span>
+                                    <span className="text-base text-white">Your data is protected</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -154,7 +158,7 @@ export default function TenantLogin() {
                     </div>
                 </div>
 
-                {/* Right — Login Form */}
+                {/* Right — Form */}
                 <div className="flex w-full items-center justify-center p-8 lg:w-1/2">
                     <motion.div
                         variants={containerVariants}
@@ -162,7 +166,6 @@ export default function TenantLogin() {
                         animate="visible"
                         className="w-full max-w-md"
                     >
-                        {/* Mobile Logo */}
                         <motion.div variants={itemVariants} className="mb-12 flex items-center gap-2 lg:hidden">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#6b38d4]">
                                 <span className="text-xl font-bold text-white">B</span>
@@ -170,15 +173,45 @@ export default function TenantLogin() {
                             <span className="text-2xl font-bold tracking-tighter text-[#131b2e]">BookCRM</span>
                         </motion.div>
 
-                        {/* Welcome */}
                         <motion.div variants={itemVariants} className="mb-10">
-                            <h2 className="mb-2 text-4xl font-bold tracking-tight text-[#131b2e]">Welcome Back</h2>
+                            <Link
+                                href="/login"
+                                className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#6b38d4] transition-all hover:underline"
+                            >
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                                </svg>
+                                Back to Login
+                            </Link>
+                            <h2 className="mb-2 text-4xl font-bold tracking-tight text-[#131b2e]">Forgot Password?</h2>
                             <p className="text-base leading-relaxed text-[#494454]/80">
-                                Sign in to your account to continue managing your business.
+                                No worries — enter your email and we'll send you a password reset link.
                             </p>
                         </motion.div>
 
-                        {/* Form */}
+                        {flash?.success && (
+                            <motion.div
+                                variants={itemVariants}
+                                className="mb-6 flex items-center gap-2.5 rounded-xl border border-success/20 bg-success/5 px-4 py-3 text-sm font-semibold text-success"
+                            >
+                                <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>{flash.success}</span>
+                            </motion.div>
+                        )}
+                        {flash?.error && (
+                            <motion.div
+                                variants={itemVariants}
+                                className="mb-6 flex items-center gap-2.5 rounded-xl border border-danger/20 bg-danger/5 px-4 py-3 text-sm font-semibold text-danger"
+                            >
+                                <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                </svg>
+                                <span>{flash.error}</span>
+                            </motion.div>
+                        )}
+
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <motion.div variants={itemVariants} className="space-y-2">
                                 <label htmlFor="email" className="ml-1 block text-sm font-semibold text-[#494454]">
@@ -218,67 +251,6 @@ export default function TenantLogin() {
                                 )}
                             </motion.div>
 
-                            <motion.div variants={itemVariants} className="space-y-2">
-                                <div className="flex items-center justify-between px-1">
-                                    <label htmlFor="password" className="text-sm font-semibold text-[#494454]">
-                                        Password
-                                    </label>
-                                    <Link
-                                        href="/forgot-password"
-                                        className="text-sm font-semibold text-[#6b38d4] transition-all hover:underline"
-                                    >
-                                        Forgot password?
-                                    </Link>
-                                </div>
-                                <div className="relative group">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7b7486]/50 transition-colors group-focus-within:text-[#6b38d4]">
-                                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                                        </svg>
-                                    </span>
-                                    <input
-                                        id="password"
-                                        type="password"
-                                        autoComplete="current-password"
-                                        value={data.password}
-                                        onChange={(e) => setData('password', e.target.value)}
-                                        className={cn(
-                                            'w-full rounded-xl border bg-[#f2f3ff] py-4 pl-12 pr-4 text-[#131b2e] transition-all placeholder:text-[#7b7486]/40 hover:bg-[#e2e7ff] focus:bg-white',
-                                            errors.password
-                                                ? 'border-danger ring-4 ring-danger/10'
-                                                : 'border-[#cbc3d7]/30 focus:border-[#6b38d4] focus:ring-4 focus:ring-[#8455ef]/20',
-                                        )}
-                                        placeholder="••••••••"
-                                        required
-                                    />
-                                </div>
-                                {errors.password && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -4 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="ml-1 text-xs text-danger"
-                                    >
-                                        {errors.password}
-                                    </motion.p>
-                                )}
-                            </motion.div>
-
-                            <motion.div variants={itemVariants} className="flex items-center gap-3 py-1">
-                                <label className="flex cursor-pointer items-center gap-3">
-                                    <div className="relative flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={data.remember}
-                                            onChange={(e) => setData('remember', e.target.checked)}
-                                            className="h-5 w-5 cursor-pointer rounded border-[#cbc3d7]/30 text-[#6b38d4] transition-all focus:ring-[#8455ef]/20"
-                                        />
-                                    </div>
-                                    <span className="select-none text-sm font-semibold text-[#494454]">
-                                        Keep me signed in for 30 days
-                                    </span>
-                                </label>
-                            </motion.div>
-
                             <motion.div variants={itemVariants}>
                                 <button
                                     type="submit"
@@ -305,15 +277,12 @@ export default function TenantLogin() {
                                 >
                                     {processing ? (
                                         <span className="inline-flex items-center gap-2">
-                                            <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                                            </svg>
-                                            Signing In...
+                                            <Spinner />
+                                            Sending Link...
                                         </span>
                                     ) : (
                                         <span className="inline-flex items-center gap-2">
-                                            Sign In to Dashboard
+                                            Send Reset Link
                                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                             </svg>
@@ -323,53 +292,14 @@ export default function TenantLogin() {
                             </motion.div>
                         </form>
 
-                        {/* Social Logins */}
-                        <motion.div variants={itemVariants} className="mt-8">
-                            <div className="relative mb-6">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-[#cbc3d7]/30" />
-                                </div>
-                                <div className="relative flex justify-center">
-                                    <span className="bg-[#faf8ff] px-4 text-sm font-semibold text-[#7b7486]/60">
-                                        Or continue with
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <button
-                                    type="button"
-                                    className="flex items-center justify-center gap-3 rounded-xl border border-[#cbc3d7]/30 py-3.5 text-sm font-semibold text-[#131b2e] transition-all hover:border-[#6b38d4]/30 hover:bg-[#f2f3ff]"
-                                >
-                                    <svg className="h-5 w-5" viewBox="0 0 24 24">
-                                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                                        <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84z" fill="#FBBC05" />
-                                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                                    </svg>
-                                    Google
-                                </button>
-                                <button
-                                    type="button"
-                                    className="flex items-center justify-center gap-3 rounded-xl border border-[#cbc3d7]/30 py-3.5 text-sm font-semibold text-[#131b2e] transition-all hover:border-[#6b38d4]/30 hover:bg-[#f2f3ff]"
-                                >
-                                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.81-3.12 1.87-2.38 5.98.43 7.13-.6 1.5-1.41 3.01-2.48 4.07zM12.03 7.25c-.02-2.23 1.51-4.07 3.5-4.25.19 2.4-2.13 4.45-3.5 4.25z" />
-                                    </svg>
-                                    Apple
-                                </button>
-                            </div>
-                        </motion.div>
-
-                        {/* Footer */}
                         <motion.footer
                             variants={itemVariants}
                             className="mt-12 flex flex-col items-center gap-4"
                         >
                             <p className="text-sm font-semibold text-[#7b7486]/60">
-                                Don't have an account?{' '}
-                                <Link href="/register" className="font-semibold text-[#6b38d4] hover:underline">
-                                    Get Started
+                                Remember your password?{' '}
+                                <Link href="/login" className="font-semibold text-[#6b38d4] hover:underline">
+                                    Sign In
                                 </Link>
                             </p>
                             <div className="flex items-center gap-4">

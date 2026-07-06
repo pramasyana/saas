@@ -4,6 +4,8 @@ use App\Modules\Admin\Http\Controllers\ActivityPageController;
 use App\Modules\Admin\Http\Controllers\AuditLogPageController;
 use App\Modules\Admin\Http\Controllers\AuthController;
 use App\Modules\Admin\Http\Controllers\ExportController;
+use App\Modules\Admin\Http\Controllers\ForgotPasswordController;
+use App\Modules\Admin\Http\Controllers\ResetPasswordController;
 use App\Modules\Admin\Http\Controllers\SystemPageController;
 use App\Modules\Admin\Http\Controllers\DashboardController;
 use App\Modules\Admin\Http\Controllers\EmailLogController;
@@ -30,6 +32,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     Route::get('/admin/login', [AuthController::class, 'create'])->name('admin.login');
     Route::post('/admin/login', [AuthController::class, 'store']);
+
+    Route::get('/admin/forgot-password', [ForgotPasswordController::class, 'create'])->name('admin.forgot-password');
+    Route::post('/admin/forgot-password', [ForgotPasswordController::class, 'store']);
+
+    Route::get('/admin/reset-password/{token}', [ResetPasswordController::class, 'create'])->name('admin.reset-password');
+    Route::post('/admin/reset-password', [ResetPasswordController::class, 'store']);
 });
 
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])

@@ -1,6 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { motion  } from 'framer-motion';
-import type {Variants} from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface LoginForm {
@@ -9,42 +8,17 @@ interface LoginForm {
     remember: boolean;
 }
 
-function MailIcon({ className }: { className?: string }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-        </svg>
-    );
-}
-
-function LockIcon({ className }: { className?: string }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-    );
-}
-
-function Spinner() {
-    return (
-        <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-        </svg>
-    );
-}
-
 const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: { staggerChildren: 0.08 } as const,
+        transition: { staggerChildren: 0.06 },
     },
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 16 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
+    hidden: { opacity: 0, y: 14 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } },
 };
 
 export default function AdminLogin() {
@@ -65,53 +39,110 @@ export default function AdminLogin() {
         <>
             <Head title="Masuk ke Admin" />
 
-            <div className="flex min-h-screen">
-                <div className="relative hidden w-[45%] overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-primary-light lg:block">
-                    <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-white/[0.06]" />
-                    <div className="absolute -bottom-32 -left-16 h-[28rem] w-[28rem] rounded-full bg-white/[0.04]" />
-                    <div className="absolute top-1/3 -left-20 h-64 w-64 rounded-full bg-white/[0.03]" />
-                    <div className="absolute right-12 bottom-1/4 h-48 w-48 rounded-full bg-white/[0.05]" />
+            <div className="flex min-h-screen w-full bg-[#faf8ff]">
+                {/* Left — Mesh Gradient + Glass Cards */}
+                <div
+                    className="relative hidden w-1/2 items-center justify-center overflow-hidden p-16 lg:flex"
+                    style={{
+                        backgroundColor: '#6d3bd7',
+                        backgroundImage: [
+                            'radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%)',
+                            'radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%)',
+                            'radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%)',
+                            'radial-gradient(at 0% 100%, hsla(321,49%,30%,1) 0, transparent 50%)',
+                            'radial-gradient(at 50% 100%, hsla(262,82%,53%,1) 0, transparent 50%)',
+                            'radial-gradient(at 100% 100%, hsla(190,49%,30%,1) 0, transparent 50%)',
+                        ].join(', '),
+                    }}
+                >
+                    {/* Glow orbs */}
+                    <div className="absolute inset-0 opacity-30">
+                        <div className="absolute -left-[10%] -top-[10%] h-[60%] w-[60%] rounded-full bg-[#6b38d4] mix-blend-screen blur-[100px]" />
+                        <div className="absolute -bottom-[10%] -right-[10%] h-[60%] w-[60%] rounded-full bg-[#4648d4] mix-blend-screen blur-[100px]" />
+                    </div>
 
-                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
-
-                    <div className="relative flex h-full flex-col items-center justify-center px-16">
+                    <div className="relative z-10 w-full max-w-xl">
+                        {/* Branding */}
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, ease: 'easeOut' }}
-                            className="text-center"
+                            className="mb-12 flex items-center gap-3"
                         >
-                            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
-                                <span className="text-2xl font-bold text-white">B</span>
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white">
+                                <span className="text-2xl font-bold text-[#6b38d4]">B</span>
+                            </div>
+                            <span className="text-3xl font-bold tracking-tighter text-white">BookCRM</span>
+                        </motion.div>
+
+                        {/* Headline */}
+                        <motion.h1
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
+                            className="mb-6 text-5xl font-extrabold leading-[1.1] tracking-tight text-white"
+                        >
+                            Manage your business
+                            <br />
+                            with intelligence.
+                        </motion.h1>
+
+                        <motion.p
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+                            className="mb-16 max-w-md text-lg leading-relaxed text-white/80"
+                        >
+                            The next-generation booking platform designed for growth, automation, and seamless customer experiences.
+                        </motion.p>
+
+                        {/* Glass Mockup Cards */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 40 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, delay: 0.35, ease: 'easeOut' }}
+                            className="relative h-64"
+                        >
+                            <div
+                                className="absolute left-0 top-0 w-80 rotate-[-4deg] rounded-xl p-6 text-white backdrop-blur-md transition-all duration-500 hover:translate-y-[-10px] hover:rotate-0"
+                                style={{
+                                    background: 'rgba(255,255,255,0.08)',
+                                    border: '1px solid rgba(255,255,255,0.15)',
+                                    boxShadow: '0 8px 32px 0 rgba(0,0,0,0.37)',
+                                }}
+                            >
+                                <div className="mb-4 flex items-center justify-between">
+                                    <span className="text-sm text-white/60">Revenue</span>
+                                    <svg className="h-5 w-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+                                    </svg>
+                                </div>
+                                <div className="text-3xl font-bold tracking-tight">$12,480.00</div>
+                                <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-white/20">
+                                    <div className="h-full w-2/3 rounded-full bg-white" />
+                                </div>
                             </div>
 
-                            <h1 className="text-3xl font-bold tracking-tight text-white">
-                                BookCRM
-                            </h1>
-                            <p className="mt-4 text-base leading-relaxed text-white/70">
-                                Kelola bisnis Anda dengan lebih cerdas.
-                                <br />
-                                Booking, CRM, dan analitik dalam satu platform.
-                            </p>
-
-                            <div className="mt-12 space-y-4 text-left">
-                                {[
-                                    { label: 'Manajemen Booking', desc: 'Atur jadwal dan reservasi dengan mudah' },
-                                    { label: 'CRM Terpadu', desc: 'Kelola relasi pelanggan dalam satu tempat' },
-                                    { label: 'Analitik Real-time', desc: 'Pantau performa bisnis secara langsung' },
-                                ].map((item) => (
-                                    <div key={item.label} className="flex items-start gap-3">
-                                        <div className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10">
-                                            <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-medium text-white">{item.label}</p>
-                                            <p className="text-xs text-white/50">{item.desc}</p>
-                                        </div>
+                            <div
+                                className="absolute left-32 top-12 w-80 rotate-[2deg] rounded-xl p-6 text-white backdrop-blur-md transition-all duration-500 hover:translate-y-[-10px] hover:rotate-0"
+                                style={{
+                                    background: 'rgba(255,255,255,0.08)',
+                                    border: '1px solid rgba(255,255,255,0.15)',
+                                    boxShadow: '0 8px 32px 0 rgba(0,0,0,0.37)',
+                                }}
+                            >
+                                <div className="mb-4 flex items-center justify-between">
+                                    <span className="text-sm text-white/60">New Bookings</span>
+                                    <svg className="h-5 w-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                                    </svg>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/40 bg-white/10 text-xs font-bold text-white">
+                                        JD
                                     </div>
-                                ))}
+                                    <span className="text-base text-white">+48 since yesterday</span>
+                                </div>
                             </div>
                         </motion.div>
 
@@ -119,46 +150,49 @@ export default function AdminLogin() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 1.2, duration: 0.6 }}
-                            className="absolute bottom-8 text-xs text-white/30"
+                            className="absolute bottom-16 left-16 text-sm text-white/40"
                         >
-                            &copy; {new Date().getFullYear()} BookCRM. All rights reserved.
+                            &copy; {new Date().getFullYear()} BookCRM. Crafted for Visionaries.
                         </motion.p>
                     </div>
                 </div>
 
-                <div className="flex flex-1 items-center justify-center bg-neutral-50 px-6">
+                {/* Right — Login Form */}
+                <div className="flex w-full items-center justify-center p-8 lg:w-1/2">
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        className="w-full max-w-sm"
+                        className="w-full max-w-md"
                     >
-                        <div className="mb-10 text-center lg:hidden">
-                            <Link href="/" className="inline-flex items-center gap-2.5">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-light text-lg font-bold text-white shadow-sm">
-                                    B
-                                </div>
-                            </Link>
-                        </div>
+                        {/* Mobile Logo */}
+                        <motion.div variants={itemVariants} className="mb-12 flex items-center gap-2 lg:hidden">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#6b38d4]">
+                                <span className="text-xl font-bold text-white">B</span>
+                            </div>
+                            <span className="text-2xl font-bold tracking-tighter text-[#131b2e]">BookCRM</span>
+                        </motion.div>
 
-                        <motion.div variants={itemVariants} className="mb-8">
-                            <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-                                Selamat Datang Kembali
-                            </h1>
-                            <p className="mt-1.5 text-sm text-neutral-500">
-                                Masuk ke panel administrasi BookCRM
+                        {/* Welcome */}
+                        <motion.div variants={itemVariants} className="mb-10">
+                            <h2 className="mb-2 text-4xl font-bold tracking-tight text-[#131b2e]">Welcome Back</h2>
+                            <p className="text-base leading-relaxed text-[#494454]/80">
+                                Enter your credentials to access your dashboard and manage your operations.
                             </p>
                         </motion.div>
 
+                        {/* Form */}
                         <form onSubmit={handleSubmit} className="space-y-5">
-                            <motion.div variants={itemVariants}>
-                                <label htmlFor="email" className="block text-sm font-medium text-neutral-700">
-                                    Alamat Email
+                            <motion.div variants={itemVariants} className="space-y-2">
+                                <label htmlFor="email" className="ml-1 block text-sm font-semibold text-[#494454]">
+                                    Email Address
                                 </label>
-                                <div className="relative mt-1.5">
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                        <MailIcon className="h-4 w-4 text-neutral-400" />
-                                    </div>
+                                <div className="relative group">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7b7486]/50 transition-colors group-focus-within:text-[#6b38d4]">
+                                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                        </svg>
+                                    </span>
                                     <input
                                         id="email"
                                         type="email"
@@ -166,10 +200,10 @@ export default function AdminLogin() {
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
                                         className={cn(
-                                            'block w-full rounded-xl border py-2.5 pl-10 pr-3.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm ring-1 ring-inset transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset',
+                                            'w-full rounded-xl border bg-[#f2f3ff] py-4 pl-12 pr-4 text-[#131b2e] transition-all placeholder:text-[#7b7486]/40 hover:bg-[#e2e7ff] focus:bg-white',
                                             errors.email
-                                                ? 'border-danger ring-danger/30 focus:ring-danger'
-                                                : 'border-border ring-neutral-300 focus:border-primary focus:ring-primary/30',
+                                                ? 'border-danger ring-4 ring-danger/10'
+                                                : 'border-[#cbc3d7]/30 focus:border-[#6b38d4] focus:ring-4 focus:ring-[#8455ef]/20',
                                         )}
                                         placeholder="admin@bookcrm.test"
                                         autoFocus
@@ -180,29 +214,31 @@ export default function AdminLogin() {
                                     <motion.p
                                         initial={{ opacity: 0, y: -4 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="mt-1.5 text-xs text-danger"
+                                        className="ml-1 text-xs text-danger"
                                     >
                                         {errors.email}
                                     </motion.p>
                                 )}
                             </motion.div>
 
-                            <motion.div variants={itemVariants}>
-                                <div className="flex items-center justify-between">
-                                    <label htmlFor="password" className="block text-sm font-medium text-neutral-700">
+                            <motion.div variants={itemVariants} className="space-y-2">
+                                <div className="flex items-center justify-between px-1">
+                                    <label htmlFor="password" className="text-sm font-semibold text-[#494454]">
                                         Password
                                     </label>
-                                    <button
-                                        type="button"
-                                        className="text-xs font-medium text-primary transition-colors hover:text-primary-dark"
+                                    <Link
+                                        href="/admin/forgot-password"
+                                        className="text-sm font-semibold text-[#6b38d4] transition-all hover:underline"
                                     >
-                                        Lupa password?
-                                    </button>
+                                        Forgot password?
+                                    </Link>
                                 </div>
-                                <div className="relative mt-1.5">
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                                        <LockIcon className="h-4 w-4 text-neutral-400" />
-                                    </div>
+                                <div className="relative group">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7b7486]/50 transition-colors group-focus-within:text-[#6b38d4]">
+                                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                        </svg>
+                                    </span>
                                     <input
                                         id="password"
                                         type="password"
@@ -210,10 +246,10 @@ export default function AdminLogin() {
                                         value={data.password}
                                         onChange={(e) => setData('password', e.target.value)}
                                         className={cn(
-                                            'block w-full rounded-xl border py-2.5 pl-10 pr-3.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm ring-1 ring-inset transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset',
+                                            'w-full rounded-xl border bg-[#f2f3ff] py-4 pl-12 pr-4 text-[#131b2e] transition-all placeholder:text-[#7b7486]/40 hover:bg-[#e2e7ff] focus:bg-white',
                                             errors.password
-                                                ? 'border-danger ring-danger/30 focus:ring-danger'
-                                                : 'border-border ring-neutral-300 focus:border-primary focus:ring-primary/30',
+                                                ? 'border-danger ring-4 ring-danger/10'
+                                                : 'border-[#cbc3d7]/30 focus:border-[#6b38d4] focus:ring-4 focus:ring-[#8455ef]/20',
                                         )}
                                         placeholder="••••••••"
                                         required
@@ -223,34 +259,26 @@ export default function AdminLogin() {
                                     <motion.p
                                         initial={{ opacity: 0, y: -4 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="mt-1.5 text-xs text-danger"
+                                        className="ml-1 text-xs text-danger"
                                     >
                                         {errors.password}
                                     </motion.p>
                                 )}
                             </motion.div>
 
-                            <motion.div variants={itemVariants} className="flex items-center justify-between">
-                                <label className="flex cursor-pointer items-center gap-2.5">
-                                    <div className="relative">
+                            <motion.div variants={itemVariants} className="flex items-center gap-3 py-1">
+                                <label className="flex cursor-pointer items-center gap-3">
+                                    <div className="relative flex items-center">
                                         <input
                                             type="checkbox"
                                             checked={data.remember}
                                             onChange={(e) => setData('remember', e.target.checked)}
-                                            className="peer sr-only"
+                                            className="h-5 w-5 cursor-pointer rounded border-[#cbc3d7]/30 text-[#6b38d4] transition-all focus:ring-[#8455ef]/20"
                                         />
-                                        <div className="h-5 w-5 rounded-md border border-border ring-1 ring-inset ring-neutral-300 transition-all peer-checked:border-primary peer-checked:bg-primary peer-checked:ring-primary/30" />
-                                        <svg
-                                            className="absolute inset-0 hidden h-5 w-5 text-white peer-checked:block"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={3}
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                        </svg>
                                     </div>
-                                    <span className="text-sm text-neutral-600">Ingat saya</span>
+                                    <span className="select-none text-sm font-semibold text-[#494454]">
+                                        Keep me signed in for 30 days
+                                    </span>
                                 </label>
                             </motion.div>
 
@@ -259,30 +287,98 @@ export default function AdminLogin() {
                                     type="submit"
                                     disabled={processing}
                                     className={cn(
-                                        'flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200',
+                                        'flex w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-semibold text-white transition-all',
                                         processing
-                                            ? 'cursor-not-allowed bg-primary/70'
-                                            : 'bg-primary hover:bg-primary-dark hover:shadow-md active:scale-[0.98]',
+                                            ? 'cursor-not-allowed bg-[#6b38d4]/70'
+                                            : 'bg-[#6b38d4] hover:scale-[1.02] active:scale-[0.98]',
                                     )}
+                                    style={!processing ? {
+                                        boxShadow: '0 10px 40px -10px rgba(107, 56, 212, 0.4)',
+                                    } : undefined}
+                                    onMouseEnter={(e) => {
+                                        if (!processing) {
+                                            e.currentTarget.style.boxShadow = '0 15px 50px -5px rgba(107, 56, 212, 0.6)';
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (!processing) {
+                                            e.currentTarget.style.boxShadow = '0 10px 40px -10px rgba(107, 56, 212, 0.4)';
+                                        }
+                                    }}
                                 >
                                     {processing ? (
-                                        <>
-                                            <Spinner />
-                                            Memproses...
-                                        </>
+                                        <span className="inline-flex items-center gap-2">
+                                            <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                            </svg>
+                                            Signing In...
+                                        </span>
                                     ) : (
-                                        'Masuk ke Admin'
+                                        <span className="inline-flex items-center gap-2">
+                                            Sign In to Dashboard
+                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                            </svg>
+                                        </span>
                                     )}
                                 </button>
                             </motion.div>
                         </form>
 
-                        <motion.p
+                        {/* Social Logins */}
+                        <motion.div variants={itemVariants} className="mt-8">
+                            <div className="relative mb-6">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-[#cbc3d7]/30" />
+                                </div>
+                                <div className="relative flex justify-center">
+                                    <span className="bg-[#faf8ff] px-4 text-sm font-semibold text-[#7b7486]/60">
+                                        Or continue with
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <button
+                                    type="button"
+                                    className="flex items-center justify-center gap-3 rounded-xl border border-[#cbc3d7]/30 py-3.5 text-sm font-semibold text-[#131b2e] transition-all hover:border-[#6b38d4]/30 hover:bg-[#f2f3ff]"
+                                >
+                                    <svg className="h-5 w-5" viewBox="0 0 24 24">
+                                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                        <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84z" fill="#FBBC05" />
+                                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                                    </svg>
+                                    Google
+                                </button>
+                                <button
+                                    type="button"
+                                    className="flex items-center justify-center gap-3 rounded-xl border border-[#cbc3d7]/30 py-3.5 text-sm font-semibold text-[#131b2e] transition-all hover:border-[#6b38d4]/30 hover:bg-[#f2f3ff]"
+                                >
+                                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.81-3.12 1.87-2.38 5.98.43 7.13-.6 1.5-1.41 3.01-2.48 4.07zM12.03 7.25c-.02-2.23 1.51-4.07 3.5-4.25.19 2.4-2.13 4.45-3.5 4.25z" />
+                                    </svg>
+                                    Apple
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* Footer */}
+                        <motion.footer
                             variants={itemVariants}
-                            className="mt-8 text-center text-xs text-neutral-400"
+                            className="mt-12 flex flex-col items-center gap-4"
                         >
-                            &copy; {new Date().getFullYear()} BookCRM. All rights reserved.
-                        </motion.p>
+                            <div className="flex items-center gap-4">
+                                <Link href="#" className="text-xs font-semibold text-[#7b7486]/40 transition-colors hover:text-[#7b7486]">
+                                    Privacy Policy
+                                </Link>
+                                <span className="text-[#cbc3d7]/30">·</span>
+                                <Link href="#" className="text-xs font-semibold text-[#7b7486]/40 transition-colors hover:text-[#7b7486]">
+                                    Terms of Service
+                                </Link>
+                            </div>
+                        </motion.footer>
                     </motion.div>
                 </div>
             </div>

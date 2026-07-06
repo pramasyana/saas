@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -75,5 +76,12 @@ class User extends Authenticatable
         );
 
         $this->notify(new VerifyEmail($url, $context));
+    }
+
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $url = url("/admin/reset-password/{$token}?email={$this->getEmailForPasswordReset()}");
+
+        $this->notify(new ResetPassword($url));
     }
 }
