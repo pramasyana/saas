@@ -9,7 +9,7 @@ interface AdminLayoutProps {
     children: ReactNode;
 }
 
-const navItems = [
+const mainNavItems = [
     {
         label: 'Dashboard',
         href: '/admin/dashboard',
@@ -19,6 +19,9 @@ const navItems = [
             </svg>
         ),
     },
+];
+
+const managementNavItems = [
     {
         label: 'Users',
         href: '/admin/users',
@@ -37,6 +40,9 @@ const navItems = [
             </svg>
         ),
     },
+];
+
+const monitoringNavItems = [
     {
         label: 'Activity',
         href: '/admin/activity',
@@ -64,6 +70,9 @@ const navItems = [
             </svg>
         ),
     },
+];
+
+const financeNavItems = [
     {
         label: 'Pricing',
         href: '/admin/pricing',
@@ -100,6 +109,9 @@ const navItems = [
             </svg>
         ),
     },
+];
+
+const notificationNavItems = [
     {
         label: 'Notifikasi',
         href: '/admin/notifications',
@@ -118,6 +130,9 @@ const navItems = [
             </svg>
         ),
     },
+];
+
+const systemNavItems = [
     {
         label: 'System',
         href: '/admin/system',
@@ -188,7 +203,197 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         Menu Utama
                     </p>
                     <nav className="space-y-0.5">
-                        {navItems.map((item) => {
+                        {mainNavItems.map((item) => {
+                            const active = isActive(item.href);
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={cn(
+                                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                                        collapsed && 'lg:justify-center lg:gap-0 lg:px-2',
+                                        active
+                                            ? 'bg-primary-50 text-primary shadow-sm'
+                                            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                                    )}
+                                    title={collapsed ? item.label : undefined}
+                                >
+                                    <span className={cn('shrink-0', active ? 'text-primary' : 'text-neutral-400')}>
+                                        {item.icon}
+                                    </span>
+                                    <span className={cn(
+                                        'overflow-hidden whitespace-nowrap transition-all duration-300',
+                                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                                    )}>
+                                        {item.label}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    {/* Manajemen */}
+                    <p className={cn(
+                        'mb-2 mt-6 overflow-hidden whitespace-nowrap px-3 text-xs font-semibold tracking-wider text-neutral-400 transition-all duration-300',
+                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                    )}>
+                        Manajemen
+                    </p>
+                    <nav className="space-y-0.5">
+                        {managementNavItems.map((item) => {
+                            const active = isActive(item.href);
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={cn(
+                                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                                        collapsed && 'lg:justify-center lg:gap-0 lg:px-2',
+                                        active
+                                            ? 'bg-primary-50 text-primary shadow-sm'
+                                            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                                    )}
+                                    title={collapsed ? item.label : undefined}
+                                >
+                                    <span className={cn('shrink-0', active ? 'text-primary' : 'text-neutral-400')}>
+                                        {item.icon}
+                                    </span>
+                                    <span className={cn(
+                                        'overflow-hidden whitespace-nowrap transition-all duration-300',
+                                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                                    )}>
+                                        {item.label}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    {/* Logs & Monitoring */}
+                    <p className={cn(
+                        'mb-2 mt-6 overflow-hidden whitespace-nowrap px-3 text-xs font-semibold tracking-wider text-neutral-400 transition-all duration-300',
+                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                    )}>
+                        Logs &amp; Monitoring
+                    </p>
+                    <nav className="space-y-0.5">
+                        {monitoringNavItems.map((item) => {
+                            const active = isActive(item.href);
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={cn(
+                                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                                        collapsed && 'lg:justify-center lg:gap-0 lg:px-2',
+                                        active
+                                            ? 'bg-primary-50 text-primary shadow-sm'
+                                            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                                    )}
+                                    title={collapsed ? item.label : undefined}
+                                >
+                                    <span className={cn('shrink-0', active ? 'text-primary' : 'text-neutral-400')}>
+                                        {item.icon}
+                                    </span>
+                                    <span className={cn(
+                                        'overflow-hidden whitespace-nowrap transition-all duration-300',
+                                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                                    )}>
+                                        {item.label}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    {/* Keuangan */}
+                    <p className={cn(
+                        'mb-2 mt-6 overflow-hidden whitespace-nowrap px-3 text-xs font-semibold tracking-wider text-neutral-400 transition-all duration-300',
+                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                    )}>
+                        Keuangan
+                    </p>
+                    <nav className="space-y-0.5">
+                        {financeNavItems.map((item) => {
+                            const active = isActive(item.href);
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={cn(
+                                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                                        collapsed && 'lg:justify-center lg:gap-0 lg:px-2',
+                                        active
+                                            ? 'bg-primary-50 text-primary shadow-sm'
+                                            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                                    )}
+                                    title={collapsed ? item.label : undefined}
+                                >
+                                    <span className={cn('shrink-0', active ? 'text-primary' : 'text-neutral-400')}>
+                                        {item.icon}
+                                    </span>
+                                    <span className={cn(
+                                        'overflow-hidden whitespace-nowrap transition-all duration-300',
+                                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                                    )}>
+                                        {item.label}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    {/* Notifikasi */}
+                    <p className={cn(
+                        'mb-2 mt-6 overflow-hidden whitespace-nowrap px-3 text-xs font-semibold tracking-wider text-neutral-400 transition-all duration-300',
+                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                    )}>
+                        Notifikasi
+                    </p>
+                    <nav className="space-y-0.5">
+                        {notificationNavItems.map((item) => {
+                            const active = isActive(item.href);
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={cn(
+                                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                                        collapsed && 'lg:justify-center lg:gap-0 lg:px-2',
+                                        active
+                                            ? 'bg-primary-50 text-primary shadow-sm'
+                                            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                                    )}
+                                    title={collapsed ? item.label : undefined}
+                                >
+                                    <span className={cn('shrink-0', active ? 'text-primary' : 'text-neutral-400')}>
+                                        {item.icon}
+                                    </span>
+                                    <span className={cn(
+                                        'overflow-hidden whitespace-nowrap transition-all duration-300',
+                                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                                    )}>
+                                        {item.label}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    {/* System */}
+                    <p className={cn(
+                        'mb-2 mt-6 overflow-hidden whitespace-nowrap px-3 text-xs font-semibold tracking-wider text-neutral-400 transition-all duration-300',
+                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
+                    )}>
+                        System
+                    </p>
+                    <nav className="space-y-0.5">
+                        {systemNavItems.map((item) => {
                             const active = isActive(item.href);
 
                             return (
