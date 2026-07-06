@@ -453,7 +453,7 @@ return;
                                     )}
                                     style={{
                                         background: isDone
-                                            ? `linear-gradient(90deg, ${c.primary}, ${c.secondary || c.primary})`
+                                            ? c.primary
                                             : `${c.primary}18`,
                                     }}
                                 />
@@ -465,11 +465,7 @@ return;
                                         isDone ? 'shadow-md' : '',
                                     )}
                                     style={{
-                                        background: isDone
-                                            ? `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})`
-                                            : isActive
-                                                ? `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})`
-                                                : '#f0edf4',
+                                        background: isDone || isActive ? c.primary : '#f0edf4',
                                         color: isDone || isActive ? '#fff' : c.text_muted,
                                         boxShadow: isDone || isActive ? `0 4px 12px ${c.primary}30` : 'none',
                                     }}
@@ -633,7 +629,7 @@ return null;
                             onClick={nextStep}
                             disabled={!canProceed()}
                             className="inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
-                            style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}
+                            style={{ background: c.primary }}
                         >
                             <span>Lanjut</span>
                             <span className="material-symbols-rounded text-base">arrow_forward</span>
@@ -687,7 +683,7 @@ return null;
                     box-shadow: 0 8px 40px rgba(107, 56, 212, 0.12);
                 }
                 .btn-primary {
-                    background: linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary});
+                    background: c.primary;
                     color: white;
                     font-weight: 600;
                     border-radius: 12px;
@@ -795,7 +791,7 @@ return null;
                                                     }}
                                                 >
                                                     {isActive && (
-                                                        <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full text-white text-xs" style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}>
+                                                        <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full text-white text-xs" style={{ background: c.primary }}>
                                                             <span className="material-symbols-rounded text-sm">check</span>
                                                         </span>
                                                     )}
@@ -803,7 +799,7 @@ return null;
                                                         <div
                                                             className="flex h-11 w-11 items-center justify-center rounded-xl text-base transition-all"
                                                             style={{
-                                                                background: isActive ? `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` : `${c.primary}0c`,
+                                                                 background: isActive ? c.primary : `${c.primary}0c`,
                                                                 color: isActive ? '#fff' : c.primary,
                                                             }}
                                                         >
@@ -969,7 +965,7 @@ return null;
                                                                     style={{ borderColor: isActive ? c.primary : 'rgba(255,255,255,0.5)', borderWidth: isActive ? 2 : 1 }}
                                                                 >
                                                                     {isActive && (
-                                                                        <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full text-white text-xs" style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}>
+                                                                        <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full text-white text-xs" style={{ background: c.primary }}>
                                                                             <span className="material-symbols-rounded text-sm">check</span>
                                                                         </span>
                                                                     )}
@@ -999,7 +995,7 @@ return null;
                                                                             <div className="space-y-0.5">
                                                                                 {pkg.services.map((ps) => (
                                                                                     <div key={ps.id} className="flex items-center gap-2 text-xs" style={{ color: c.text_muted }}>
-                                                                                        <span className="material-symbols-rounded text-xs" style={{ color: c.secondary }}>check</span>
+                                                                                        <span className="material-symbols-rounded text-xs" style={{ color: c.primary }}>check</span>
                                                                                         {ps.quantity > 1 && <span className="font-semibold tabular-nums" style={{ color: c.text }}>{ps.quantity}x</span>}
                                                                                         <span>{ps.name}</span>
                                                                                     </div>
@@ -1041,7 +1037,7 @@ return null;
                                                                 style={{ borderColor: isActive ? c.primary : 'rgba(255,255,255,0.5)', borderWidth: isActive ? 2 : 1 }}
                                                             >
                                                                 {isActive && (
-                                                                    <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full text-white text-xs" style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}>
+                                                                    <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full text-white text-xs" style={{ background: c.primary }}>
                                                                         <span className="material-symbols-rounded text-sm fill">check</span>
                                                                     </span>
                                                                 )}
@@ -1051,7 +1047,7 @@ return null;
                                                                             <div
                                                                                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm transition-all"
                                                                                 style={{
-                                                                                    background: isActive ? `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` : `${c.primary}0c`,
+                                                                                    background: isActive ? c.primary : `${c.primary}0c`,
                                                                                     color: isActive ? '#fff' : c.primary,
                                                                                 }}
                                                                             >
@@ -1091,7 +1087,7 @@ return null;
                                                                 style={{ borderColor: isActive ? c.primary : 'rgba(255,255,255,0.5)', borderWidth: isActive ? 2 : 1 }}
                                                             >
                                                                 {isActive && (
-                                                                    <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full text-white text-xs" style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}>
+                                                                    <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full text-white text-xs" style={{ background: c.primary }}>
                                                                         <span className="material-symbols-rounded text-sm">check</span>
                                                                     </span>
                                                                 )}
@@ -1120,7 +1116,7 @@ return null;
                                                                         <div className="space-y-0.5">
                                                                             {pkg.services.map((ps) => (
                                                                                 <div key={ps.id} className="flex items-center gap-2 text-xs" style={{ color: c.text_muted }}>
-                                                                                    <span className="material-symbols-rounded text-xs" style={{ color: c.secondary }}>check</span>
+                                                                                    <span className="material-symbols-rounded text-xs" style={{ color: c.primary }}>check</span>
                                                                                     {ps.quantity > 1 && <span className="font-semibold tabular-nums" style={{ color: c.text }}>{ps.quantity}x</span>}
                                                                                     <span>{ps.name}</span>
                                                                                 </div>
@@ -1364,7 +1360,7 @@ setParticipants([]);
                                                             <div key={i} className="flex items-center gap-2">
                                                                 <span
                                                                     className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold"
-                                                                    style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})`, color: '#fff' }}
+                                                                    style={{ background: c.primary, color: '#fff' }}
                                                                 >
                                                                     {i + 1}
                                                                 </span>
@@ -1771,7 +1767,7 @@ setParticipants([]);
                                                 <div className="space-y-1">
                                                     {selectedPackage.services.map((ps) => (
                                                         <div key={ps.id} className="flex items-center gap-2 text-xs" style={{ color: c.text_muted }}>
-                                                            <span className="material-symbols-rounded text-xs" style={{ color: c.secondary }}>check</span>
+                                                            <span className="material-symbols-rounded text-xs" style={{ color: c.primary }}>check</span>
                                                             {ps.quantity > 1 && <span className="font-semibold tabular-nums" style={{ color: c.text }}>{ps.quantity}x</span>}
                                                             <span>{ps.name}</span>
                                                             {serviceAddons[ps.id]?.length > 0 && (
@@ -1791,7 +1787,7 @@ setParticipants([]);
                                                     <div key={svc.id} className="rounded-xl px-4 py-3" style={{ backgroundColor: `${c.primary}06` }}>
                                                         <div className="flex items-center justify-between">
                                                             <div className="flex items-center gap-2 text-sm font-medium" style={{ color: c.text }}>
-                                                                <span className="material-symbols-rounded text-sm" style={{ color: c.secondary }}>check</span>
+                                                                <span className="material-symbols-rounded text-sm" style={{ color: c.primary }}>check</span>
                                                                 {svc.name}
                                                             </div>
                                                             {settings.show_prices && (
@@ -1952,7 +1948,7 @@ setParticipants([]);
                                             onClick={handleSubmit}
                                             disabled={createMutation.isPending}
                                             className="inline-flex items-center gap-2 rounded-2xl px-10 py-3.5 text-base font-bold text-white shadow-lg transition-all hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
-                                            style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}
+                                            style={{ background: c.primary }}
                                         >
                                             {createMutation.isPending ? (
                                                 <>

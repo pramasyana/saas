@@ -2,7 +2,7 @@ import { Head } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { usePublicBooking } from '@/features/booking/hooks/usePublicBooking';
 import PublicLayout from '@/layouts/PublicLayout';
-import { formatPrice } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 
 interface ServiceAddon {
     name: string;
@@ -57,7 +57,7 @@ interface PageProps {
 
 const defaultColors = {
     primary: '#7C3AED',
-    secondary: '#10B981',
+    secondary: '#7C3AED',
     accent: '#F59E0B',
     background: '#FAFAFA',
     text: '#171717',
@@ -158,7 +158,7 @@ export default function ConfirmationPage({ booking, colors: colorsProp, tenant }
                     transition={{ duration: 0.5, ease: 'easeOut' }}
                     className="relative overflow-hidden rounded-2xl p-8 text-center"
                     style={{
-                        background: `linear-gradient(135deg, ${c.primary}12 0%, ${c.secondary || c.primary}08 100%)`,
+                        backgroundColor: `${c.primary}06`,
                         border: `1px solid ${c.primary}15`,
                     }}
                 >
@@ -171,7 +171,7 @@ export default function ConfirmationPage({ booking, colors: colorsProp, tenant }
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.15, type: 'spring', stiffness: 300, damping: 18 }}
                         className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg"
-                        style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}
+                        style={{ background: c.primary }}
                     >
                         <span className="material-symbols-rounded text-3xl text-white">check</span>
                     </motion.div>
@@ -306,7 +306,7 @@ export default function ConfirmationPage({ booking, colors: colorsProp, tenant }
                                 {currentBooking.participants.map((p, i) => (
                                     <div key={i} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
                                         <div className="flex items-center gap-3 min-w-0">
-                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold text-white" style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}>
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold text-white" style={{ background: c.primary }}>
                                                 {p.name.charAt(0).toUpperCase()}
                                             </div>
                                             <div className="min-w-0">
@@ -316,7 +316,10 @@ export default function ConfirmationPage({ booking, colors: colorsProp, tenant }
                                                 )}
                                             </div>
                                         </div>
-                                        <span className={cn('rounded-full px-2.5 py-0.5 text-[10px] font-semibold', p.status === 'attended' ? 'text-green-700 bg-green-100' : p.status === 'cancelled' ? 'text-red-700 bg-red-100' : 'text-yellow-700 bg-yellow-100')}>
+                                        <span className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold" style={{
+                                            color: p.status === 'attended' ? c.primary : p.status === 'cancelled' ? '#991b1b' : '#92400e',
+                                            backgroundColor: p.status === 'attended' ? `${c.primary}12` : p.status === 'cancelled' ? '#fee2e2' : '#fef3c7',
+                                        }}>
                                             {p.status === 'attended' ? 'Hadir' : p.status === 'cancelled' ? 'Batal' : 'Terdaftar'}
                                         </span>
                                     </div>
@@ -361,7 +364,7 @@ export default function ConfirmationPage({ booking, colors: colorsProp, tenant }
                             <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: c.text_muted }}>Data Pemesan</h2>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white" style={{ background: `linear-gradient(135deg, ${c.primary}, ${c.secondary || c.primary})` }}>
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white" style={{ background: c.primary }}>
                                 {currentBooking.customer_name.charAt(0).toUpperCase()}
                             </div>
                             <div>

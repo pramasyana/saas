@@ -17,7 +17,7 @@ interface PageProps {
 
 const defaultColors = {
     primary: '#7C3AED',
-    secondary: '#10B981',
+    secondary: '#7C3AED',
     accent: '#F59E0B',
     background: '#FAFAFA',
     text: '#171717',
