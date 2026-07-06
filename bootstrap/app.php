@@ -95,6 +95,22 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/admin/settings.php'));
 
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/profile.php'));
+
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/activity.php'));
+
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/system.php'));
+
+            Route::middleware('web')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin/notifications.php'));
+
             Route::middleware('api')
                 ->prefix('api/v1')
                 ->group(base_path('routes/api/v1/public.php'));

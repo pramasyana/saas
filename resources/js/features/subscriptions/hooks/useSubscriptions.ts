@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Subscription, SubscriptionFilters } from '@/features/subscriptions/types';
+import type { Invoice, InvoiceFilters, Subscription, SubscriptionFilters } from '@/features/subscriptions/types';
 import type { PaginationMeta } from '@/features/users/types';
 import api from '@/lib/axios';
 
@@ -12,6 +12,24 @@ interface SubscriptionsResponse {
 interface SubscriptionResponse {
     status: string;
     data: Subscription;
+}
+
+interface InvoicesResponse {
+    status: string;
+    data: Invoice[];
+    meta: PaginationMeta;
+}
+
+function getInvoices(params: InvoiceFilters): Promise<InvoicesResponse> {
+    return api.get('/api/v1/admin/invoices', { params }).then((res) => res.data);
+}
+
+export function useInvoices(filters: InvoiceFilters) {
+    return useQuery({
+        queryKey: ['invoices', filters],
+        queryFn: () => getInvoices(filters),
+        retry: false,
+    });
 }
 
 function getSubscriptions(params: SubscriptionFilters): Promise<SubscriptionsResponse> {

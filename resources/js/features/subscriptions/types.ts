@@ -39,11 +39,21 @@ export interface Invoice {
     paid_at: string | null;
     notes: string | null;
     created_at: string | null;
+    subscription?: Subscription;
 }
 
 export interface SubscriptionFilters {
     search?: string;
     status?: string;
+    sort?: string;
+    direction?: 'asc' | 'desc';
+    page?: number;
+    per_page?: number;
+}
+
+export interface InvoiceFilters {
+    status?: string;
+    subscription_id?: string;
     sort?: string;
     direction?: 'asc' | 'desc';
     page?: number;

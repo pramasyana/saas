@@ -1,9 +1,15 @@
 <?php
 
+use App\Modules\Admin\Http\Controllers\ActivityPageController;
 use App\Modules\Admin\Http\Controllers\AuthController;
+use App\Modules\Admin\Http\Controllers\NotificationPageController;
+use App\Modules\Admin\Http\Controllers\ExportController;
+use App\Modules\Admin\Http\Controllers\SystemPageController;
 use App\Modules\Admin\Http\Controllers\DashboardController;
 use App\Modules\Admin\Http\Controllers\EmailLogController;
 use App\Modules\Admin\Http\Controllers\ImpersonationController;
+use App\Modules\Admin\Http\Controllers\InvoicePageController;
+use App\Modules\Admin\Http\Controllers\ProfilePageController;
 use App\Modules\Admin\Http\Controllers\RevenueController;
 use App\Modules\Admin\Http\Controllers\SettingsController;
 use App\Modules\Admin\Http\Controllers\UserController;
@@ -39,7 +45,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/pricing/create', [PlanController::class, 'create'])->name('admin.pricing.create');
     Route::get('/admin/pricing/{id}/edit', [PlanController::class, 'edit'])->name('admin.pricing.edit');
     Route::get('/admin/revenue', [RevenueController::class, 'index'])->name('admin.revenue');
+    Route::get('/admin/profile', [ProfilePageController::class, 'index'])->name('admin.profile');
+    Route::get('/admin/activity', [ActivityPageController::class, 'index'])->name('admin.activity');
+    Route::get('/admin/system', [SystemPageController::class, 'index'])->name('admin.system');
+    Route::get('/admin/notifications', [NotificationPageController::class, 'index'])->name('admin.notifications');
     Route::get('/admin/subscriptions', [SubscriptionPageController::class, 'index'])->name('admin.subscriptions');
+    Route::get('/admin/invoices', [InvoicePageController::class, 'index'])->name('admin.invoices');
     Route::get('/admin/tenants/{tenantId}/subscription', [TenantSubscriptionController::class, 'show'])->name('admin.tenants.subscription');
     Route::get('/admin/tenants', [TenantController::class, 'index'])->name('admin.tenants');
     Route::get('/admin/tenants/create', [TenantController::class, 'create'])->name('admin.tenants.create');
@@ -60,6 +71,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/tenants/{tenantId}/company/holidays/{id}', [HolidayController::class, 'update'])->name('admin.tenants.company.holidays.update');
     Route::delete('/admin/tenants/{tenantId}/company/holidays/{id}', [HolidayController::class, 'destroy'])->name('admin.tenants.company.holidays.destroy');
     Route::post('/admin/tenants/{tenantId}/impersonate', [ImpersonationController::class, 'store'])->name('admin.tenants.impersonate');
+    Route::get('/admin/export/tenants', [ExportController::class, 'tenants'])->name('admin.export.tenants');
+    Route::get('/admin/export/subscriptions', [ExportController::class, 'subscriptions'])->name('admin.export.subscriptions');
+    Route::get('/admin/export/invoices', [ExportController::class, 'invoices'])->name('admin.export.invoices');
     Route::post('/admin/logout', [AuthController::class, 'destroy'])->name('admin.logout');
 });
 

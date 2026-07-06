@@ -49,6 +49,15 @@ export default function Subscriptions({ title, stats }: SubscriptionsPageProps) 
                     <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">Subscriptions</h1>
                     <p className="mt-1 text-sm text-neutral-500">Kelola langganan pelanggan.</p>
                 </div>
+                <a
+                    href="/admin/export/subscriptions"
+                    className="inline-flex items-center gap-2 rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm font-medium text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50"
+                >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Export CSV
+                </a>
             </div>
 
             <div className="mb-6 grid gap-4 sm:grid-cols-3">

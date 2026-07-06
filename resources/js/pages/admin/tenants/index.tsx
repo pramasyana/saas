@@ -166,14 +166,25 @@ return;
                         Kelola semua tenant yang terdaftar di sistem.
                     </p>
                 </div>
-                <Link href="/admin/tenants/create">
-                    <Button>
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                <div className="flex items-center gap-3">
+                    <a
+                        href="/admin/export/tenants"
+                        className="inline-flex items-center gap-2 rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm font-medium text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50"
+                    >
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                         </svg>
-                        Tambah Tenant
-                    </Button>
-                </Link>
+                        Export CSV
+                    </a>
+                    <Link href="/admin/tenants/create">
+                        <Button>
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            Tambah Tenant
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             <FadeIn delay={0.05}>
