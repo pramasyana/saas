@@ -14,9 +14,25 @@ export interface AdminNotification {
     updated_at: string;
 }
 
+interface PaginationMeta {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+}
+
 interface NotificationsResponse {
     status: string;
     data: AdminNotification[];
+    meta: PaginationMeta;
+}
+
+export interface NotificationFilters {
+    page?: number;
+    per_page?: number;
+    search?: string;
+    type?: string;
+    is_active?: string;
 }
 
 interface NotificationFormData {
@@ -28,8 +44,8 @@ interface NotificationFormData {
     active_until?: string | null;
 }
 
-function getNotifications(): Promise<NotificationsResponse> {
-    return api.get('/api/v1/admin/notifications').then((res) => res.data);
+function getNotifications(filters: NotificationFilters = {}): Promise<NotificationsResponse> {
+    return api.get('/api/v1/admin/notifications', { params: filters }).then((res) => res.data);
 }
 
 function createNotification(data: NotificationFormData): Promise<{ status: string; message: string; data: AdminNotification }> {
@@ -48,10 +64,10 @@ function toggleNotification(id: string): Promise<{ status: string; message: stri
     return api.put(`/api/v1/admin/notifications/${id}/toggle-active`).then((res) => res.data);
 }
 
-export function useAdminNotifications() {
+export function useAdminNotifications(filters: NotificationFilters = {}) {
     return useQuery({
-        queryKey: ['admin-notifications'],
-        queryFn: getNotifications,
+        queryKey: ['admin-notifications', filters],
+        queryFn: () => getNotifications(filters),
         retry: false,
     });
 }
