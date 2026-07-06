@@ -18,9 +18,9 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
             <section className="relative min-h-screen flex items-center pt-20 overflow-hidden" style={{ backgroundColor: colors.primary }}>
                 <img src={data.background_image} alt="" className="absolute inset-0 h-full w-full object-cover" />
                 <div className="absolute inset-0" style={{ backgroundColor: colors.primary, opacity: 0.65 }} />
-                <div className="relative mx-auto max-w-5xl px-4 py-24 text-center sm:px-6 lg:px-8 lg:py-32">
+                <div className="relative mx-auto max-w-5xl px-4 py-10 text-center sm:px-6 lg:px-8 lg:py-14">
                     <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
-                        className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl drop-shadow-lg"
+                        className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-5xl xl:text-6xl drop-shadow-lg"
                     >
                         {title}
                     </motion.h1>
@@ -50,15 +50,15 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
     }
 
     return (
-        <section className="relative min-h-screen flex items-center pt-20 overflow-hidden" style={{ backgroundColor: colors.background }}>
+            <section className="relative min-h-screen flex items-center pt-20 overflow-hidden" style={{ backgroundColor: colors.background }}>
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full opacity-20 blur-3xl" style={{ backgroundColor: colors.primary, animation: 'float 6s ease-in-out infinite' }} />
-                <div className="absolute top-1/3 -right-16 h-56 w-56 rounded-full opacity-15 blur-3xl" style={{ backgroundColor: colors.secondary, animation: 'float-slow 8s ease-in-out infinite' }} />
-                <div className="absolute -bottom-10 left-1/3 h-48 w-48 rounded-full opacity-10 blur-3xl" style={{ backgroundColor: colors.accent || colors.primary, animation: 'float 7s ease-in-out infinite reverse' }} />
+                <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full opacity-20 blur-3xl" style={{ backgroundColor: colors.primary }} />
+                <div className="absolute top-1/3 -right-16 h-56 w-56 rounded-full opacity-15 blur-3xl" style={{ backgroundColor: colors.secondary }} />
+                <div className="absolute -bottom-10 left-1/3 h-48 w-48 rounded-full opacity-10 blur-3xl" style={{ backgroundColor: colors.accent || colors.primary }} />
             </div>
 
-            <div className="mx-auto max-w-7xl px-gutter grid lg:grid-cols-2 gap-16 items-center w-full py-section-gap-mobile lg:py-section-gap-desktop">
-                <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="space-y-8">
+            <div className="mx-auto max-w-7xl px-gutter grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full py-6 lg:py-10">
+                <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="space-y-6">
                     {/* Badge */}
                     {data.badge && (
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border" style={{ backgroundColor: colors.primary + '10', borderColor: colors.primary + '20' }}>
@@ -68,7 +68,7 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
                     )}
 
                     {/* Title */}
-                    <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl leading-tight">
+                    <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-5xl xl:text-6xl leading-tight">
                         <span className="text-transparent bg-clip-text bg-gradient-to-r" style={{
                             backgroundImage: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
                         }}>
@@ -86,7 +86,7 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
                         {data.cta_text ? (
                             <Link
                                 href={data.cta_link || '/booking'}
-                                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
                                 style={{ backgroundColor: colors.primary }}
                             >
                                 {data.cta_text}
@@ -97,7 +97,7 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
                         ) : (
                             <Link
                                 href="/booking"
-                                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
                                 style={{ backgroundColor: colors.primary }}
                             >
                                 Booking Sekarang
@@ -108,7 +108,7 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
                         )}
                         <a
                             href="#services"
-                            className="inline-flex items-center px-8 py-4 rounded-xl text-sm font-semibold transition-all border"
+                            className="inline-flex items-center px-6 py-3 rounded-xl text-sm font-semibold transition-all border"
                             style={{
                                 backgroundColor: 'rgba(255,255,255,0.7)',
                                 borderColor: 'rgba(255,255,255,0.2)',
@@ -122,7 +122,7 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
 
                     {/* Stats */}
                     {data.stats && data.stats.length > 0 && (
-                        <div className="flex items-center gap-8 pt-8">
+                        <div className="flex items-center gap-6 pt-4">
                             {data.stats.map((stat, i) => (
                                 <React.Fragment key={i}>
                                     {i > 0 && <div className="h-10 w-px" style={{ backgroundColor: colors.primary + '20' }} />}
@@ -141,15 +141,15 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
                 {/* Right: Glass image card */}
                 {data.image && (
                     <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative hidden lg:block">
-                        <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full blur-[100px]" style={{ backgroundColor: colors.secondary + '20' }} />
-                        <div className="absolute -bottom-10 -left-10 w-64 h-64 rounded-full blur-[100px]" style={{ backgroundColor: colors.primary + '20' }} />
+                        <div className="absolute -top-8 -right-8 w-48 h-48 rounded-full blur-[80px]" style={{ backgroundColor: colors.secondary + '20' }} />
+                        <div className="absolute -bottom-8 -left-8 w-48 h-48 rounded-full blur-[80px]" style={{ backgroundColor: colors.primary + '20' }} />
                         <div className="relative z-10 overflow-hidden rounded-xl" style={{
                             backgroundColor: 'rgba(255,255,255,0.7)',
                             backdropFilter: 'blur(12px)',
                             border: '1px solid rgba(255,255,255,0.2)',
-                            padding: '8px',
+                            padding: '6px',
                         }}>
-                            <div className="aspect-[4/5] w-full rounded-lg overflow-hidden">
+                            <div className="aspect-[4/3] w-full rounded-lg overflow-hidden">
                                 <img src={data.image} alt="" className="h-full w-full object-cover" />
                             </div>
                         </div>

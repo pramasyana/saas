@@ -4,7 +4,7 @@ export default function DashboardMockup() {
             <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-2xl shadow-primary/5">
                 <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
                     <div className="flex items-center gap-2.5">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-white">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-light text-xs font-bold text-white shadow-sm">
                             B
                         </div>
                         <span className="text-sm font-semibold text-neutral-900">
@@ -12,9 +12,12 @@ export default function DashboardMockup() {
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="h-2 w-2 rounded-full bg-success" />
+                        <div className="relative">
+                            <div className="h-2 w-2 rounded-full bg-success" />
+                            <div className="absolute inset-0 h-2 w-2 animate-ping rounded-full bg-success/40" />
+                        </div>
                         <span className="text-xs text-neutral-400">Online</span>
-                        <div className="ml-2 h-6 w-6 rounded-full bg-gradient-to-br from-primary to-primary-light" />
+                        <div className="ml-2 h-6 w-6 rounded-full bg-gradient-to-br from-primary/80 to-primary shadow-sm" />
                     </div>
                 </div>
 
@@ -50,7 +53,7 @@ export default function DashboardMockup() {
                                     key={day}
                                     className={`flex h-8 items-center justify-center rounded-lg text-xs transition-colors ${
                                         isToday
-                                            ? 'bg-primary font-semibold text-white'
+                                            ? 'bg-gradient-to-br from-primary to-primary-light font-semibold text-white shadow-sm'
                                             : hasBooking
                                               ? 'bg-primary/10 font-medium text-primary'
                                               : 'text-neutral-500 hover:bg-neutral-100'
@@ -62,10 +65,10 @@ export default function DashboardMockup() {
                         })}
                     </div>
 
-                    <div className="mt-5 space-y-2">
-                        <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
+                    <div className="mt-5 space-y-2.5">
+                        <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3 shadow-sm transition-shadow hover:shadow-md">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary-light/20 text-xs font-semibold text-primary">
                                     SJ
                                 </div>
                                 <div>
@@ -82,9 +85,9 @@ export default function DashboardMockup() {
                                 Confirmed
                             </span>
                         </div>
-                        <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3">
+                        <div className="flex items-center justify-between rounded-xl border border-border bg-white px-4 py-3 shadow-sm transition-shadow hover:shadow-md">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-warning/20 to-warning-light/20 text-xs font-semibold text-warning">
                                     MC
                                 </div>
                                 <div>

@@ -24,7 +24,7 @@ export default function Footer() {
                 <div className="flex flex-col items-start gap-12 lg:flex-row">
                     <div className="max-w-sm">
                         <a href="/" className="flex items-center gap-2.5">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-light text-sm font-bold text-white shadow-sm">
                                 B
                             </div>
                             <span className="text-base font-semibold text-neutral-900">

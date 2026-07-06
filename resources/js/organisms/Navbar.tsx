@@ -1,13 +1,13 @@
 import { Link } from '@inertiajs/react';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
 import Button from '@/atoms/Button';
 import { cn } from '@/lib/utils';
 
 const links = [
     { label: 'Fitur', href: '#features' },
     { label: 'Harga', href: '#pricing' },
-    { label: 'Tentang', href: '#about' },
     { label: 'FAQ', href: '#faq' },
 ];
 
@@ -40,7 +40,7 @@ export default function Navbar() {
             className={cn(
                 'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
                 scrolled
-                    ? 'bg-white/70 backdrop-blur-xl shadow-sm border-b border-border/50'
+                    ? 'bg-white/80 backdrop-blur-xl shadow-sm border-b border-border/50'
                     : 'bg-transparent',
             )}
         >
@@ -70,7 +70,7 @@ export default function Navbar() {
                             </li>
                         ))}
                     </ul>
-                    <div className="ml-6 flex items-center gap-3">
+                    <div className="ml-8 flex items-center gap-3">
                         <Link href="/login" className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900">
                             Masuk
                         </Link>
@@ -90,27 +90,11 @@ export default function Navbar() {
                     )}
                     aria-label="Toggle menu"
                 >
-                    <svg
-                        className="h-4 w-4 text-neutral-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                    >
-                        {mobileOpen ? (
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        ) : (
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                            />
-                        )}
-                    </svg>
+                    {mobileOpen ? (
+                        <X className="h-4 w-4 text-neutral-600" />
+                    ) : (
+                        <Menu className="h-4 w-4 text-neutral-600" />
+                    )}
                 </button>
             </div>
 

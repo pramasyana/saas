@@ -1,20 +1,13 @@
 import { Head } from '@inertiajs/react';
 import Footer from '@/organisms/Footer';
 import Navbar from '@/organisms/Navbar';
-import BenefitsSection from '@/pages/landing/BenefitsSection';
 import CtaFooter from '@/pages/landing/CtaFooter';
-import DifferentiationSection from '@/pages/landing/DifferentiationSection';
 import FaqSection from '@/pages/landing/FaqSection';
 import FeaturesSection from '@/pages/landing/FeaturesSection';
-import GoalSection from '@/pages/landing/GoalSection';
 import HeroSection from '@/pages/landing/HeroSection';
 import HowItWorksSection from '@/pages/landing/HowItWorksSection';
-import MarketSection from '@/pages/landing/MarketSection';
 import PricingSection from '@/pages/landing/PricingSection';
-import ProblemSection from '@/pages/landing/ProblemSection';
-import SolutionSection from '@/pages/landing/SolutionSection';
 import TargetAudienceSection from '@/pages/landing/TargetAudienceSection';
-import WhyNowSection from '@/pages/landing/WhyNowSection';
 
 export default function Welcome() {
     return (
@@ -26,17 +19,10 @@ export default function Welcome() {
 
                 <main>
                     <HeroSection />
-                    <ProblemSection />
-                    <SolutionSection />
-                    <BenefitsSection />
-                    <TargetAudienceSection />
                     <HowItWorksSection />
-                    <PricingSection />
                     <FeaturesSection />
-                    <MarketSection />
-                    <WhyNowSection />
-                    <DifferentiationSection />
-                    <GoalSection />
+                    <TargetAudienceSection />
+                    <PricingSection />
                     <FaqSection />
                     <CtaFooter />
                 </main>
