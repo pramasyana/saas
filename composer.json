@@ -55,7 +55,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "@php artisan serve"
+            "npx concurrently -k -n php,vite -c blue,green \"php artisan serve\" \"npm run dev\""
         ],
         "lint": [
             "pint --parallel"

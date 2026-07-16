@@ -29,6 +29,7 @@ use App\Modules\Staff\Http\Controllers\Tenant\LeaveController;
 use App\Modules\Staff\Http\Controllers\Tenant\ScheduleController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffUserController;
+use App\Modules\Financing\Http\Controllers\FinancingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -123,5 +124,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/commission', [CommissionController::class, 'index'])->name('commission');
         Route::get('/commission/create', [CommissionController::class, 'create'])->name('commission.create');
         Route::get('/commission/{id}/edit', [CommissionController::class, 'edit'])->name('commission.edit');
+    });
+
+    // Financing pages
+    Route::prefix('financing')->name('tenant.financing.')->group(function () {
+        Route::get('/', [FinancingController::class, 'index'])->name('index');
+        Route::get('/costs', [FinancingController::class, 'costs'])->name('costs');
+        Route::get('/categories', [FinancingController::class, 'categories'])->name('categories');
     });
 });
