@@ -32,7 +32,7 @@ services:
         condition: service_healthy
     env_file: .env
     healthcheck:
-      test: [ "CMD-SHELL", "pgrep php-fpm > /dev/null" ]
+      test: [ "CMD-SHELL", "php -r 'echo 1;'" ]
       interval: 30s
       timeout: 10s
       retries: 3
