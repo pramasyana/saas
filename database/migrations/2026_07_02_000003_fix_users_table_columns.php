@@ -103,7 +103,9 @@ return new class extends Migration
 
     private function fixTenantIdMysql(): void
     {
-        DB::statement('ALTER TABLE users MODIFY tenant_id VARCHAR(36) NULL');
+        if (Schema::hasColumn('users', 'tenant_id')) {
+            DB::statement('ALTER TABLE users MODIFY tenant_id VARCHAR(36) NULL');
+        }
     }
 
     private function rebuildUsersSqlite(): void
