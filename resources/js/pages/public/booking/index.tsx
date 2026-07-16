@@ -182,7 +182,7 @@ return [];
 
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
-            result = result.filter((s) => s.name.toLowerCase().includes(q) || (s.description && s.description.toLowerCase().includes(q)));
+            result = result.filter((s) => (s.name ?? '').toLowerCase().includes(q) || (s.description && s.description.toLowerCase().includes(q)));
         }
 
         return result;

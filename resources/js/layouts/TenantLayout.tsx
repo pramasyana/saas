@@ -322,7 +322,7 @@ const companyNavItems = [
 
 export default function TenantLayout({ children }: TenantLayoutProps) {
     const { mobileOpen, setMobileOpen } = useSidebarStore();
-    const { url } = usePage();
+    const { url = '' } = usePage();
 
     function handleLogout() {
         router.post('/logout');

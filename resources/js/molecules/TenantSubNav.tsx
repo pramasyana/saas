@@ -39,7 +39,7 @@ function getInitials(name: string | null | undefined): string {
 }
 
 export default function TenantSubNav({ tenantId, tenantName, tenantEmail }: TenantSubNavProps) {
-    const { url } = usePage();
+    const { url = '' } = usePage();
 
     function isActive(tabHref: string) {
         if (!tabHref) return url === `/admin/tenants/${tenantId}` || url === `/admin/tenants/${tenantId}/edit`;

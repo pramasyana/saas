@@ -261,7 +261,7 @@ export default function PricingRuleForm({ pricingRule, saving, errors = {}, onSa
                             <div className="relative">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
                                     <span className="text-sm text-neutral-400">
-                                        {form.action_type.includes('percentage') ? '%' : 'Rp'}
+                                        {(form.action_type ?? '').includes('percentage') ? '%' : 'Rp'}
                                     </span>
                                 </div>
                                 <input

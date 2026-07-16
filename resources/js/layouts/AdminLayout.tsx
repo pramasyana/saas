@@ -158,7 +158,7 @@ const systemNavItems = [
 export default function AdminLayout({ children }: AdminLayoutProps) {
     const { collapsed, mobileOpen, toggleCollapsed, setMobileOpen } = useSidebarStore();
 
-    const { url } = usePage();
+    const { url = '' } = usePage();
 
     function handleLogout() {
         router.post('/admin/logout');
