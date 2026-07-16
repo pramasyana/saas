@@ -5,6 +5,14 @@ COMPOSE="docker compose -f docker-compose.yml -f docker-compose.prod.yml"
 
 echo "=== Saas Zero-Downtime Deploy ==="
 
+# Ensure app container is running before proceeding
+if ! $COMPOSE ps app --format json 2>/dev/null | grep -q '"State":"running"'; then
+    echo "App container not running, starting it..."
+    $COMPOSE up -d app
+    echo "Waiting for app to be healthy..."
+    sleep 15
+fi
+
 # Pull latest code
 echo "Pulling latest code..."
 git pull origin main
