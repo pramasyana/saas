@@ -45,6 +45,8 @@ export interface StatusLogItem {
 export interface BookingServiceItem {
     id: string;
     service_id: string | null;
+    staff_id: string | null;
+    staff_name: string | null;
     name: string;
     price: number;
     duration: number;

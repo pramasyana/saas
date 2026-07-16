@@ -88,6 +88,7 @@ class PublicBookingController
                 serviceId: $firstServiceId ?? '',
                 duration: $duration,
                 branchId: $request->branch_id,
+                customerId: $customer->id,
             );
 
             $matchedSlot = collect($slots['slots'] ?? [])
@@ -140,7 +141,7 @@ class PublicBookingController
     public function show(string $code): JsonResponse
     {
         $booking = Booking::where('booking_code', $code)
-            ->with(['customer', 'staff', 'branch', 'services.addons', 'rooms', 'participants'])
+            ->with(['customer', 'staff', 'branch', 'services.addons', 'services.staff', 'rooms', 'participants'])
             ->first();
 
         if (! $booking) {
@@ -174,6 +175,7 @@ class PublicBookingController
                     'price' => $s->price,
                     'duration' => $s->duration,
                     'quantity' => $s->quantity,
+                    'staff_name' => $s->staff?->name,
                     'addons' => $s->addons->map(fn ($a) => [
                         'name' => $a->name,
                         'price' => $a->price,

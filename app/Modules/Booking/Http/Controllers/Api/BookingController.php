@@ -48,7 +48,7 @@ class BookingController extends Controller
         $booking = $this->bookingService->findById($id);
         $booking->load(['adjustments' => function ($q) {
             $q->latest();
-        }]);
+        }, 'services.staff']);
 
         return response()->json([
             'status' => 'success',

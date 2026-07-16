@@ -94,4 +94,9 @@ class Customer extends Model
     {
         return $this->hasMany(CustomerSubscription::class, 'customer_id');
     }
+
+    public function staffPreferences(): HasMany
+    {
+        return $this->hasMany(CustomerStaffPreference::class, 'customer_id');
+    }
 }

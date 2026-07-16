@@ -81,6 +81,8 @@ class CreateBookingAction
                         );
                     }
 
+                    $svcData['staff_id'] = $svcData['staff_id'] ?? null;
+
                     $bookingService = $booking->services()->create($svcData);
 
                     if (! empty($addons)) {

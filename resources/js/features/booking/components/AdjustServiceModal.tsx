@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import Button from '@/atoms/Button';
 import { useAdjustServices } from '@/features/booking/hooks/useBookings';
+import { useAllStaff } from '@/features/staff/hooks/useStaff';
 import { useAllServices } from '@/features/service/hooks/useServices';
 import type { AdjustmentPayload, Booking, BookingServiceItem } from '@/features/booking/types';
 import type { ServiceItem } from '@/features/service/types';
@@ -19,6 +20,8 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
     const addToast = useToastStore((s) => s.addToast);
     const { data: servicesData } = useAllServices();
     const services: ServiceItem[] = servicesData?.data ?? [];
+    const { data: staffData } = useAllStaff();
+    const staffList = staffData?.data ?? [];
 
     const [localServices, setLocalServices] = useState<BookingServiceItem[]>(() => [...(booking.services ?? [])]);
     const [notes, setNotes] = useState('');
@@ -43,6 +46,10 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
         setLocalServices((prev) => prev.map((s) => s.id === serviceId ? { ...s, quantity: qty } : s));
     }
 
+    function handleStaffChange(serviceId: string, staffId: string) {
+        setLocalServices((prev) => prev.map((s) => s.id === serviceId ? { ...s, staff_id: staffId || null, staff_name: staffList.find((st) => st.id === staffId)?.name ?? null } : s));
+    }
+
     function handleAddService(serviceId: string) {
         const svc = services.find((s) => s.id === serviceId);
         if (!svc) return;
@@ -64,6 +71,8 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
                 const newService: BookingServiceItem = {
                     id: `temp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
                     service_id: svc.id,
+                    staff_id: null,
+                    staff_name: null,
                     name: svc.name,
                     price: Number(svc.price),
                     duration: Number(svc.duration),
@@ -137,6 +146,17 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
                                                         </span>
                                                     )}
                                                 </p>
+                                                <select
+                                                    value={s.staff_id ?? ''}
+                                                    onChange={(e) => handleStaffChange(s.id, e.target.value)}
+                                                    className="mt-1 w-full rounded-lg border bg-white px-2 py-1 text-[11px] text-neutral-600 outline-none focus:border-primary"
+                                                    style={{ borderColor: 'rgba(0,0,0,0.1)' }}
+                                                >
+                                                    <option value="">Tanpa staff</option>
+                                                    {staffList.filter((st) => st.is_active).map((st) => (
+                                                        <option key={st.id} value={st.id}>{st.name}</option>
+                                                    ))}
+                                                </select>
                                             </div>
 
                                             <div className="flex items-center gap-4 shrink-0">
@@ -213,6 +233,17 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
                                             <p className="text-[11px] text-neutral-400 mt-0.5 ml-7">
                                                 {formatPrice(Number(s.price))} / pcs
                                             </p>
+                                            <select
+                                                value={s.staff_id ?? ''}
+                                                onChange={(e) => handleStaffChange(s.id, e.target.value)}
+                                                className="mt-1 ml-7 w-full rounded-lg border bg-white px-2 py-1 text-[11px] text-neutral-600 outline-none focus:border-primary"
+                                                style={{ borderColor: 'rgba(0,0,0,0.1)' }}
+                                            >
+                                                <option value="">Tanpa staff</option>
+                                                {staffList.filter((st) => st.is_active).map((st) => (
+                                                    <option key={st.id} value={st.id}>{st.name}</option>
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div className="flex items-center gap-4 shrink-0">

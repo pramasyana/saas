@@ -9,10 +9,12 @@ use App\Modules\Booking\Contracts\RoomRepositoryInterface;
 use App\Modules\Booking\Models\Room;
 use App\Modules\Company\Contracts\HolidayRepositoryInterface;
 use App\Modules\Company\Contracts\WorkingHourRepositoryInterface;
+use App\Modules\Crm\Models\CustomerStaffPreference;
 use App\Modules\Setting\Services\TenantSettingService;
 use App\Modules\Staff\Contracts\LeaveRepositoryInterface;
 use App\Modules\Staff\Contracts\ScheduleRepositoryInterface;
 use App\Modules\Staff\Contracts\StaffRepositoryInterface;
+use App\Modules\Staff\Models\StaffShiftAssignment;
 use Illuminate\Support\Collection;
 
 use App\Modules\Service\Models\Service;
@@ -35,7 +37,7 @@ class AvailabilityService
         return tenant()->getTenantKey();
     }
 
-    public function getAvailableSlots(string $date, string $serviceId, int $duration, ?string $branchId = null, ?string $staffId = null): array
+    public function getAvailableSlots(string $date, string $serviceId, int $duration, ?string $branchId = null, ?string $staffId = null, ?string $customerId = null): array
     {
         $tenantId = $this->getTenantId();
         $dayOfWeek = (int) date('w', strtotime($date));
@@ -52,7 +54,7 @@ class AvailabilityService
             return ['date' => $date, 'available' => false, 'reason' => 'Day off', 'slots' => []];
         }
 
-        $staffCollection = $this->getAvailableStaff($tenantId, $date, $dayOfWeek, $branchId, $staffId, $serviceId);
+        $staffCollection = $this->getAvailableStaff($tenantId, $date, $dayOfWeek, $branchId, $staffId, $serviceId, $customerId);
         if ($staffCollection->isEmpty()) {
             return ['date' => $date, 'available' => false, 'reason' => 'No available staff', 'slots' => []];
         }
@@ -75,7 +77,7 @@ class AvailabilityService
         ];
     }
 
-    private function getAvailableStaff(string $tenantId, string $date, int $dayOfWeek, ?string $branchId = null, ?string $staffId = null, ?string $serviceId = null): Collection
+    private function getAvailableStaff(string $tenantId, string $date, int $dayOfWeek, ?string $branchId = null, ?string $staffId = null, ?string $serviceId = null, ?string $customerId = null): Collection
     {
         $allStaff = $this->staffRepository->findAllByTenant($tenantId);
 
@@ -96,9 +98,30 @@ class AvailabilityService
             }
         }
 
+        // Filter by shift assignment (staff must have a shift on this date)
+        $shiftStaffIds = StaffShiftAssignment::where('tenant_id', $tenantId)
+            ->where('date', $date)
+            ->pluck('staff_id')
+            ->toArray();
+
+        if (! empty($shiftStaffIds)) {
+            $allStaff = $allStaff->whereIn('id', $shiftStaffIds);
+        }
+
         $schedules = $this->scheduleRepository->findByTenant($tenantId);
 
-        return $allStaff->filter(function ($staff) use ($tenantId, $date, $dayOfWeek, $schedules) {
+        // Load customer preferences if customerId provided
+        $preferences = $customerId ? CustomerStaffPreference::where('tenant_id', $tenantId)->where('customer_id', $customerId)->get() : collect();
+
+        $blockedStaffIds = $preferences->where('preference_type', 'blocked')->flatMap(fn ($p) => $p->blocked_staff_ids ?? [])->toArray();
+        $preferredStaffId = $preferences->where('preference_type', 'preferred')->first()?->staff_id;
+        $genderPreference = $preferences->where('preference_type', 'gender')->first()?->gender;
+
+        $filtered = $allStaff->filter(function ($staff) use ($tenantId, $date, $dayOfWeek, $schedules, $blockedStaffIds) {
+            if (in_array($staff->id, $blockedStaffIds)) {
+                return false;
+            }
+
             $schedule = $schedules->firstWhere(fn ($s) => $s->staff_id === $staff->id && $s->day_of_week === $dayOfWeek);
 
             if ($schedule === null || ! $schedule->is_active) {
@@ -113,6 +136,21 @@ class AvailabilityService
 
             return true;
         })->values();
+
+        // Apply gender filter if preference set
+        if ($genderPreference && in_array($genderPreference, ['male', 'female'])) {
+            $genderFiltered = $filtered->filter(fn ($s) => strtolower($s->position ?? '') === $genderPreference);
+            if ($genderFiltered->isNotEmpty()) {
+                $filtered = $genderFiltered->values();
+            }
+        }
+
+        // Sort: preferred staff first
+        if ($preferredStaffId) {
+            $filtered = $filtered->sortBy(fn ($s) => $s->id === $preferredStaffId ? 0 : 1)->values();
+        }
+
+        return $filtered;
     }
 
     public function getAvailableRooms(string $date, string $startTime, string $endTime, ?string $branchId = null, ?string $excludeBookingId = null): array

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Booking\Models;
 
 use App\Modules\Service\Models\Service;
+use App\Modules\Staff\Models\Staff;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +22,7 @@ class BookingService extends Model
     protected $fillable = [
         'booking_id',
         'service_id',
+        'staff_id',
         'name',
         'price',
         'duration',
@@ -56,6 +58,11 @@ class BookingService extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    public function staff(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'staff_id');
     }
 
     public function addons(): HasMany

@@ -307,6 +307,12 @@ return;
                                                         <div>
                                                             <p className="text-sm font-semibold text-neutral-900">{s.name}</p>
                                                             {s.quantity > 1 && <p className="text-xs text-neutral-400">{s.quantity}x</p>}
+                                                            {s.staff_name && (
+                                                                <p className="text-[10px] text-primary font-medium mt-0.5">
+                                                                    <span className="material-symbols-rounded text-[10px] mr-0.5">person</span>
+                                                                    {s.staff_name}
+                                                                </p>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     {s.price > 0 && (

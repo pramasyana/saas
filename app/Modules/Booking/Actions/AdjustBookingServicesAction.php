@@ -100,6 +100,7 @@ class AdjustBookingServicesAction
         $booking->services()->create([
             'tenant_id' => $booking->tenant_id,
             'service_id' => $adj['service_id'] ?? null,
+            'staff_id' => $adj['staff_id'] ?? null,
             'name' => $adj['name'],
             'price' => $adj['price'] ?? 0,
             'duration' => $adj['duration'] ?? 0,

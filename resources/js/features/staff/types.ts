@@ -129,3 +129,39 @@ export interface PaginatedResponse<T> {
     data: T[];
     meta: PaginationMeta;
 }
+
+export interface ShiftAssignment {
+    id: string;
+    staff_id: string;
+    staff_name: string;
+    branch_id: string | null;
+    date: string;
+    start_time: string;
+    end_time: string;
+    notes: string | null;
+}
+
+export interface ShiftAssignmentFormData {
+    staff_id: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+    notes?: string;
+}
+
+export interface ShiftCalendarData {
+    start_date: string;
+    end_date: string;
+    assignments: {
+        staff_id: string;
+        staff_name: string;
+        branch_id: string | null;
+        shifts: {
+            id: string;
+            date: string;
+            start_time: string;
+            end_time: string;
+            notes: string | null;
+        }[];
+    }[];
+}

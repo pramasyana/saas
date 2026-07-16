@@ -16,6 +16,8 @@ class BookingServiceResource extends JsonResource
         return [
             'id' => $this->id,
             'service_id' => $this->service_id,
+            'staff_id' => $this->staff_id,
+            'staff_name' => $this->whenLoaded('staff', fn () => $this->staff?->name),
             'name' => $this->name,
             'price' => (float) $this->price,
             'duration' => $this->duration,

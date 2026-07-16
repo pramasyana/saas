@@ -6,6 +6,7 @@ use App\Modules\Staff\Http\Controllers\Api\AttendanceController;
 use App\Modules\Staff\Http\Controllers\Api\CommissionController;
 use App\Modules\Staff\Http\Controllers\Api\LeaveController;
 use App\Modules\Staff\Http\Controllers\Api\ScheduleController;
+use App\Modules\Staff\Http\Controllers\Api\ShiftAssignmentController;
 use App\Modules\Staff\Http\Controllers\Api\StaffController;
 use App\Modules\Staff\Http\Controllers\Api\StaffServiceController;
 use App\Modules\Staff\Http\Controllers\Api\StaffUserController;
@@ -44,6 +45,11 @@ Route::middleware('auth')->group(function () {
     // Staff-Service Mapping
     Route::get('/staff/{staff}/services', [StaffServiceController::class, 'index']);
     Route::put('/staff/{staff}/services', [StaffServiceController::class, 'sync']);
+
+    // Shift Assignments
+    Route::get('/staff/shifts', [ShiftAssignmentController::class, 'index']);
+    Route::post('/staff/shifts', [ShiftAssignmentController::class, 'bulkStore']);
+    Route::delete('/staff/shifts', [ShiftAssignmentController::class, 'destroy']);
 
     // Staff CRUD (MUST be last to avoid shadowing literal sub-routes like /staff/leaves)
     Route::get('/staff', [StaffController::class, 'index']);

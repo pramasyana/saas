@@ -36,6 +36,7 @@ class StoreBookingRequest extends FormRequest
             'rooms.*.end_time' => 'required|date|after:rooms.*.start_time',
             'services' => 'nullable|array',
             'services.*.service_id' => 'nullable|string|exists:services,id',
+            'services.*.staff_id' => 'nullable|string|exists:staff,id',
             'services.*.name' => 'required_with:services|string|max:255',
             'services.*.price' => 'required_with:services|numeric|min:0',
             'services.*.duration' => 'required_with:services|integer|min:1',

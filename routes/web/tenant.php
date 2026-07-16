@@ -27,6 +27,7 @@ use App\Modules\Staff\Http\Controllers\Tenant\AttendanceController;
 use App\Modules\Staff\Http\Controllers\Tenant\CommissionController;
 use App\Modules\Staff\Http\Controllers\Tenant\LeaveController;
 use App\Modules\Staff\Http\Controllers\Tenant\ScheduleController;
+use App\Modules\Staff\Http\Controllers\Tenant\ShiftController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffController;
 use App\Modules\Staff\Http\Controllers\Tenant\StaffUserController;
 use App\Modules\Financing\Http\Controllers\FinancingController;
@@ -124,6 +125,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/commission', [CommissionController::class, 'index'])->name('commission');
         Route::get('/commission/create', [CommissionController::class, 'create'])->name('commission.create');
         Route::get('/commission/{id}/edit', [CommissionController::class, 'edit'])->name('commission.edit');
+        Route::get('/shift', [ShiftController::class, 'index'])->name('shift');
     });
 
     // Financing pages
