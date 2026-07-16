@@ -74,7 +74,7 @@ $COMPOSE exec app php artisan route:cache
 $COMPOSE exec app php artisan view:cache
 
 # Restart supporting services
-$COMPOSE --profile queue restart queue 2>/dev/null || true
+$COMPOSE restart queue
 $COMPOSE restart scheduler
 $COMPOSE restart dozzle 2>/dev/null || true
 
