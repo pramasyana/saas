@@ -66,6 +66,9 @@ docker compose exec app php artisan view:cache
 docker compose --profile queue restart queue 2>/dev/null || true
 docker compose restart scheduler
 
+# Start dozzle (log viewer)
+docker compose --profile dozzle up -d dozzle 2>/dev/null || true
+
 # Link storage
 docker compose exec app php artisan storage:link --force
 

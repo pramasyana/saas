@@ -12,6 +12,11 @@ services:
       - public_images:/var/www/public/images
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/www/certbot:/var/www/certbot:ro
+    depends_on:
+      app:
+        condition: service_healthy
+      dozzle:
+        condition: service_started
     restart: always
 
   app:
@@ -37,5 +42,6 @@ services:
     restart: always
 
   dozzle:
+    profiles: []
     ports: []
     restart: always
