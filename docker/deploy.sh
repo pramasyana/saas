@@ -12,7 +12,7 @@ echo "Installing dependencies..."
 docker compose exec app composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 docker compose exec app npm install
 
-# Run migrations
+# Run migrations.
 echo "Running migrations..."
 docker compose exec app php artisan migrate --force
 docker compose exec app php artisan tenants:migrate --force 2>/dev/null || true
