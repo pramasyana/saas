@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import Button from '@/atoms/Button';
-import { useSettings, useUpdateSettings } from '@/features/settings/hooks/useSettings';
+import { useAdminSettings, useUpdateAdminSettings } from '@/features/settings/hooks/useAdminSettings';
 import AdminLayout from '@/layouts/AdminLayout';
 
 interface SettingsPageProps {
@@ -18,8 +18,8 @@ interface InfoItem {
 }
 
 export default function Settings({ title, phpVersion, appVersion, laravelVersion, baseDomain: initialBaseDomain }: SettingsPageProps) {
-    const { data: settingsData, isLoading } = useSettings();
-    const updateSettings = useUpdateSettings();
+    const { data: settingsData, isLoading } = useAdminSettings();
+    const updateSettings = useUpdateAdminSettings();
 
     const [baseDomain, setBaseDomain] = useState(initialBaseDomain);
 
