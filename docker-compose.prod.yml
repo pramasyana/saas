@@ -42,6 +42,5 @@ services:
     restart: always
 
   dozzle:
-    profiles: []
     ports: []
     restart: always
