@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "Starting Saas ..."
+echo "Starting Saas..."
 
 # Wait for MariaDB
 echo "Waiting for MariaDB..."
@@ -30,10 +30,17 @@ try {
 echo "Running migrations..."
 php artisan migrate --force
 
+# Run tenant migrations
+echo "Running tenant migrations..."
+php artisan tenants:migrate --force 2>/dev/null || echo "No tenant to migrate, skipping."
+
 # Link storage
 php artisan storage:link --force
 
 # Clear and cache config
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache

@@ -1,0 +1,12 @@
+node_modules
+.git
+.github
+vendor
+public/build
+*.md
+.env
+.env.*
+docker-compose*.yml
+.vscode
+.idea
+tests

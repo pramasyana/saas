@@ -28,7 +28,12 @@ WORKDIR /var/www
 RUN groupadd -g 1003 www && useradd -u 1003 -ms /bin/bash -g www www
 RUN chown -R 1003:1003 /var/www && mkdir -p /tmp && chmod 1777 /tmp
 
+# Entrypoint script
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 USER www
 
 EXPOSE 9000
+ENTRYPOINT ["start.sh"]
 CMD ["php-fpm"]

@@ -78,8 +78,7 @@ services:
       app:
         condition: service_healthy
     env_file: .env
-    command: >
-      sh -c "while true; do php artisan schedule:run --verbose --no-interaction & sleep 60; done"
+    command: php artisan schedule:work
     healthcheck:
       test: [ "CMD", "pidof", "sh" ]
       interval: 30s
