@@ -4,6 +4,7 @@ namespace App\Modules\Pricing\Services;
 
 use App\Modules\Pricing\Contracts\FeatureDefinitionRepositoryInterface;
 use App\Modules\Pricing\Contracts\PlanRepositoryInterface;
+use App\Modules\Pricing\Models\Plan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
