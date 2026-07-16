@@ -28,7 +28,7 @@ class RegisterTenantAction
 
     public function execute(RegisterRequest $request): User
     {
-        return DB::transaction(function () use ($request) {
+        $user = DB::transaction(function () use ($request) {
             $plan = $this->planRepository->findActiveById($request->plan_id);
 
             if (! $plan) {
@@ -69,6 +69,12 @@ class RegisterTenantAction
                 'billing_interval' => $request->billing_interval,
             ]);
 
+            return [$user, $tenant, $plan];
+        });
+
+        [$user, $tenant, $plan] = $user;
+
+        DB::afterCommit(function () use ($user, $tenant, $request, $plan) {
             event(new TenantRegistered($user, $tenant));
 
             Log::info('Tenant registered', [
@@ -79,8 +85,8 @@ class RegisterTenantAction
                 'plan_id' => $plan->id,
                 'plan_slug' => $plan->slug,
             ]);
-
-            return $user;
         });
+
+        return $user;
     }
 }
