@@ -29,8 +29,7 @@ class LandingSettingsController
         $tenant = tenant();
         $validated = $request->validated();
 
-        $existing = $tenant->getInternal('landing_config') ?? [];
-        $config = array_replace_recursive($existing, $validated);
+        $config = $validated;
 
         $tenant->setInternal('landing_config', $config);
         $tenant->save();
