@@ -32,9 +32,11 @@ docker compose exec app npm run build
 echo "Building new image..."
 docker compose build --no-cache app
 
-# Start new app container
+# Stop old container and start new one
 echo "Starting new container..."
-docker compose up -d --no-deps app
+docker compose stop app
+docker compose rm -f app
+docker compose up -d app
 
 # Fix storage & cache permissions (Docker volumes may be root-owned)
 echo "Fixing permissions..."
@@ -50,7 +52,9 @@ if docker compose exec app php -r "echo 1;" > /dev/null 2>&1; then
     echo "New container is healthy!"
 else
     echo "Health check failed! Rolling back..."
-    docker compose up -d --no-deps app
+    docker compose stop app
+    docker compose rm -f app
+    docker compose up -d app
     exit 1
 fi
 
