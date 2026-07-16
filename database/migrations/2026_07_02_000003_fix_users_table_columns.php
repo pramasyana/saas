@@ -23,6 +23,14 @@ return new class extends Migration
         // Cleanup from previous failed run
         Schema::dropIfExists('_user_id_map');
 
+        // Skip if users already has UUID primary key (already migrated)
+        $columnType = DB::selectOne(
+            "SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'users' AND COLUMN_NAME = 'id' AND TABLE_SCHEMA = DATABASE()"
+        );
+        if ($columnType && in_array(strtolower($columnType->DATA_TYPE), ['char', 'varchar'])) {
+            return;
+        }
+
         $driver = DB::connection()->getDriverName();
 
         if ($driver === 'sqlite') {
