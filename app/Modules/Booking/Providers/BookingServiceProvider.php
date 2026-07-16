@@ -10,6 +10,7 @@ use App\Modules\Booking\Console\SendBookingRemindersCommand;
 use App\Modules\Booking\Contracts\BookingReminderRepositoryInterface;
 use App\Modules\Booking\Contracts\BookingRepositoryInterface;
 use App\Modules\Booking\Contracts\BookingStatusLogRepositoryInterface;
+use App\Modules\Booking\Contracts\CustomerInvoiceRepositoryInterface;
 use App\Modules\Booking\Contracts\RoomRepositoryInterface;
 use App\Modules\Booking\Contracts\WaitingListRepositoryInterface;
 use App\Modules\Booking\Events\BookingCancelled;
@@ -20,6 +21,7 @@ use App\Modules\Booking\Events\BookingCreated;
 use App\Modules\Booking\Events\BookingNoShow;
 use App\Modules\Booking\Events\BookingRescheduled;
 use App\Modules\Booking\Listeners\CreateBookingReminders;
+use App\Modules\Booking\Listeners\GenerateCustomerInvoiceListener;
 use App\Modules\Booking\Listeners\NotifyWaitingList;
 use App\Modules\Booking\Listeners\SendBookingConfirmation;
 use App\Modules\Booking\Listeners\UpdateDashboardStats;
@@ -27,6 +29,7 @@ use App\Modules\Staff\Listeners\CreateIncentiveCommissionsListener;
 use App\Modules\Booking\Repositories\BookingReminderRepository;
 use App\Modules\Booking\Repositories\BookingRepository;
 use App\Modules\Booking\Repositories\BookingStatusLogRepository;
+use App\Modules\Booking\Repositories\CustomerInvoiceRepository;
 use App\Modules\Booking\Repositories\RoomRepository;
 use App\Modules\Booking\Repositories\WaitingListRepository;
 use Illuminate\Support\Facades\Event;
@@ -41,6 +44,7 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->bind(BookingStatusLogRepositoryInterface::class, BookingStatusLogRepository::class);
         $this->app->bind(BookingReminderRepositoryInterface::class, BookingReminderRepository::class);
         $this->app->bind(RoomRepositoryInterface::class, RoomRepository::class);
+        $this->app->bind(CustomerInvoiceRepositoryInterface::class, CustomerInvoiceRepository::class);
 
         $this->commands([
             SeedAvailabilityCommand::class,
@@ -62,5 +66,6 @@ class BookingServiceProvider extends ServiceProvider
         Event::listen(BookingCheckedIn::class, UpdateDashboardStats::class);
         Event::listen(BookingCompleted::class, UpdateDashboardStats::class);
         Event::listen(BookingCompleted::class, CreateIncentiveCommissionsListener::class);
+        Event::listen(BookingCompleted::class, GenerateCustomerInvoiceListener::class);
     }
 }
