@@ -14,6 +14,8 @@ class CommissionResource extends JsonResource
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
+        $isAuto = $this->type === 'incentive';
+
         return [
             'id' => $this->id,
             'staff_id' => $this->staff_id,
@@ -26,8 +28,10 @@ class CommissionResource extends JsonResource
                 'service' => 'Jasa',
                 'product' => 'Produk',
                 'bonus' => 'Bonus',
+                'incentive' => 'Incentive',
                 default => $this->type,
             },
+            'is_auto' => $isAuto,
             'date' => $this->date?->format('Y-m-d'),
             'notes' => $this->notes,
             'created_at' => $this->created_at?->format('d M Y'),

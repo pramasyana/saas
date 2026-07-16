@@ -73,6 +73,7 @@ const typeOptions = [
     { value: 'service', label: 'Layanan' },
     { value: 'product', label: 'Produk' },
     { value: 'bonus', label: 'Bonus' },
+    { value: 'incentive', label: 'Incentive' },
 ];
 
 const perPageOptions = [
@@ -86,6 +87,7 @@ const typeColors: Record<string, { badge: 'success' | 'warning' | 'default'; dot
     service: { badge: 'success', dot: 'bg-success' },
     product: { badge: 'warning', dot: 'bg-warning' },
     bonus: { badge: 'default', dot: 'bg-primary' },
+    incentive: { badge: 'success', dot: 'bg-info' },
 };
 
 function formatCurrency(value: number): string {
@@ -278,7 +280,12 @@ return;
                             <span className={`inline-block h-2 w-2 shrink-0 rounded-full ${tc.dot}`} />
                             <p className="truncate text-sm font-semibold text-neutral-900">{c.staff_name || '-'}</p>
                         </div>
-                        <p className="mt-1 text-xs text-neutral-500">{c.type_label} &middot; {c.date}</p>
+                        <div className="mt-1 flex items-center gap-1.5">
+                            <p className="text-xs text-neutral-500">{c.type_label} &middot; {c.date}</p>
+                            {c.is_auto && (
+                                <span className="inline-flex items-center rounded-full bg-info/10 px-1.5 py-0.5 text-[10px] font-semibold text-info">Otomatis</span>
+                            )}
+                        </div>
                         {c.notes && <p className="mt-1 truncate text-xs text-neutral-400">{c.notes}</p>}
                     </div>
                     <div className="flex flex-col items-end gap-2">
@@ -314,7 +321,12 @@ return;
                     </div>
                 </td>
                 <td className="whitespace-nowrap px-6 py-4">
-                    <Badge variant={tc.badge}>{c.type_label}</Badge>
+                    <div className="flex items-center gap-1.5">
+                        <Badge variant={tc.badge}>{c.type_label}</Badge>
+                        {c.is_auto && (
+                            <span className="inline-flex items-center rounded-full bg-info/10 px-1.5 py-0.5 text-[10px] font-semibold text-info">Otomatis</span>
+                        )}
+                    </div>
                 </td>
                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-bold text-neutral-900">{c.amount_formatted}</td>
                 <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-600">{c.date}</td>

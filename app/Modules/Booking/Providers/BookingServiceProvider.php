@@ -23,6 +23,7 @@ use App\Modules\Booking\Listeners\CreateBookingReminders;
 use App\Modules\Booking\Listeners\NotifyWaitingList;
 use App\Modules\Booking\Listeners\SendBookingConfirmation;
 use App\Modules\Booking\Listeners\UpdateDashboardStats;
+use App\Modules\Staff\Listeners\CreateIncentiveCommissionsListener;
 use App\Modules\Booking\Repositories\BookingReminderRepository;
 use App\Modules\Booking\Repositories\BookingRepository;
 use App\Modules\Booking\Repositories\BookingStatusLogRepository;
@@ -60,5 +61,6 @@ class BookingServiceProvider extends ServiceProvider
         Event::listen(BookingCancelled::class, UpdateDashboardStats::class);
         Event::listen(BookingCheckedIn::class, UpdateDashboardStats::class);
         Event::listen(BookingCompleted::class, UpdateDashboardStats::class);
+        Event::listen(BookingCompleted::class, CreateIncentiveCommissionsListener::class);
     }
 }

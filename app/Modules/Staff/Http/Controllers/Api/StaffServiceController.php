@@ -22,6 +22,7 @@ class StaffServiceController extends Controller
                 'id' => $s->id,
                 'name' => $s->name,
                 'is_primary' => (bool) $s->pivot->is_primary,
+                'commission_percentage' => (float) $s->pivot->commission_percentage,
             ]),
         ]);
     }
@@ -32,11 +33,15 @@ class StaffServiceController extends Controller
             'services' => 'required|array',
             'services.*.id' => 'required|string|exists:services,id',
             'services.*.is_primary' => 'boolean',
+            'services.*.commission_percentage' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $sync = [];
         foreach ($validated['services'] as $svc) {
-            $sync[$svc['id']] = ['is_primary' => $svc['is_primary'] ?? false];
+            $sync[$svc['id']] = [
+                'is_primary' => $svc['is_primary'] ?? false,
+                'commission_percentage' => $svc['commission_percentage'] ?? 0,
+            ];
         }
 
         $staff->services()->sync($sync);

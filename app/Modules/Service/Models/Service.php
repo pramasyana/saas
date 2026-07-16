@@ -79,6 +79,6 @@ class Service extends Model
     public function staff(): BelongsToMany
     {
         return $this->belongsToMany(Staff::class, 'staff_service', 'service_id', 'staff_id')
-            ->withPivot('is_primary');
+            ->withPivot('is_primary', 'commission_percentage');
     }
 }

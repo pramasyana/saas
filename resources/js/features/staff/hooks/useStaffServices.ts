@@ -5,6 +5,7 @@ interface StaffServiceItem {
     id: string;
     name: string;
     is_primary: boolean;
+    commission_percentage: number;
 }
 
 export function useStaffServices(staffId: string) {
@@ -19,7 +20,7 @@ export function useSyncStaffServices(staffId: string) {
     const qc = useQueryClient();
 
     return useMutation({
-        mutationFn: (services: { id: string; is_primary: boolean }[]) =>
+        mutationFn: (services: { id: string; is_primary: boolean; commission_percentage: number }[]) =>
             api.put(`/api/v1/staff/${staffId}/services`, { services }),
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: ['staff', staffId, 'services'] });

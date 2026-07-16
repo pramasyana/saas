@@ -104,6 +104,7 @@ export interface Commission {
     amount_formatted: string;
     type: string;
     type_label: string;
+    is_auto: boolean;
     date: string;
     notes: string | null;
     created_at: string;
@@ -113,7 +114,7 @@ export interface CommissionFormData {
     staff_id: string;
     booking_id?: string;
     amount: number;
-    type: 'service' | 'product' | 'bonus';
+    type: 'service' | 'product' | 'bonus' | 'incentive';
     date: string;
     notes?: string;
 }
