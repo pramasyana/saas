@@ -10,6 +10,16 @@ until php -r "new PDO('mysql:host=${DB_HOST:-mariadb};port=${DB_PORT:-3306}', '$
 done
 echo "MariaDB is ready."
 
+# Install PHP dependencies (vendor/ is gitignored, not in image)
+echo "Installing dependencies..."
+composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+
+# Install & build frontend assets if public/build doesn't exist
+if [ ! -d "public/build" ]; then
+    echo "Building frontend assets..."
+    npm ci --prefer-offline && npm run build
+fi
+
 # Run migrations
 echo "Running migrations..."
 php artisan migrate --force
