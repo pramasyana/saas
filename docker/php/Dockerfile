@@ -28,6 +28,10 @@ WORKDIR /var/www
 RUN groupadd -g 1003 www && useradd -u 1003 -ms /bin/bash -g www www
 RUN chown -R 1003:1003 /var/www && mkdir -p /tmp && chmod 1777 /tmp
 
+# Ensure cache & storage directories exist with correct ownership
+RUN mkdir -p /var/www/storage/framework/{cache/data,views,sessions} /var/www/bootstrap/cache \
+    && chown -R 1003:1003 /var/www/storage /var/www/bootstrap/cache
+
 USER www
 
 EXPOSE 9000

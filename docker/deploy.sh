@@ -35,6 +35,11 @@ docker compose build --no-cache app
 echo "Starting new container..."
 docker compose up -d --no-deps app
 
+# Fix storage & cache permissions (Docker volumes may be root-owned)
+echo "Fixing permissions..."
+docker compose exec -u root app mkdir -p /var/www/storage/framework/{cache/data,views,sessions} /var/www/bootstrap/cache
+docker compose exec -u root app chown -R www:www /var/www/storage /var/www/bootstrap/cache
+
 # Wait for new container to be healthy
 echo "Waiting for new container to be healthy..."
 sleep 10
