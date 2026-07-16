@@ -34,11 +34,9 @@ $COMPOSE exec app npm run build
 echo "Building new image..."
 $COMPOSE build --no-cache app
 
-# Stop old container and start new one
+# Recreate app container with new image
 echo "Starting new container..."
-$COMPOSE stop app
-$COMPOSE rm -f app
-$COMPOSE up -d app
+$COMPOSE up -d --force-recreate --no-deps app
 
 # Fix storage & cache permissions (Docker volumes may be root-owned)
 echo "Fixing permissions..."
@@ -54,9 +52,7 @@ if $COMPOSE exec app php -r "echo 1;" > /dev/null 2>&1; then
     echo "New container is healthy!"
 else
     echo "Health check failed! Rolling back..."
-    $COMPOSE stop app
-    $COMPOSE rm -f app
-    $COMPOSE up -d app
+    $COMPOSE up -d --force-recreate --no-deps app
     exit 1
 fi
 
