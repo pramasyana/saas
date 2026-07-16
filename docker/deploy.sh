@@ -7,13 +7,24 @@ echo "=== Saas Zero-Downtime Deploy ==="
 echo "Pulling latest code..."
 git pull origin main
 
-# Install dependencies (vendor/ is gitignored, bind-mounted from host)
+# Install dependencies
 echo "Installing dependencies..."
 docker compose exec app composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-
-# Build frontend assets
-echo "Building frontend assets..."
 docker compose exec app npm install
+
+# Run migrations
+echo "Running migrations..."
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan tenants:migrate --force 2>/dev/null || true
+
+# Cache config & routes (needed by Wayfinder for npm build)
+echo "Caching config and routes..."
+docker compose exec app php artisan config:cache
+docker compose exec app php artisan route:cache
+docker compose exec app php artisan view:cache
+
+# Build frontend assets (Wayfinder needs routes cached)
+echo "Building frontend assets..."
 docker compose exec app npm run build
 
 # Build new image
@@ -37,17 +48,8 @@ else
     exit 1
 fi
 
-# Run migrations
-echo "Running migrations..."
-docker compose exec app php artisan migrate --force
-docker compose exec app php artisan tenants:migrate --force 2>/dev/null || true
-
-# Restart supporting services
-docker compose --profile queue restart queue 2>/dev/null || true
-docker compose restart scheduler
-
-# Clear and rebuild cache
-echo "Rebuilding cache..."
+# Clear and rebuild cache inside new container
+echo "Rebuilding cache in new container..."
 docker compose exec app php artisan config:clear
 docker compose exec app php artisan route:clear
 docker compose exec app php artisan view:clear
@@ -55,10 +57,14 @@ docker compose exec app php artisan config:cache
 docker compose exec app php artisan route:cache
 docker compose exec app php artisan view:cache
 
+# Restart supporting services
+docker compose --profile queue restart queue 2>/dev/null || true
+docker compose restart scheduler
+
 # Link storage
 docker compose exec app php artisan storage:link --force
 
-# Reload nginx to pick up any config changes
+# Reload nginx
 echo "Reloading nginx..."
 docker compose exec nginx nginx -s reload 2>/dev/null || true
 
