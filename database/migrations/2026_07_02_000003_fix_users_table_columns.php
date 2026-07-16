@@ -20,6 +20,9 @@ return new class extends Migration
 
     public function up(): void
     {
+        // Cleanup from previous failed run
+        Schema::dropIfExists('_user_id_map');
+
         $driver = DB::connection()->getDriverName();
 
         if ($driver === 'sqlite') {
@@ -70,6 +73,8 @@ return new class extends Migration
 
     private function storeMapping(): void
     {
+        Schema::dropIfExists('_user_id_map');
+
         Schema::create('_user_id_map', function (Blueprint $table) {
             $table->bigInteger('old_id')->primary();
             $table->uuid('new_id');
