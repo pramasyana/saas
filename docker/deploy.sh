@@ -10,8 +10,8 @@ git pull origin main
 # Install dependencies
 echo "Installing dependencies..."
 docker compose exec app composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+docker compose exec -u root app chmod -R 775 /var/www/node_modules/.bin/
 docker compose exec app npm install
-docker compose exec app chmod +x node_modules/.bin/*
 
 # Run migrations.
 echo "Running migrations..."
