@@ -13,7 +13,7 @@ sudo docker compose exec app composer install --no-interaction --prefer-dist --o
 
 # Build frontend assets
 echo "Building frontend assets..."
-sudo docker compose exec app npm ci
+sudo docker compose exec app npm install
 sudo docker compose exec app npm run build
 
 # Build new image
