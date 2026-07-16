@@ -2,9 +2,9 @@
 
 namespace App\Notifications;
 
-use App\Modules\Notification\Services\MailService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class VerifyEmail extends Notification implements ShouldQueue
@@ -33,55 +33,24 @@ class VerifyEmail extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['mailtrap'];
+        return ['mail'];
     }
 
-    public function toMailtrap(object $notifiable): void
+    public function toMail(object $notifiable): MailMessage
     {
-        $mailer = app(MailService::class);
-
         $subject = match ($this->context) {
             'new_account' => 'Verifikasi Email - Akun Baru',
             'resend' => 'Verifikasi Email - Pengingat',
         };
 
-        $mailer->send(
-            toEmail: $notifiable->email,
-            toName: $notifiable->name,
-            subject: $subject,
-            html: $this->buildHtml($notifiable),
-            text: $this->buildText($notifiable),
-            userId: $notifiable->getKey(),
-        );
-    }
-
-    private function buildHtml(object $notifiable): string
-    {
-        return view('emails.verify-email', [
-            'name' => $notifiable->name,
-            'email' => $notifiable->email,
-            'verificationUrl' => $this->verificationUrl,
-            'context' => $this->context,
-            'expiresIn' => now()->addHour()->diffForHumans(),
-        ])->render();
-    }
-
-    private function buildText(object $notifiable): string
-    {
-        $greeting = "Halo {$notifiable->name},";
-
-        $body = match ($this->context) {
-            'new_account' => "Akun baru telah dibuat untuk Anda. Silakan verifikasi alamat email {$notifiable->email} dengan mengklik link di bawah ini.",
-            'resend' => "Anda menerima email ini karena ada permintaan verifikasi ulang untuk alamat {$notifiable->email}. Silakan verifikasi dengan mengklik link di bawah ini.",
-        };
-
-        return implode("\n\n", [
-            $greeting,
-            $body,
-            $this->verificationUrl,
-            'Tautan ini berlaku selama 1 jam.',
-            '',
-            'Jika Anda tidak merasa melakukan ini, abaikan email ini. Akun Anda tidak akan aktif sampai email diverifikasi.',
-        ]);
+        return (new MailMessage)
+            ->subject($subject)
+            ->view('emails.verify-email', [
+                'name' => $notifiable->name,
+                'email' => $notifiable->email,
+                'verificationUrl' => $this->verificationUrl,
+                'context' => $this->context,
+                'expiresIn' => now()->addHour()->diffForHumans(),
+            ]);
     }
 }
