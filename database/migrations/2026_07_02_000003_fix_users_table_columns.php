@@ -158,6 +158,9 @@ return new class extends Migration
             DB::table('users')->where('id', $user->id)->update(['uuid' => $uuid]);
         });
 
+        // Remove AUTO_INCREMENT before dropping primary key (MySQL/MariaDB requirement)
+        DB::statement('ALTER TABLE users MODIFY id BIGINT UNSIGNED NOT NULL');
+
         Schema::table('users', function (Blueprint $table) {
             $table->dropPrimary('id');
         });
