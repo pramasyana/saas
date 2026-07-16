@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/booking/bookings/{id}/check-in', [BookingController::class, 'checkIn']);
     Route::post('/booking/bookings/{id}/complete', [BookingController::class, 'complete']);
     Route::post('/booking/bookings/{id}/cancel', [BookingController::class, 'cancel']);
+    Route::post('/booking/bookings/{id}/adjust-services', [BookingController::class, 'adjustServices']);
     Route::apiResource('/booking/bookings', BookingController::class)->except(['edit', 'create']);
 
     // Walk In

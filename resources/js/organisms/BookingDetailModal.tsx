@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
+import AdjustServiceModal from '@/features/booking/components/AdjustServiceModal';
 import { useBooking, useCancelBooking, useCheckIn, useCompleteBooking, useConfirmBooking, useMarkNoShow } from '@/features/booking/hooks/useBookings';
 import type { Booking, BookingStatus, StatusLogItem } from '@/features/booking/types';
 import { cn } from '@/lib/utils';
@@ -149,6 +150,7 @@ export default function BookingDetailModal({ bookingId, onClose }: BookingDetail
     const booking: Booking | undefined = bookingData?.data;
     const [loadingAction, setLoadingAction] = useState<string | null>(null);
     const [confirmAction, setConfirmAction] = useState<string | null>(null);
+    const [showAdjust, setShowAdjust] = useState(false);
     const addToast = useToastStore((s) => s.addToast);
 
     const confirmMut = useConfirmBooking();
@@ -413,6 +415,12 @@ return;
 
                     {/* ── Actions ── */}
                     <div className="flex flex-wrap items-center justify-end gap-2 border-t border-neutral-200 bg-neutral-50/50 px-6 py-4">
+                        {['pending', 'confirmed', 'in_progress'].includes(booking.status) && (
+                            <Button size="sm" variant="secondary" onClick={() => setShowAdjust(true)} disabled={!!loadingAction}>
+                                <span className="material-symbols-rounded mr-1 text-sm">edit_note</span>
+                                Adjust Layanan
+                            </Button>
+                        )}
                         {booking.status === 'pending' && (
                             <>
                                 <Button size="sm" variant="danger" onClick={() => doAction('cancel')} disabled={!!loadingAction}>
@@ -476,6 +484,15 @@ return;
                     );
                 })()}
             </Modal>
+
+            {/* Adjust Service Modal */}
+            {showAdjust && booking && (
+                <AdjustServiceModal
+                    booking={booking}
+                    open={showAdjust}
+                    onClose={() => setShowAdjust(false)}
+                />
+            )}
         </Modal>
     );
 }

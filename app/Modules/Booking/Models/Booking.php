@@ -122,4 +122,9 @@ class Booking extends Model
             ->withPivot(['start_time', 'end_time'])
             ->withTimestamps();
     }
+
+    public function adjustments(): HasMany
+    {
+        return $this->hasMany(BookingServiceAdjustment::class, 'booking_id');
+    }
 }

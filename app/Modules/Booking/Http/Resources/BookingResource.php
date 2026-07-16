@@ -60,6 +60,17 @@ class BookingResource extends JsonResource
                 'notes' => $log->notes,
                 'created_at' => $log->created_at?->format('Y-m-d H:i:s'),
             ])),
+            'adjustments' => $this->whenLoaded('adjustments', fn () => $this->adjustments->map(fn ($adj) => [
+                'id' => $adj->id,
+                'action' => $adj->action,
+                'old_data' => $adj->old_data,
+                'new_data' => $adj->new_data,
+                'old_total' => (float) $adj->old_total,
+                'new_total' => (float) $adj->new_total,
+                'adjusted_by' => $adj->adjusted_by,
+                'notes' => $adj->notes,
+                'created_at' => $adj->created_at?->format('Y-m-d H:i:s'),
+            ])),
             'created_at' => $this->created_at?->format('d M Y H:i'),
         ];
     }

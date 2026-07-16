@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
-import type { Booking, BookingFormData, PaginatedResponse } from '../types';
+import type { AdjustServicesPayload, AdjustServicesResult, Booking, BookingFormData, PaginatedResponse } from '../types';
 
 interface Filters {
     branch_id?: string;
@@ -197,5 +197,21 @@ export function useUpdateBookingSettings() {
     return useMutation({
         mutationFn: updateBookingSettings,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['booking-settings'] }),
+    });
+}
+
+function adjustServices(id: string, data: AdjustServicesPayload): Promise<{ data: AdjustServicesResult }> {
+    return api.post(`/api/v1/booking/bookings/${id}/adjust-services`, data).then((r) => r.data);
+}
+
+export function useAdjustServices() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, data }: { id: string; data: AdjustServicesPayload }) => adjustServices(id, data),
+        onSuccess: (_result, variables) => {
+            qc.invalidateQueries({ queryKey: ['bookings'] });
+            qc.invalidateQueries({ queryKey: ['booking', variables.id] });
+        },
     });
 }

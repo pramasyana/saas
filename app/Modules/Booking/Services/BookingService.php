@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Services;
 
+use App\Modules\Booking\Actions\AdjustBookingServicesAction;
 use App\Modules\Booking\Actions\ConfirmBookingAction;
 use App\Modules\Booking\Actions\CreateBookingAction;
 use App\Modules\Booking\Actions\NoShowAction;
@@ -29,6 +30,7 @@ class BookingService
         private readonly NoShowAction $noShowAction,
         private readonly WalkInAction $walkInAction,
         private readonly ConfirmBookingAction $confirmBookingAction,
+        private readonly AdjustBookingServicesAction $adjustBookingServicesAction,
     ) {}
 
     public function getTenantId(): string
@@ -143,6 +145,11 @@ class BookingService
     public function walkIn(array $data): Booking
     {
         return $this->walkInAction->execute($data, $this->getTenantId());
+    }
+
+    public function adjustServices(string $id, array $adjustments, ?string $notes): Booking
+    {
+        return $this->adjustBookingServicesAction->execute($id, $adjustments, $notes);
     }
 
     public function getCalendarEvents(string $startDate, string $endDate, ?string $branchId = null, ?string $staffId = null): Collection

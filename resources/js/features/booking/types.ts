@@ -19,6 +19,7 @@ export interface Booking {
     services: BookingServiceItem[];
     reminders: ReminderItem[];
     status_logs: StatusLogItem[];
+    adjustments?: AdjustmentLogItem[];
     created_at: string;
 }
 
@@ -144,4 +145,40 @@ export interface PaginationMeta {
 export interface PaginatedResponse<T> {
     data: T[];
     meta: PaginationMeta;
+}
+
+export interface AdjustmentLogItem {
+    id: string;
+    action: string;
+    old_data: BookingServiceItem[] | null;
+    new_data: BookingServiceItem[];
+    old_total: number;
+    new_total: number;
+    adjusted_by: string;
+    notes: string | null;
+    created_at: string;
+}
+
+export interface AdjustmentPayload {
+    action: 'add' | 'remove' | 'update_quantity' | 'update_price';
+    booking_service_id?: string;
+    service_id?: string;
+    name?: string;
+    price?: number;
+    duration?: number;
+    quantity?: number;
+}
+
+export interface AdjustServicesPayload {
+    adjustments: AdjustmentPayload[];
+    notes?: string;
+}
+
+export interface AdjustServicesResult {
+    booking: Booking;
+    adjustment_summary: {
+        old_total: number;
+        new_total: number;
+        difference: number;
+    };
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Booking\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Booking\Http\Requests\AdjustServicesRequest;
 use App\Modules\Booking\Http\Requests\RescheduleBookingRequest;
 use App\Modules\Booking\Http\Requests\StoreBookingRequest;
 use App\Modules\Booking\Http\Requests\UpdateBookingRequest;
@@ -45,6 +46,9 @@ class BookingController extends Controller
     public function show(string $id): JsonResponse
     {
         $booking = $this->bookingService->findById($id);
+        $booking->load(['adjustments' => function ($q) {
+            $q->latest();
+        }]);
 
         return response()->json([
             'status' => 'success',
@@ -148,6 +152,36 @@ class BookingController extends Controller
             'status' => 'success',
             'message' => 'Booking dibatalkan.',
             'data' => new BookingResource($booking),
+        ]);
+    }
+
+    public function adjustServices(AdjustServicesRequest $request, string $id): JsonResponse
+    {
+        $booking = $this->bookingService->adjustServices(
+            $id,
+            $request->validated()['adjustments'],
+            $request->validated()['notes'] ?? null,
+        );
+
+        $oldTotal = 0;
+        $newTotal = 0;
+        $adjustmentLog = $booking->adjustments()->latest()->first();
+        if ($adjustmentLog) {
+            $oldTotal = (float) $adjustmentLog->old_total;
+            $newTotal = (float) $adjustmentLog->new_total;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Layanan berhasil disesuaikan.',
+            'data' => [
+                'booking' => new BookingResource($booking),
+                'adjustment_summary' => [
+                    'old_total' => $oldTotal,
+                    'new_total' => $newTotal,
+                    'difference' => $newTotal - $oldTotal,
+                ],
+            ],
         ]);
     }
 
