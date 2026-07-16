@@ -20,7 +20,7 @@ return new class extends Migration
 
     public function up(): void
     {
-        // Cleanup from previous failed run
+        // Cleanup from previous failed runs
         Schema::dropIfExists('_user_id_map');
 
         // Skip if users already has UUID primary key (already migrated)
@@ -70,12 +70,16 @@ return new class extends Migration
             return;
         }
 
-        if ($driver === 'sqlite') {
-            Schema::table('personal_access_tokens', function (Blueprint $table) {
-                $table->string('tokenable_id', 36)->nullable()->change();
-            });
-        } else {
-            DB::statement('ALTER TABLE personal_access_tokens MODIFY tokenable_id VARCHAR(36) NULL');
+        try {
+            if ($driver === 'sqlite') {
+                Schema::table('personal_access_tokens', function (Blueprint $table) {
+                    $table->string('tokenable_id', 36)->nullable()->change();
+                });
+            } else {
+                DB::statement('ALTER TABLE personal_access_tokens MODIFY tokenable_id VARCHAR(36) NULL');
+            }
+        } catch (Throwable) {
+            // Column may already be VARCHAR(36)
         }
     }
 
@@ -147,32 +151,48 @@ return new class extends Migration
 
     private function convertUsersMysql(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->uuid('uuid')->nullable()->unique()->after('id');
-        });
+        // Step 1: Add uuid column (skip if already exists)
+        if (! Schema::hasColumn('users', 'uuid')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->uuid('uuid')->nullable()->unique()->after('id');
+            });
+        }
 
-        DB::table('users')->orderBy('id')->each(function ($user) {
-            $uuid = DB::table('_user_id_map')
-                ->where('old_id', $user->id)
-                ->value('new_id');
-            DB::table('users')->where('id', $user->id)->update(['uuid' => $uuid]);
-        });
+        // Step 2: Populate uuid data (skip if already populated)
+        $hasUuidData = DB::table('users')->whereNotNull('uuid')->first();
+        if (! $hasUuidData) {
+            DB::table('users')->orderBy('id')->each(function ($user) {
+                $uuid = DB::table('_user_id_map')
+                    ->where('old_id', $user->id)
+                    ->value('new_id');
+                DB::table('users')->where('id', $user->id)->update(['uuid' => $uuid]);
+            });
+        }
 
-        // Remove AUTO_INCREMENT before dropping primary key (MySQL/MariaDB requirement)
-        DB::statement('ALTER TABLE users MODIFY id BIGINT UNSIGNED NOT NULL');
+        // Step 3: If id is still bigint, remove AUTO_INCREMENT and convert
+        $idType = DB::selectOne(
+            "SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'users' AND COLUMN_NAME = 'id' AND TABLE_SCHEMA = DATABASE()"
+        );
+        if ($idType && strtolower($idType->DATA_TYPE) === 'bigint') {
+            DB::statement('ALTER TABLE users MODIFY id BIGINT UNSIGNED NOT NULL');
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropPrimary('id');
-        });
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropPrimary('id');
+            });
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('id');
-        });
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('id');
+            });
+        }
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->renameColumn('uuid', 'id');
-        });
+        // Step 4: Rename uuid → id (skip if uuid column no longer exists)
+        if (Schema::hasColumn('users', 'uuid')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->renameColumn('uuid', 'id');
+            });
+        }
 
+        // Step 5: Ensure primary key on id
         Schema::table('users', function (Blueprint $table) {
             $table->primary('id');
         });
@@ -190,32 +210,52 @@ return new class extends Migration
         $tempColumn = $column.'_uuid';
         $driver = DB::connection()->getDriverName();
 
-        Schema::table($table, function (Blueprint $table) use ($tempColumn) {
-            $table->string($tempColumn, 36)->nullable();
-        });
+        // Skip if original column is already UUID type
+        $colType = DB::selectOne(
+            "SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND COLUMN_NAME = '{$column}' AND TABLE_SCHEMA = DATABASE()"
+        );
+        if ($colType && in_array(strtolower($colType->DATA_TYPE), ['char', 'varchar'])) {
+            return;
+        }
 
-        DB::table($table)->whereNotNull($column)->orderBy('id')->each(function ($row) use ($table, $column, $tempColumn) {
-            $uuid = DB::table('_user_id_map')
-                ->where('old_id', $row->$column)
-                ->value('new_id');
+        // Add temp column (skip if exists)
+        if (! Schema::hasColumn($table, $tempColumn)) {
+            Schema::table($table, function (Blueprint $table) use ($tempColumn) {
+                $table->string($tempColumn, 36)->nullable();
+            });
+        }
 
-            if ($uuid) {
-                DB::table($table)
-                    ->where('id', $row->id)
-                    ->update([$tempColumn => $uuid]);
-            }
-        });
+        // Populate temp column (skip if already done)
+        $hasData = DB::table($table)->whereNotNull($tempColumn)->first();
+        if (! $hasData) {
+            DB::table($table)->whereNotNull($column)->orderBy('id')->each(function ($row) use ($table, $column, $tempColumn) {
+                $uuid = DB::table('_user_id_map')
+                    ->where('old_id', $row->$column)
+                    ->value('new_id');
 
+                if ($uuid) {
+                    DB::table($table)
+                        ->where('id', $row->id)
+                        ->update([$tempColumn => $uuid]);
+                }
+            });
+        }
+
+        // Drop original + rename temp (skip if original already gone)
         if ($driver === 'sqlite') {
             $this->convertSingleColumnSqlite($table, $column, $tempColumn);
         } else {
-            Schema::table($table, function (Blueprint $table) use ($column) {
-                $table->dropColumn($column);
-            });
+            if (Schema::hasColumn($table, $column)) {
+                Schema::table($table, function (Blueprint $table) use ($column) {
+                    $table->dropColumn($column);
+                });
+            }
 
-            Schema::table($table, function (Blueprint $table) use ($tempColumn, $column) {
-                $table->renameColumn($tempColumn, $column);
-            });
+            if (Schema::hasColumn($table, $tempColumn)) {
+                Schema::table($table, function (Blueprint $table) use ($tempColumn, $column) {
+                    $table->renameColumn($tempColumn, $column);
+                });
+            }
         }
     }
 
