@@ -27,3 +27,9 @@ yarn-error.log
 /.vscode
 /.zed
 AGENTS.md
+/docker/dozzle/users.yml
+/docker/mariadb/data
+/docker/grafana/data
+/docker/loki/data
+/docker/prometheus/data
+/docker/tempo/data
