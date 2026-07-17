@@ -16,14 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         using: function (): void {
-            $centralDomains = config('tenancy.central_domains', []);
-            $isCentral = in_array(request()->getHost(), $centralDomains);
-
-            // Central-only routes (marketing landing, etc.)
-            if ($isCentral) {
-                Route::middleware('web')
-                    ->group(base_path('routes/web.php'));
-            }
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
 
             Route::middleware('web')
                 ->group(base_path('routes/web/admin.php'));
@@ -77,14 +71,12 @@ return Application::configure(basePath: dirname(__DIR__))
             // Public tenant routes — registered AFTER auth routes so they take
             // priority on tenant domains. The public controller handles
             // redirecting authenticated users to the admin booking page.
-            if (! $isCentral) {
-                Route::middleware(['web', 'tenant.domain.public'])
-                    ->group(base_path('routes/web/tenant_public.php'));
+            Route::middleware(['web', 'tenant.domain.public'])
+                ->group(base_path('routes/web/tenant_public.php'));
 
-                Route::middleware(['api', 'tenant.domain.public'])
-                    ->prefix('api/v1')
-                    ->group(base_path('routes/api/v1/tenant_public.php'));
-            }
+            Route::middleware(['api', 'tenant.domain.public'])
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/tenant_public.php'));
 
             Route::middleware('api')
                 ->prefix('api')

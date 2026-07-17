@@ -1,6 +1,5 @@
 <?php
 
-use App\Modules\Admin\Http\Controllers\LandingController;
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', [LandingController::class, 'index'])->name('home');
+// Marketing landing page is now handled by tenant_public.php's GET / route.
+// The domain-aware dispatch in tenant_public.php routes central domains to the
+// marketing page and tenant domains to the tenant landing page.
