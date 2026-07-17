@@ -2,7 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
-import { LandingPreview, EditPanel, TemplateModal, SidebarSectionList } from '@/features/booking/components/landing';
+import { LandingPreview, EditPanel, TemplateModal, TemplateSelector, SidebarSectionList } from '@/features/booking/components/landing';
 import { defaultLandingTemplate } from '@/features/booking/data/defaultLandingTemplate';
 import type { LandingConfig, ServiceItem, PackageItem } from '@/features/booking/hooks/useLandingSettings';
 import { useLandingSettings, useUpdateLandingSettings, useUploadLandingLogo, useDeleteLandingLogo, useUploadLandingImage } from '@/features/booking/hooks/useLandingSettings';
@@ -79,7 +79,6 @@ export default function LandingSettings({ title, publicUrl, services, categories
 
     const [config, setConfig] = useState<LandingConfig>({});
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
-    const [previewMode, setPreviewMode] = useState(false);
     const [showTemplateModal, setShowTemplateModal] = useState(false);
     const [dirty, setDirty] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
@@ -94,10 +93,6 @@ export default function LandingSettings({ title, publicUrl, services, categories
                 section_order: normalizeOrder(serverConfig.section_order ?? allSectionKeys as string[]),
             });
             initialized.current = true;
-
-            if (!serverConfig.template) {
-                setShowTemplateModal(true);
-            }
         }
     }, [serverConfig]);
 
@@ -290,6 +285,7 @@ setSelectedSection(null);
     const c = { ...defaultColors, ...config.colors };
     const selectedSectionData = selectedSection ? (config as Record<string, unknown>)[selectedSection] as Record<string, unknown> ?? {} : {};
 
+    // Loading state
     if (isLoading) {
         return (
             <TenantLayout>
@@ -307,24 +303,22 @@ setSelectedSection(null);
         );
     }
 
-    if (previewMode) {
+    // Full-page template selector when no template
+    if (!hasTemplate) {
         return (
             <TenantLayout>
-                <Head title={`Preview - ${title}`} />
-                <div className="mb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Preview Landing Page</h1>
-                    <Button variant="secondary" size="sm" onClick={() => setPreviewMode(false)}>
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-                        Kembali Edit
-                    </Button>
-                </div>
-                <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm">
-                    <iframe
-                        src={publicUrl || '/'}
-                        className="h-[calc(100vh-16rem)] w-full rounded-2xl"
-                        title="Preview"
-                    />
-                </div>
+                <Head title={`${title} — Pilih Template`} />
+                <nav className="mb-2 flex items-center gap-2 text-sm text-neutral-500">
+                    <Link href="/booking" className="transition-colors hover:text-neutral-700">Booking</Link>
+                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                    <span className="font-medium text-neutral-900">Landing Page</span>
+                </nav>
+                <TemplateSelector
+                    onApply={(tpl) => {
+                        applyTemplate(tpl);
+                    }}
+                    isPending={updateSettings.isPending}
+                />
             </TenantLayout>
         );
     }
@@ -339,26 +333,6 @@ setSelectedSection(null);
                 <span className="font-medium text-neutral-900">Landing Page</span>
             </nav>
 
-            {/* No template warning */}
-            {!hasTemplate && (
-                <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-100">
-                            <svg className="h-4 w-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                            </svg>
-                        </div>
-                        <div className="flex-1">
-                            <p className="text-sm font-medium text-amber-800">Pilih template terlebih dahulu</p>
-                            <p className="text-xs text-amber-600">Anda harus memilih template sebelum bisa mengedit landing page.</p>
-                        </div>
-                        <Button variant="secondary" size="sm" onClick={() => setShowTemplateModal(true)}>
-                            Pilih Template
-                        </Button>
-                    </div>
-                </div>
-            )}
-
             {/* Main layout: sidebar + preview + edit panel */}
             <div className="flex gap-6" style={{ height: 'calc(100vh - 10rem)' }}>
                 {/* Left Sidebar */}
@@ -370,10 +344,10 @@ setSelectedSection(null);
                         availableSections={availableSections}
                         sectionLabels={sectionLabels}
                         selectedSection={selectedSection}
-                        onSelect={hasTemplate ? (key) => setSelectedSection(selectedSection === key ? null : key) : undefined}
-                        onRemove={hasTemplate ? removeSection : undefined}
-                        onAdd={hasTemplate ? addSection : undefined}
-                        onReorder={hasTemplate ? handleOrderChange : undefined}
+                        onSelect={(key) => setSelectedSection(selectedSection === key ? null : key)}
+                        onRemove={removeSection}
+                        onAdd={addSection}
+                        onReorder={handleOrderChange}
                     />
 
                     {/* General Settings */}
@@ -474,17 +448,26 @@ setSelectedSection(null);
                     {/* Toolbar */}
                     <div className="mb-4 flex items-center justify-between">
                         <div>
-                            <h1 className="text-lg font-bold tracking-tight text-neutral-900">{title}</h1>
+                            <h1 className="text-lg font-bold tracking-tight text-neutral-900">Landing Page Editor</h1>
                             <p className="text-xs text-neutral-500">Klik section untuk edit, drag untuk urutkan</p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button variant="secondary" size="sm" onClick={() => setShowTemplateModal(true)}>
-                                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0h-9m9 0H21a.75.75 0 01.75.75v11.25a.75.75 0 01-.75.75h-4.5a5.25 5.25 0 00-5.25 5.25v.75a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75v-.75A5.25 5.25 0 00.75 16.5H3a.75.75 0 01-.75-.75V4.5a.75.75 0 01.75-.75h4.5" /></svg>
-                                Template
+                            <Button
+                                variant="secondary"
+                                onClick={() => setShowTemplateModal(true)}
+                                className="h-full min-h-[44px] px-6"
+                            >
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H3" /></svg>
+                                Ganti Template
                             </Button>
-                            <Button variant="secondary" size="sm" onClick={() => setPreviewMode(true)} disabled={!publicUrl}>
-                                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                Preview
+                            <Button
+                                variant="secondary"
+                                onClick={() => publicUrl && window.open(publicUrl, '_blank')}
+                                disabled={!publicUrl}
+                                className="h-full min-h-[44px] px-6"
+                            >
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                                Buka Halaman Publik
                             </Button>
                             <Button size="sm" onClick={handleSave} disabled={updateSettings.isPending || !dirty} className="min-w-[100px]">
                                 {updateSettings.isPending ? 'Menyimpan...' : 'Simpan'}
@@ -502,9 +485,9 @@ setSelectedSection(null);
                                 categories={categories}
                                 branches={branches}
                                 tenantName={config.hero?.title ? undefined : 'Your Business'}
-                                selectedSection={hasTemplate ? selectedSection : null}
-                                onSectionClick={hasTemplate ? setSelectedSection : () => {}}
-                                onRemoveSection={hasTemplate ? removeSection : () => {}}
+                                selectedSection={selectedSection}
+                                onSectionClick={setSelectedSection}
+                                onRemoveSection={removeSection}
                             />
                         </FadeIn>
                     </div>
@@ -525,13 +508,12 @@ setSelectedSection(null);
                 />
             )}
 
-            {/* Template Modal */}
+            {/* Template Modal (for switching templates after first selection) */}
             <TemplateModal
                 open={showTemplateModal}
-                onClose={hasTemplate ? () => setShowTemplateModal(false) : undefined}
+                onClose={() => setShowTemplateModal(false)}
                 onApply={applyTemplate}
                 currentTemplate={config.template}
-                forceSelection={!hasTemplate}
             />
         </TenantLayout>
     );
