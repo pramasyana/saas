@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CentralDomainOnly;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\InitializeTenancyByDomainPublic;
 use App\Http\Middleware\InitializeTenancyByUser;
@@ -19,10 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
 
-            Route::middleware('web')
+            Route::middleware(['web', 'central'])
                 ->group(base_path('routes/web/admin.php'));
 
-            Route::middleware('web')
+            Route::middleware(['web', 'central'])
                 ->group(base_path('routes/web/auth.php'));
 
             Route::middleware(['web', 'auth', 'tenant'])
@@ -143,6 +144,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'central' => CentralDomainOnly::class,
             'tenant' => InitializeTenancyByUser::class,
             'tenant.domain.public' => InitializeTenancyByDomainPublic::class,
         ]);
