@@ -2,24 +2,8 @@ import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { LandingConfig, PackageItem } from '@/features/booking/hooks/useLandingSettings';
 import { cn } from '@/lib/utils';
-import {
-    HeroSection,
-    FeaturesSection,
-    AboutSection,
-    StatsSection,
-    ServicesSection,
-    PricingSection,
-    TeamSection,
-    TestimonialsSection,
-    FAQSection,
-    GallerySection,
-    CTASection,
-    ContactSection,
-    DividerSection,
-    LogoCloudSection,
-    BranchesSection,
-    FooterSection,
-} from './sections';
+import { getSectionComponent } from './sections/templateRegistry';
+import { DividerSection, LogoCloudSection, FooterSection } from './sections';
 
 interface BranchItem {
     id: string; name: string; address: string | null; phone: string | null; email: string | null; whatsapp: string | null; map_embed_url: string | null; latitude: number | null; longitude: number | null; is_default: boolean;
@@ -55,6 +39,8 @@ const allSectionKeys = [
     'hero', 'features', 'about', 'stats', 'services', 'team',
     'testimonials', 'faq', 'gallery', 'cta', 'contact', 'branches', 'divider', 'logo_cloud', 'footer',
 ];
+
+const sharedSections = ['divider', 'logo_cloud', 'footer'];
 
 function SectionWrapper({
     id,
@@ -118,6 +104,7 @@ export default function LandingPreview({
     onRemoveSection,
 }: Props) {
     const colors = { primary: '#7C3AED', secondary: '#10B981', accent: '#F59E0B', background: '#FAFAFA', text: '#171717', text_muted: '#737373', ...config.colors };
+    const template = config.template ?? 'lumina';
 
     const visibleSections = useMemo(() => {
         const order = config.section_order ?? [
@@ -131,14 +118,14 @@ export default function LandingPreview({
         const result: string[] = [];
 
         if (hasHero) {
-result.push('hero');
-}
+            result.push('hero');
+        }
 
         result.push(...middle);
 
         if (hasFooter) {
-result.push('footer');
-}
+            result.push('footer');
+        }
 
         return result;
     }, [config.section_order]);
@@ -153,42 +140,55 @@ result.push('footer');
 
         const commonProps = { colors };
 
-        switch (key) {
-            case 'hero':
-                return <HeroSection data={sectionData as any} colors={colors} tenantName={tenantName} />;
-            case 'features':
-                return <FeaturesSection data={sectionData as any} {...commonProps} />;
-            case 'about':
-                return <AboutSection data={sectionData as any} {...commonProps} />;
-            case 'stats':
-                return <StatsSection data={sectionData as any} {...commonProps} />;
-            case 'services':
-                return <ServicesSection data={sectionData as any} {...commonProps} services={services} packages={packages} categories={categories} branches={branches} settings={settings} />;
-            case 'pricing':
-                return <PricingSection data={sectionData as any} {...commonProps} services={services} categories={categories} />;
-            case 'team':
-                return <TeamSection data={sectionData as any} {...commonProps} team={team} />;
-            case 'testimonials':
-                return <TestimonialsSection data={sectionData as any} {...commonProps} />;
-            case 'faq':
-                return <FAQSection data={sectionData as any} {...commonProps} />;
-            case 'gallery':
-                return <GallerySection data={sectionData as any} {...commonProps} />;
-            case 'cta':
-                return <CTASection data={sectionData as any} {...commonProps} />;
-            case 'contact':
-                return <ContactSection data={sectionData as any} {...commonProps} branches={branches} />;
-            case 'branches':
-                return <BranchesSection data={sectionData as any} {...commonProps} branches={branches} />;
-            case 'divider':
-                return <DividerSection data={sectionData as any} {...commonProps} />;
-            case 'logo_cloud':
-                return <LogoCloudSection data={sectionData as any} {...commonProps} />;
-            case 'footer':
-                return <FooterSection data={sectionData as any} {...commonProps} tenantName={tenantName} />;
-            default:
-                return null;
+        // Shared sections (divider, logo_cloud, footer) are not template-specific
+        if (key === 'divider') {
+            return <DividerSection data={sectionData as any} {...commonProps} />;
         }
+
+        if (key === 'logo_cloud') {
+            return <LogoCloudSection data={sectionData as any} {...commonProps} />;
+        }
+
+        if (key === 'footer') {
+            return <FooterSection data={sectionData as any} {...commonProps} tenantName={tenantName} />;
+        }
+
+        // Get template-specific section component from registry
+        const SectionComponent = getSectionComponent(template, key);
+
+        if (!SectionComponent) {
+            return null;
+        }
+
+        // Build props based on section key
+        const extraProps: Record<string, any> = {};
+
+        if (key === 'hero') {
+            extraProps.tenantName = tenantName;
+        }
+
+        if (key === 'services') {
+            extraProps.services = services;
+            extraProps.packages = packages;
+            extraProps.categories = categories;
+            extraProps.branches = branches;
+            extraProps.settings = settings;
+        }
+
+        if (key === 'pricing') {
+            extraProps.services = services;
+            extraProps.categories = categories;
+        }
+
+        if (key === 'team') {
+            extraProps.team = team;
+        }
+
+        if (key === 'contact' || key === 'branches') {
+            extraProps.branches = branches;
+        }
+
+        return <SectionComponent data={sectionData as any} {...commonProps} {...extraProps} />;
     }
 
     return (

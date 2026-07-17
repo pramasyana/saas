@@ -1,21 +1,7 @@
 import { Head } from '@inertiajs/react';
 import type { ReactNode } from 'react';
-import {
-    HeroSection,
-    FeaturesSection,
-    AboutSection,
-    StatsSection,
-    ServicesSection,
-    TeamSection,
-    TestimonialsSection,
-    FAQSection,
-    GallerySection,
-    CTASection,
-    ContactSection,
-    DividerSection,
-    LogoCloudSection,
-    BranchesSection,
-} from '@/features/booking/components/landing/sections';
+import { getSectionComponent } from '@/features/booking/components/landing/sections/templateRegistry';
+import { DividerSection, LogoCloudSection } from '@/features/booking/components/landing/sections';
 import type { LandingConfig, PackageItem } from '@/features/booking/hooks/useLandingSettings';
 import PublicLayout from '@/layouts/PublicLayout';
 
@@ -49,113 +35,72 @@ interface PageProps {
 export default function LandingPage({ landing, categories, services, packages, branches, team, settings, tenant: tenantInfo }: PageProps) {
     const colors = { primary: '#7C3AED', secondary: '#10B981', accent: '#F59E0B', background: '#FAFAFA', text: '#171717', text_muted: '#737373', ...landing.colors };
     const logo = landing.logo ?? tenantInfo.logo;
+    const template = landing.template ?? 'lumina';
     const sectionOrder = landing.section_order ?? [
         'hero', 'features', 'about', 'stats', 'services', 'team',
         'testimonials', 'faq', 'gallery', 'cta', 'contact', 'branches', 'divider', 'logo_cloud', 'footer',
     ];
 
     const commonProps = { colors };
-    const sectionMap: Record<string, () => ReactNode> = {
-        hero: () => {
-            if (landing.hero?.enabled === false) {
-return null;
-}
 
-            return <HeroSection data={landing.hero ?? {}} colors={colors} tenantName={tenantInfo.name} />;
-        },
-        features: () => {
-            if (landing.features?.enabled === false) {
-return null;
-}
+    function renderSection(key: string): ReactNode {
+        const sectionData = (landing as Record<string, unknown>)[key] as Record<string, unknown> ?? {};
+        const enabled = (sectionData as { enabled?: boolean })?.enabled;
 
-            return <FeaturesSection data={landing.features ?? {}} {...commonProps} />;
-        },
-        about: () => {
-            if (landing.about?.enabled === false) {
-return null;
-}
+        if (enabled === false) {
+            return null;
+        }
 
-            return <AboutSection data={landing.about ?? {}} {...commonProps} />;
-        },
-        stats: () => {
-            if (landing.stats?.enabled === false) {
-return null;
-}
+        // Shared sections (divider, logo_cloud) are not template-specific
+        if (key === 'divider') {
+            return <DividerSection data={sectionData as any} {...commonProps} />;
+        }
 
-            return <StatsSection data={landing.stats ?? {}} {...commonProps} />;
-        },
-        services: () => {
-            if (landing.services?.enabled === false) {
-return null;
-}
+        if (key === 'logo_cloud') {
+            return <LogoCloudSection data={sectionData as any} {...commonProps} />;
+        }
 
-            return <ServicesSection data={landing.services ?? {}} {...commonProps} services={services} packages={packages} categories={categories} branches={branches} settings={settings} />;
-        },
-        team: () => {
-            if (landing.team?.enabled === false) {
-return null;
-}
+        if (key === 'footer') {
+            return null; // Footer handled by PublicLayout
+        }
 
-            return <TeamSection data={landing.team ?? {}} {...commonProps} team={team} />;
-        },
-        testimonials: () => {
-            if (landing.testimonials?.enabled === false) {
-return null;
-}
+        // Get template-specific section component from registry
+        const SectionComponent = getSectionComponent(template, key);
 
-            return <TestimonialsSection data={landing.testimonials ?? {}} {...commonProps} />;
-        },
-        faq: () => {
-            if (landing.faq?.enabled === false) {
-return null;
-}
+        if (!SectionComponent) {
+            return null;
+        }
 
-            return <FAQSection data={landing.faq ?? {}} {...commonProps} />;
-        },
-        gallery: () => {
-            if (landing.gallery?.enabled === false) {
-return null;
-}
+        // Build props based on section key
+        const extraProps: Record<string, any> = {};
 
-            return <GallerySection data={landing.gallery ?? {}} {...commonProps} />;
-        },
-        cta: () => {
-            if (landing.cta?.enabled === false) {
-return null;
-}
+        if (key === 'hero') {
+            extraProps.tenantName = tenantInfo.name;
+        }
 
-            return <CTASection data={landing.cta ?? {}} {...commonProps} />;
-        },
-        contact: () => {
-            if (landing.contact?.enabled === false) {
-return null;
-}
+        if (key === 'services') {
+            extraProps.services = services;
+            extraProps.packages = packages;
+            extraProps.categories = categories;
+            extraProps.branches = branches;
+            extraProps.settings = settings;
+        }
 
-            return <ContactSection data={landing.contact ?? {}} {...commonProps} branches={branches} />;
-        },
-        branches: () => {
-            if (landing.branches?.enabled === false) {
-return null;
-}
+        if (key === 'pricing') {
+            extraProps.services = services;
+            extraProps.categories = categories;
+        }
 
-            return <BranchesSection data={landing.branches ?? {}} {...commonProps} branches={branches} />;
-        },
-        divider: () => {
-            if (landing.divider?.enabled === false) {
-return null;
-}
+        if (key === 'team') {
+            extraProps.team = team;
+        }
 
-            return <DividerSection data={landing.divider ?? {}} {...commonProps} />;
-        },
-        logo_cloud: () => {
-            if (landing.logo_cloud?.enabled === false) {
-return null;
-}
+        if (key === 'contact' || key === 'branches') {
+            extraProps.branches = branches;
+        }
 
-            return <LogoCloudSection data={landing.logo_cloud ?? {}} {...commonProps} />;
-        },
-        footer: () => null,
-    };
+        return <SectionComponent data={sectionData as any} {...commonProps} {...extraProps} />;
+    }
 
     const orderedSections = sectionOrder.filter((key) => key !== 'footer');
 
@@ -163,9 +108,9 @@ return null;
         <PublicLayout tenantName={tenantInfo.name} logo={logo} colors={colors}>
             <Head title={tenantInfo.name} />
             {orderedSections.map((key) => {
-                const render = sectionMap[key];
+                const rendered = renderSection(key);
 
-                return render ? <div key={key}>{render()}</div> : null;
+                return rendered ? <div key={key}>{rendered}</div> : null;
             })}
         </PublicLayout>
     );

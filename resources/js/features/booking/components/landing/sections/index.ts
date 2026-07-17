@@ -14,3 +14,5 @@ export { default as DividerSection } from './DividerSection';
 export { default as LogoCloudSection } from './LogoCloudSection';
 export { default as BranchesSection } from './BranchesSection';
 export { default as FooterSection } from './FooterSection';
+export { templateRegistry, getSectionComponent } from './templateRegistry';
+export type { TemplateSections, SectionKey } from './templateRegistry';
