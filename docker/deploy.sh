@@ -46,6 +46,10 @@ $COMPOSE build --no-cache app
 echo "Starting new container..."
 $COMPOSE up -d --force-recreate --no-deps app
 
+# Recreate nginx with updated volume mounts (removes old public_images volume mount)
+echo "Recreating nginx..."
+$COMPOSE up -d --force-recreate --no-deps nginx
+
 # Remove orphaned public_images volume (replaced by bind mount)
 if docker volume inspect saas_public_images >/dev/null 2>&1; then
     echo "Removing orphaned public_images volume..."
