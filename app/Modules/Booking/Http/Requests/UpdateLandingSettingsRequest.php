@@ -13,6 +13,7 @@ class UpdateLandingSettingsRequest extends FormRequest
         return [
             'enabled' => 'boolean',
             'template' => 'string|max:50',
+            'logo' => 'nullable|string|max:500',
             'section_order' => 'nullable|array',
             'section_order.*' => 'string',
 
