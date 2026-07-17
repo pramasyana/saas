@@ -43,6 +43,7 @@ export default function CompanyBranding({ branding, tenant_id, tenant_name, tena
 
     function inputClass(field: string) {
         const hasError = errors[field];
+
         return [
             'block w-full rounded-lg border px-3.5 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2',
             hasError

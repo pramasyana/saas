@@ -7,8 +7,8 @@ import TenantForm from '@/features/tenants/components/TenantForm';
 import { useUpdateTenant } from '@/features/tenants/hooks/useTenants';
 import type { TenantFormData } from '@/features/tenants/types';
 import AdminLayout from '@/layouts/AdminLayout';
-import TenantSubNav from '@/molecules/TenantSubNav';
 import { cn } from '@/lib/utils';
+import TenantSubNav from '@/molecules/TenantSubNav';
 import { useToastStore } from '@/stores/toast';
 
 interface EditTenantPageProps {

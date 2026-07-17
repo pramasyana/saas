@@ -34,7 +34,10 @@ const paymentMethods = [
 ];
 
 function formatDate(date: string | null): string {
-    if (!date) return '-';
+    if (!date) {
+return '-';
+}
+
     return new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
@@ -63,10 +66,13 @@ export default function InvoiceDetail({ invoiceId }: Props) {
 
     function handlePay() {
         const amount = parseFloat(payAmount);
+
         if (isNaN(amount) || amount <= 0) {
             addToast('error', 'Masukkan jumlah pembayaran yang valid.');
+
             return;
         }
+
         payMutation.mutate(
             { id: invoiceId, data: { payment_method: payMethod, amount } },
             {

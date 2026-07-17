@@ -42,12 +42,18 @@ const perPageOptions = [
 ];
 
 function formatDate(date: string | null): string {
-    if (!date) return '-';
+    if (!date) {
+return '-';
+}
+
     return new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function isOverdue(date: string | null): boolean {
-    if (!date) return false;
+    if (!date) {
+return false;
+}
+
     return new Date(date) < new Date();
 }
 

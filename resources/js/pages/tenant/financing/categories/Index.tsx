@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import TenantLayout from '@/layouts/TenantLayout';
-import { formatPrice } from '@/lib/utils';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
 import {
     useCostCategories,
     useCreateCategory,
@@ -11,6 +8,9 @@ import {
     useDeleteCategory,
 } from '@/features/financing/hooks/useFinancing';
 import type { CostCategory, CostCategoryFormData } from '@/features/financing/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import { formatPrice } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 const container = {
     hidden: { opacity: 0 },
@@ -52,11 +52,15 @@ export default function CategoriesIndex() {
 
         if (editingCategory) {
             updateCategory.mutate({ id: editingCategory.id, data }, {
-                onSuccess: () => { setShowModal(false); setEditingCategory(null); setSelectedColor(COLOR_PRESETS[0]); },
+                onSuccess: () => {
+ setShowModal(false); setEditingCategory(null); setSelectedColor(COLOR_PRESETS[0]); 
+},
             });
         } else {
             createCategory.mutate(data, {
-                onSuccess: () => { setShowModal(false); setSelectedColor(COLOR_PRESETS[0]); },
+                onSuccess: () => {
+ setShowModal(false); setSelectedColor(COLOR_PRESETS[0]); 
+},
             });
         }
     }
@@ -83,7 +87,9 @@ export default function CategoriesIndex() {
                         <p className="mt-1 text-sm text-neutral-500">Kelola kategori untuk pengelompokan biaya operasional.</p>
                     </div>
                     <button
-                        onClick={() => { setEditingCategory(null); setSelectedColor(COLOR_PRESETS[0]); setShowModal(true); }}
+                        onClick={() => {
+ setEditingCategory(null); setSelectedColor(COLOR_PRESETS[0]); setShowModal(true); 
+}}
                         className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-600"
                     >
                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -202,7 +208,9 @@ export default function CategoriesIndex() {
                                 <input name="sort_order" type="number" min="0" defaultValue={editingCategory?.sort_order ?? 0} className="mt-1 w-full rounded-lg border border-neutral-200 px-3 py-2.5 text-sm focus:border-primary focus:outline-none" />
                             </div>
                             <div className="flex justify-end gap-2 pt-2">
-                                <button type="button" onClick={() => { setShowModal(false); setEditingCategory(null); }} className="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-50">Batal</button>
+                                <button type="button" onClick={() => {
+ setShowModal(false); setEditingCategory(null); 
+}} className="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-50">Batal</button>
                                 <button type="submit" disabled={createCategory.isPending || updateCategory.isPending} className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50">
                                     {createCategory.isPending || updateCategory.isPending ? 'Menyimpan...' : 'Simpan'}
                                 </button>

@@ -3,8 +3,8 @@ import { useState } from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import AdminLayout from '@/layouts/AdminLayout';
-import TenantSubNav from '@/molecules/TenantSubNav';
 import { cn } from '@/lib/utils';
+import TenantSubNav from '@/molecules/TenantSubNav';
 import { useToastStore } from '@/stores/toast';
 
 interface Branch {
@@ -106,7 +106,9 @@ export default function CompanyBranches({ tenant_id, tenant_name, tenant_email, 
     }
 
     function confirmDelete() {
-        if (!deletingBranch) return;
+        if (!deletingBranch) {
+return;
+}
 
         router.delete(`/admin/tenants/${tenant_id}/company/branches/${deletingBranch.id}`, {
             onSuccess: () => {
@@ -127,6 +129,7 @@ export default function CompanyBranches({ tenant_id, tenant_name, tenant_email, 
 
     function inputClass(field: string) {
         const hasError = errors[field];
+
         return [
             'block w-full rounded-lg border px-3.5 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2',
             hasError

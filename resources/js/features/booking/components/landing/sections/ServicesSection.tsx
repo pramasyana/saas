@@ -101,7 +101,7 @@ function ServiceCard({
                         )}
                     </div>
                     <Link
-                        href="/booking"
+                        href="/book"
                         className="w-10 h-10 rounded-full border flex items-center justify-center transition-all hover:text-white"
                         style={{ borderColor: colors.primary + '20', color: colors.primary }}
                     >
@@ -197,7 +197,7 @@ function PackageCard({
                     )}
                 </div>
                 <Link
-                    href="/booking"
+                    href="/book"
                     className="w-10 h-10 rounded-full border flex items-center justify-center transition-all hover:text-white"
                     style={{ borderColor: colors.primary + '20', color: colors.primary }}
                 >
@@ -406,7 +406,7 @@ return null;
 
                 <div className="mt-12 text-center">
                     <Link
-                        href="/booking"
+                        href="/book"
                         className="inline-flex items-center gap-2 text-sm font-semibold transition-all hover:gap-4"
                         style={{ color: colors.primary }}
                     >

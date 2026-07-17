@@ -86,13 +86,10 @@ export default function AdminResetPassword({ token, email }: Props) {
                             transition={{ duration: 0.8, ease: 'easeOut' }}
                             className="text-center"
                         >
-                            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm ring-1 ring-white/20">
-                                <span className="text-2xl font-bold text-white">B</span>
+                            <div className="flex items-center gap-3">
+                                <img src="/images/logo-nusentra-n-pw.png" alt="Nusentra" className="h-12 w-auto object-contain" />
+                                <span className="text-3xl font-bold tracking-tighter text-white">Nusentra</span>
                             </div>
-
-                            <h1 className="text-3xl font-bold tracking-tight text-white">
-                                BookCRM
-                            </h1>
                             <p className="mt-4 text-base leading-relaxed text-white/70">
                                 Buat password baru untuk akun Anda.
                                 <br />
@@ -106,7 +103,7 @@ export default function AdminResetPassword({ token, email }: Props) {
                             transition={{ delay: 1.2, duration: 0.6 }}
                             className="absolute bottom-8 text-xs text-white/30"
                         >
-                            &copy; {new Date().getFullYear()} BookCRM. All rights reserved.
+                            &copy; {new Date().getFullYear()} Nusentra. Hak cipta dilindungi.
                         </motion.p>
                     </div>
                 </div>
@@ -120,9 +117,8 @@ export default function AdminResetPassword({ token, email }: Props) {
                     >
                         <div className="mb-10 text-center lg:hidden">
                             <Link href="/" className="inline-flex items-center gap-2.5">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-light text-lg font-bold text-white shadow-sm">
-                                    B
-                                </div>
+                                <img src="/images/logo-nusentra-n-pw.png" alt="Nusentra" className="h-8 w-auto object-contain" />
+                                <span className="text-2xl font-bold tracking-tighter text-[#131b2e]">Nusentra</span>
                             </Link>
                         </div>
 
@@ -261,7 +257,7 @@ export default function AdminResetPassword({ token, email }: Props) {
                             variants={itemVariants}
                             className="mt-8 text-center text-xs text-neutral-400"
                         >
-                            &copy; {new Date().getFullYear()} BookCRM. All rights reserved.
+                            &copy; {new Date().getFullYear()} Nusentra. Hak cipta dilindungi.
                         </motion.p>
                     </motion.div>
                 </div>

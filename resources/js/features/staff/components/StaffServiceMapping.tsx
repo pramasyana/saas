@@ -24,9 +24,11 @@ export default function StaffServiceMapping({ staffId }: StaffServiceMappingProp
             setSelected(new Set(staffServices.map((s) => s.id)));
             setPrimaries(new Set(staffServices.filter((s) => s.is_primary).map((s) => s.id)));
             const pctMap: Record<string, number> = {};
+
             for (const s of staffServices) {
                 pctMap[s.id] = s.commission_percentage;
             }
+
             setPercentages(pctMap);
             setLoaded(true);
         }
@@ -35,19 +37,23 @@ export default function StaffServiceMapping({ staffId }: StaffServiceMappingProp
     function toggle(id: string) {
         setSelected((prev) => {
             const next = new Set(prev);
+
             if (next.has(id)) {
                 next.delete(id);
                 setPrimaries((p) => {
                     const p2 = new Set(p);
                     p2.delete(id);
+
                     return p2;
                 });
             } else {
                 next.add(id);
+
                 if (!(id in percentages)) {
                     setPercentages((prev) => ({ ...prev, [id]: 0 }));
                 }
             }
+
             return next;
         });
     }
@@ -55,11 +61,13 @@ export default function StaffServiceMapping({ staffId }: StaffServiceMappingProp
     function togglePrimary(id: string) {
         setPrimaries((prev) => {
             const next = new Set(prev);
+
             if (next.has(id)) {
                 next.delete(id);
             } else {
                 next.add(id);
             }
+
             return next;
         });
     }
@@ -83,14 +91,28 @@ export default function StaffServiceMapping({ staffId }: StaffServiceMappingProp
     const isLoading = loadingServices || loadingMapped;
     const services = allServices?.data ?? [];
     const hasChanges = (() => {
-        if (!staffServices) return true;
+        if (!staffServices) {
+return true;
+}
+
         const mappedIds = new Set(staffServices.map((s) => s.id));
-        if (mappedIds.size !== selected.size) return true;
+
+        if (mappedIds.size !== selected.size) {
+return true;
+}
+
         for (const id of mappedIds) {
-            if (!selected.has(id)) return true;
+            if (!selected.has(id)) {
+return true;
+}
+
             const original = staffServices.find((s) => s.id === id);
-            if (original && original.commission_percentage !== (percentages[id] ?? 0)) return true;
+
+            if (original && original.commission_percentage !== (percentages[id] ?? 0)) {
+return true;
+}
         }
+
         return false;
     })();
 

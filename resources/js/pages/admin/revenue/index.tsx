@@ -1,5 +1,4 @@
 import { Head } from '@inertiajs/react';
-import { motion } from 'framer-motion';
 import {
     ArcElement,
     BarElement,
@@ -10,6 +9,7 @@ import {
     Title as ChartTitle,
     Tooltip,
 } from 'chart.js';
+import { motion } from 'framer-motion';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import AdminLayout from '@/layouts/AdminLayout';
 import { formatPrice } from '@/lib/utils';
@@ -46,8 +46,14 @@ interface Props {
 }
 
 function formatCompact(value: number): string {
-    if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(1)}jt`;
-    if (value >= 1_000) return `Rp ${(value / 1_000).toFixed(0)}rb`;
+    if (value >= 1_000_000) {
+return `Rp ${(value / 1_000_000).toFixed(1)}jt`;
+}
+
+    if (value >= 1_000) {
+return `Rp ${(value / 1_000).toFixed(0)}rb`;
+}
+
     return formatPrice(value);
 }
 
@@ -233,6 +239,7 @@ export default function Revenue({ title, overview, monthly, by_plan }: Props) {
                     font: { size: 11 },
                     generateLabels: (chart: ChartJS) => {
                         const data = chart.data;
+
                         return (data.labels ?? []).map((label, i) => ({
                             text: `${label}: ${formatCompact(data.datasets[0].data[i] as number)}`,
                             fillStyle: (data.datasets[0].backgroundColor as string[])[i],
@@ -433,6 +440,7 @@ export default function Revenue({ title, overview, monthly, by_plan }: Props) {
                                                 const pct = overview.mrr > 0
                                                     ? ((plan.revenue / overview.mrr) * 100).toFixed(1)
                                                     : '0';
+
                                                 return (
                                                     <tr key={plan.name} className="transition-colors hover:bg-neutral-50/50">
                                                         <td className="px-5 py-4 text-sm font-medium text-neutral-900">{plan.name}</td>

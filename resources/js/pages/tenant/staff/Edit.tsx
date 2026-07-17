@@ -35,9 +35,11 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
@@ -51,7 +53,10 @@ function getInitials(name: string): string {
 }
 
 function formatJoined(date: string | null): string {
-    if (!date) return '-';
+    if (!date) {
+return '-';
+}
+
     return new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
@@ -90,6 +95,7 @@ export default function Edit({ title, staff }: EditPageProps) {
                 },
                 onError: (error: unknown) => {
                     const data = (error as { response?: { data?: { errors?: Record<string, string[]> } } })?.response?.data;
+
                     if (data?.errors) {
                         setErrors(data.errors);
                     } else {

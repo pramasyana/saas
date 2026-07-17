@@ -18,5 +18,5 @@ Route::get('/', function (Request $request) {
     return app(\App\Modules\Admin\Http\Controllers\LandingController::class)->index();
 })->name('home');
 
-Route::get('/booking', [BookingController::class, 'index']);
-Route::get('/booking/{code}/confirmation', [BookingController::class, 'confirmation']);
+Route::get('/book', [BookingController::class, 'index']);
+Route::get('/book/{code}/confirmation', [BookingController::class, 'confirmation']);

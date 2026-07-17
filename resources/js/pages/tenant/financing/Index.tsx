@@ -1,5 +1,4 @@
 import { Head } from '@inertiajs/react';
-import { motion } from 'framer-motion';
 import {
     ArcElement,
     BarElement,
@@ -10,15 +9,16 @@ import {
     Title as ChartTitle,
     Tooltip,
 } from 'chart.js';
+import { motion } from 'framer-motion';
 import { Bar, Doughnut } from 'react-chartjs-2';
-import TenantLayout from '@/layouts/TenantLayout';
-import { formatPrice } from '@/lib/utils';
-import { cn } from '@/lib/utils';
 import {
     useFinancingOverview,
     useFinancingMonthly,
     useFinancingBreakdown,
 } from '@/features/financing/hooks/useFinancing';
+import TenantLayout from '@/layouts/TenantLayout';
+import { formatPrice } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, ChartTitle, Tooltip, Legend);
 
@@ -50,8 +50,14 @@ const iconBgMap: Record<string, string> = {
 };
 
 function formatCompact(value: number): string {
-    if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(1)}jt`;
-    if (value >= 1_000) return `Rp ${(value / 1_000).toFixed(0)}rb`;
+    if (value >= 1_000_000) {
+return `Rp ${(value / 1_000_000).toFixed(1)}jt`;
+}
+
+    if (value >= 1_000) {
+return `Rp ${(value / 1_000).toFixed(0)}rb`;
+}
+
     return formatPrice(value);
 }
 

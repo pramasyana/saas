@@ -115,6 +115,7 @@ export function useCosts(filters: CostFilters) {
 
 export function useCreateCost() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createCost,
         onSuccess: () => {
@@ -129,6 +130,7 @@ export function useCreateCost() {
 
 export function useUpdateCost() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: CostFormData }) => updateCost(id, data),
         onSuccess: () => {
@@ -142,6 +144,7 @@ export function useUpdateCost() {
 
 export function useDeleteCost() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteCost,
         onSuccess: () => {
@@ -156,6 +159,7 @@ export function useDeleteCost() {
 
 export function useImportCosts() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: importCosts,
         onSuccess: () => {
@@ -195,6 +199,7 @@ export function useCostCategories() {
 
 export function useCreateCategory() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: createCategory,
         onSuccess: () => qc.invalidateQueries({ queryKey: ['financing', 'categories'] }),
@@ -203,6 +208,7 @@ export function useCreateCategory() {
 
 export function useUpdateCategory() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: CostCategoryFormData }) => updateCategory(id, data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['financing', 'categories'] }),
@@ -211,6 +217,7 @@ export function useUpdateCategory() {
 
 export function useDeleteCategory() {
     const qc = useQueryClient();
+
     return useMutation({
         mutationFn: deleteCategory,
         onSuccess: () => {

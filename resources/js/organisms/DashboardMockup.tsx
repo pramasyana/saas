@@ -4,11 +4,13 @@ export default function DashboardMockup() {
             <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-2xl shadow-primary/5">
                 <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
                     <div className="flex items-center gap-2.5">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-light text-xs font-bold text-white shadow-sm">
-                            B
-                        </div>
+                        <img
+                            src="/images/logo-nusentra-n-pw.png"
+                            alt="Nusentra"
+                            className="h-6 w-6 object-contain"
+                        />
                         <span className="text-sm font-semibold text-neutral-900">
-                            BookCRM
+                            Nusentra
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -32,9 +34,9 @@ export default function DashboardMockup() {
                     </div>
 
                     <div className="mt-4 grid grid-cols-7 gap-1">
-                        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d) => (
+                        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
                             <div
-                                key={d}
+                                key={`dow-${i}`}
                                 className="text-center text-[11px] font-medium text-neutral-300"
                             >
                                 {d}

@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import Section from '@/molecules/Section';
 
 const faqs = [
@@ -35,34 +36,26 @@ export default function FaqSection() {
     return (
         <Section
             id="faq"
-            heading="Pertanyaan yang sering diajukan."
+            heading="Pertanyaan yang Sering Diajukan"
             subheading="Semua yang perlu Anda ketahui tentang platform kami."
         >
-            <div className="mx-auto max-w-2xl divide-y divide-border">
+            <div className="mx-auto max-w-2xl divide-y divide-neutral-200">
                 {faqs.map((faq, i) => (
                     <div key={i} className="py-4">
                         <button
                             onClick={() => setOpen(open === i ? null : i)}
-                            className="flex w-full items-center justify-between text-left"
+                            className="flex w-full items-center justify-between text-left group"
                         >
-                            <span className="text-sm font-medium text-neutral-900">
+                            <span className="text-sm font-medium text-neutral-900 group-hover:text-primary transition-colors">
                                 {faq.q}
                             </span>
-                            <motion.svg
+                            <motion.div
                                 animate={{ rotate: open === i ? 180 : 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="h-4 w-4 shrink-0 text-neutral-400"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2}
+                                className="shrink-0 ml-4"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                                />
-                            </motion.svg>
+                                <ChevronDown className="h-4 w-4 text-neutral-400" />
+                            </motion.div>
                         </button>
                         <AnimatePresence initial={false}>
                             {open === i && (
@@ -74,7 +67,7 @@ export default function FaqSection() {
                                     transition={{ duration: 0.2 }}
                                     className="overflow-hidden"
                                 >
-                                    <p className="mt-3 text-sm leading-relaxed text-neutral-400">
+                                    <p className="mt-3 text-sm leading-relaxed text-neutral-500">
                                         {faq.a}
                                     </p>
                                 </motion.div>

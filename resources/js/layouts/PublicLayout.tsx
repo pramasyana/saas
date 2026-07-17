@@ -99,7 +99,7 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
                             </Link>
                         ))}
                         <Link
-                            href="/booking"
+                            href="/book"
                             className="hidden lg:inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
                             style={{ backgroundColor: c.primary }}
                         >
@@ -145,7 +145,7 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
                                     </Link>
                                 ))}
                                 <Link
-                                    href="/booking"
+                                    href="/book"
                                     className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white"
                                     style={{ backgroundColor: c.primary }}
                                     onClick={() => setMobileOpen(false)}
@@ -198,7 +198,7 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
                             {['Beranda', 'Layanan', 'Booking', 'Kontak'].map((item) => (
                                 <li key={item}>
                                     <Link
-                                        href={item === 'Booking' ? '/booking' : '/'}
+                                        href={item === 'Booking' ? '/book' : '/'}
                                         className="text-sm transition-colors font-semibold"
                                         style={{ color: c.text_muted }}
                                     >
@@ -246,7 +246,7 @@ export default function PublicLayout({ children, tenantName, logo, colors, solid
 
                 <div className="mx-auto max-w-7xl px-gutter mt-16 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4" style={{ borderColor: 'rgba(203,195,215,0.3)' }}>
                     <p className="text-xs" style={{ color: c.text_muted }}>
-                        &copy; {new Date().getFullYear()} {tenantName ?? 'BookCRM'}. All rights reserved.
+                        &copy; {new Date().getFullYear()} {tenantName ?? 'Nusentra'}. All rights reserved.
                     </p>
                     <div className="flex gap-6 text-xs" style={{ color: c.text_muted }}>
                         <a href="#" className="hover:underline">Privacy Policy</a>

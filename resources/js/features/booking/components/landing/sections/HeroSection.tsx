@@ -33,7 +33,7 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
                     )}
                     {data.cta_text && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="mt-10">
-                            <Link href={data.cta_link || '/booking'}
+                            <Link href={data.cta_link || '/book'}
                                 className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-white px-8 py-4 text-sm font-semibold shadow-2xl transition-all hover:shadow-3xl hover:scale-105"
                                 style={{ color: colors.primary }}
                             >
@@ -85,7 +85,7 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
                     <div className="flex flex-wrap gap-4">
                         {data.cta_text ? (
                             <Link
-                                href={data.cta_link || '/booking'}
+                                href={data.cta_link || '/book'}
                                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
                                 style={{ backgroundColor: colors.primary }}
                             >
@@ -96,7 +96,7 @@ export default function HeroSection({ data, colors, tenantName }: Props) {
                             </Link>
                         ) : (
                             <Link
-                                href="/booking"
+                                href="/book"
                                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
                                 style={{ backgroundColor: colors.primary }}
                             >

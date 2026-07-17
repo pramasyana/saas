@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import Modal from '@/molecules/Modal';
 import { useTenants } from '@/features/tenants/hooks/useTenants';
+import Modal from '@/molecules/Modal';
 
 interface TenantSelectModalProps {
     open: boolean;
@@ -66,7 +66,9 @@ export default function TenantSelectModal({ open, selectedIds, onSelect, onClose
                         type="text"
                         placeholder="Cari tenant..."
                         value={search}
-                        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                        onChange={(e) => {
+ setSearch(e.target.value); setPage(1); 
+}}
                         className="w-full rounded-xl border border-neutral-300 py-2.5 pl-9 pr-4 text-sm shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                         autoFocus
                     />

@@ -1,12 +1,8 @@
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import Select from '@/atoms/Select';
+import { useState } from 'react';
 import Badge from '@/atoms/Badge';
-import AdminLayout from '@/layouts/AdminLayout';
-import Modal from '@/molecules/Modal';
-import Pagination from '@/molecules/Pagination';
+import Select from '@/atoms/Select';
 import {
     useAdminNotifications,
     useCreateNotification,
@@ -15,6 +11,10 @@ import {
     useToggleNotification,
 } from '@/features/admin/hooks/useAdminNotifications';
 import type { AdminNotification, NotificationFilters } from '@/features/admin/hooks/useAdminNotifications';
+import AdminLayout from '@/layouts/AdminLayout';
+import { cn } from '@/lib/utils';
+import Modal from '@/molecules/Modal';
+import Pagination from '@/molecules/Pagination';
 
 interface Props {
     title: string;
@@ -124,24 +124,45 @@ function TrashIcon({ className }: { className?: string }) {
 }
 
 function formatDate(dateStr: string | null) {
-    if (!dateStr) return '-';
+    if (!dateStr) {
+return '-';
+}
+
     return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function formatDateTime(dateStr: string | null) {
-    if (!dateStr) return '-';
+    if (!dateStr) {
+return '-';
+}
+
     return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 function getRelativeTime(dateStr: string) {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'baru saja';
-    if (mins < 60) return `${mins} menit lalu`;
+
+    if (mins < 1) {
+return 'baru saja';
+}
+
+    if (mins < 60) {
+return `${mins} menit lalu`;
+}
+
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} jam lalu`;
+
+    if (hours < 24) {
+return `${hours} jam lalu`;
+}
+
     const days = Math.floor(hours / 24);
-    if (days < 7) return `${days} hari lalu`;
+
+    if (days < 7) {
+return `${days} hari lalu`;
+}
+
     return formatDateTime(dateStr);
 }
 
@@ -264,13 +285,17 @@ export default function AdminNotifications({ title }: Props) {
             updateMutation.mutate(
                 { id: editingId, ...payload },
                 {
-                    onSuccess: () => { resetForm(); setModalOpen(false); },
+                    onSuccess: () => {
+ resetForm(); setModalOpen(false); 
+},
                     onError: (err: any) => {
                         if (err?.response?.data?.errors) {
                             const ve: Record<string, string> = {};
+
                             for (const [k, msgs] of Object.entries(err.response.data.errors)) {
                                 ve[k] = (msgs as string[])[0];
                             }
+
                             setFormErrors(ve);
                         }
                     },
@@ -280,13 +305,17 @@ export default function AdminNotifications({ title }: Props) {
             createMutation.mutate(
                 { ...payload, is_active: true },
                 {
-                    onSuccess: () => { resetForm(); setModalOpen(false); },
+                    onSuccess: () => {
+ resetForm(); setModalOpen(false); 
+},
                     onError: (err: any) => {
                         if (err?.response?.data?.errors) {
                             const ve: Record<string, string> = {};
+
                             for (const [k, msgs] of Object.entries(err.response.data.errors)) {
                                 ve[k] = (msgs as string[])[0];
                             }
+
                             setFormErrors(ve);
                         }
                     },
@@ -412,7 +441,9 @@ export default function AdminNotifications({ title }: Props) {
                     </div>
                 </motion.div>
 
-                <Modal open={modalOpen} onClose={() => { setModalOpen(false); resetForm(); }} size="lg">
+                <Modal open={modalOpen} onClose={() => {
+ setModalOpen(false); resetForm(); 
+}} size="lg">
                     <form onSubmit={handleSubmit}>
                         <div className="border-b border-border px-6 py-4">
                             <div className="flex items-center justify-between">
@@ -421,7 +452,9 @@ export default function AdminNotifications({ title }: Props) {
                                 </h2>
                                 <button
                                     type="button"
-                                    onClick={() => { setModalOpen(false); resetForm(); }}
+                                    onClick={() => {
+ setModalOpen(false); resetForm(); 
+}}
                                     className="rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600"
                                 >
                                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -500,7 +533,9 @@ export default function AdminNotifications({ title }: Props) {
                         <div className="flex items-center justify-end gap-3 border-t border-border px-6 py-4">
                             <button
                                 type="button"
-                                onClick={() => { setModalOpen(false); resetForm(); }}
+                                onClick={() => {
+ setModalOpen(false); resetForm(); 
+}}
                                 className="rounded-xl border border-neutral-300 px-5 py-2.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
                             >
                                 Batal
@@ -581,6 +616,7 @@ export default function AdminNotifications({ title }: Props) {
                                         {notifications.map((n) => {
                                             const tc = typeConfig[n.type] ?? typeConfig.info;
                                             const scheduled = isScheduled(n);
+
                                             return (
                                                 <tr key={n.id} className={cn('transition-colors hover:bg-neutral-50/50', !n.is_active && 'opacity-60')}>
                                                     <td className="px-5 py-4">
@@ -625,7 +661,11 @@ export default function AdminNotifications({ title }: Props) {
                                                                 <PencilIcon className="h-4 w-4" />
                                                             </button>
                                                             <button
-                                                                onClick={() => { if (confirm('Hapus notifikasi ini?')) deleteMutation.mutate(n.id); }}
+                                                                onClick={() => {
+ if (confirm('Hapus notifikasi ini?')) {
+deleteMutation.mutate(n.id);
+} 
+}}
                                                                 className="rounded-lg p-2 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-danger"
                                                                 title="Hapus"
                                                             >
@@ -645,6 +685,7 @@ export default function AdminNotifications({ title }: Props) {
                             {notifications.map((n) => {
                                 const tc = typeConfig[n.type] ?? typeConfig.info;
                                 const scheduled = isScheduled(n);
+
                                 return (
                                     <div key={n.id} className={cn('rounded-xl border border-border bg-white p-4 shadow-sm', !n.is_active && 'opacity-60')}>
                                         <div className="flex items-start justify-between gap-2">
@@ -681,7 +722,11 @@ export default function AdminNotifications({ title }: Props) {
                                                     <PencilIcon className="h-3.5 w-3.5" />
                                                 </button>
                                                 <button
-                                                    onClick={() => { if (confirm('Hapus notifikasi ini?')) deleteMutation.mutate(n.id); }}
+                                                    onClick={() => {
+ if (confirm('Hapus notifikasi ini?')) {
+deleteMutation.mutate(n.id);
+} 
+}}
                                                     className="rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-danger"
                                                 >
                                                     <TrashIcon className="h-3.5 w-3.5" />

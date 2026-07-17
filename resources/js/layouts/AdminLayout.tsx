@@ -2,9 +2,9 @@ import { Link, router, usePage } from '@inertiajs/react';
 import type {ReactNode} from 'react';
 import ToastContainer from '@/atoms/Toast';
 import { cn } from '@/lib/utils';
-import { useSidebarStore } from '@/stores/sidebar';
 import AdminNotificationBell from '@/molecules/AdminNotificationBell';
 import UserDropdown from '@/molecules/UserDropdown';
+import { useSidebarStore } from '@/stores/sidebar';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -185,15 +185,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     'flex h-16 shrink-0 items-center border-b border-border transition-all duration-300',
                     collapsed ? 'lg:justify-center lg:px-0' : 'gap-2.5 px-6',
                 )}>
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-light text-sm font-bold text-white shadow-sm">
-                        B
-                    </div>
-                    <span className={cn(
-                        'overflow-hidden whitespace-nowrap text-base font-bold tracking-tight text-neutral-900 transition-all duration-300',
-                        collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100',
-                    )}>
-                        BookCRM
-                    </span>
+                    <img src="/images/logo-nusentra-n-pw.png" alt="Nusentra" className="h-8 w-auto object-contain" />
+                    <span className={cn('overflow-hidden whitespace-nowrap text-base font-bold tracking-tight text-neutral-900 transition-all duration-300', collapsed ? 'lg:w-0 lg:opacity-0' : 'w-auto opacity-100')}>Nusentra</span>
                 </div>
 
                 <div className="flex-1 overflow-y-auto px-2 py-4 lg:px-3">

@@ -1,10 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Badge from '@/atoms/Badge';
-import Card from '@/molecules/Card';
+import { useTenantNotifications } from '@/features/tenant/hooks/useTenantNotifications';
 import TenantLayout from '@/layouts/TenantLayout';
 import { cn, formatNumber } from '@/lib/utils';
-import { useTenantNotifications } from '@/features/tenant/hooks/useTenantNotifications';
+import Card from '@/molecules/Card';
 
 interface UserInfo {
     name: string;
@@ -96,16 +96,31 @@ const iconRingMap: Record<string, string> = {
 
 function timeAgo(dateStr: string): string {
     const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-    if (diff < 60) return 'Baru saja';
-    if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
+
+    if (diff < 60) {
+return 'Baru saja';
+}
+
+    if (diff < 3600) {
+return `${Math.floor(diff / 60)} menit lalu`;
+}
+
+    if (diff < 86400) {
+return `${Math.floor(diff / 3600)} jam lalu`;
+}
+
     const days = Math.floor(diff / 86400);
+
     return `${days} hari lalu`;
 }
 
 function GrowthBadge({ value }: { value: number }) {
-    if (value === 0) return null;
+    if (value === 0) {
+return null;
+}
+
     const isPositive = value > 0;
+
     return (
         <span
             className={cn(
@@ -149,6 +164,7 @@ function StatIcon({ name }: { name: string }) {
             </svg>
         ),
     };
+
     return icons[name] ?? icons.revenue;
 }
 
@@ -266,6 +282,7 @@ export default function TenantDashboard({ user, subscription, stats, urgent_book
                                 danger: { border: 'border-red-200', bg: 'bg-red-50', dot: 'bg-red-500' },
                             };
                             const s = styleMap[n.type] ?? styleMap.info;
+
                             return (
                                 <div key={n.id} className={cn('flex items-start gap-3 rounded-xl border p-4', s.border, s.bg)}>
                                     <span className={cn('mt-1 h-2 w-2 shrink-0 rounded-full', s.dot)} />

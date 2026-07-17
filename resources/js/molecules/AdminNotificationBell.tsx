@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
+import { useState, useRef, useEffect } from 'react';
 import { useAdminNotifications, useMarkNotificationRead } from '@/features/admin/hooks/useAdminNotifications';
 
 const typeStyles: Record<string, string> = {
@@ -19,9 +19,16 @@ export default function AdminNotificationBell() {
 
     const notifications = data?.data ?? [];
     const activeNotifications = notifications.filter((n) => {
-        if (!n.is_active) return false;
-        if (!userId) return true;
+        if (!n.is_active) {
+return false;
+}
+
+        if (!userId) {
+return true;
+}
+
         const readBy = n.read_by ?? [];
+
         return !readBy.includes(userId);
     });
     const unreadCount = activeNotifications.length;
@@ -33,6 +40,7 @@ export default function AdminNotificationBell() {
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 

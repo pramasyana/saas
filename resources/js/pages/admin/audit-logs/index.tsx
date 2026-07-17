@@ -1,12 +1,12 @@
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import Select from '@/atoms/Select';
 import { useAuditLogs } from '@/features/admin/hooks/useAuditLogs';
 import type { AuditLogFilters } from '@/features/admin/hooks/useAuditLogs';
 import AdminLayout from '@/layouts/AdminLayout';
-import Pagination from '@/molecules/Pagination';
 import { cn } from '@/lib/utils';
+import Pagination from '@/molecules/Pagination';
 
 interface AuditLogsPageProps {
     title: string;
@@ -86,12 +86,27 @@ function formatTime(dateStr: string) {
 function getTimeAgo(dateStr: string) {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'Baru saja';
-    if (mins < 60) return `${mins}m lalu`;
+
+    if (mins < 1) {
+return 'Baru saja';
+}
+
+    if (mins < 60) {
+return `${mins}m lalu`;
+}
+
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}j lalu`;
+
+    if (hours < 24) {
+return `${hours}j lalu`;
+}
+
     const days = Math.floor(hours / 24);
-    if (days < 7) return `${days}h lalu`;
+
+    if (days < 7) {
+return `${days}h lalu`;
+}
+
     return formatDate(dateStr);
 }
 
@@ -103,6 +118,7 @@ function getAdminColor(name: string) {
         'bg-warning-light text-warning',
         'bg-danger-light text-danger',
     ];
+
     return colors[name.length % colors.length];
 }
 
@@ -367,6 +383,7 @@ export default function AuditLogs({ title }: AuditLogsPageProps) {
                                     <tbody className="divide-y divide-border">
                                         {logs.map((entry, idx) => {
                                             const action = getActionConfig(entry.action);
+
                                             return (
                                                 <tr key={entry.id} className="transition-colors hover:bg-neutral-50/50">
                                                     <td className="whitespace-nowrap px-5 py-4">
@@ -431,6 +448,7 @@ export default function AuditLogs({ title }: AuditLogsPageProps) {
                         <motion.div variants={itemAnim} className="sm:hidden space-y-3">
                             {logs.map((entry) => {
                                 const action = getActionConfig(entry.action);
+
                                 return (
                                     <div key={entry.id} className="rounded-xl border border-border bg-white p-4 shadow-sm">
                                         <div className="flex items-start justify-between gap-3">

@@ -1,14 +1,14 @@
 import { Head, Link } from '@inertiajs/react';
-import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Select from '@/atoms/Select';
+import { useState, useRef, useEffect } from 'react';
 import Badge from '@/atoms/Badge';
+import Select from '@/atoms/Select';
 import { useTenantActivity } from '@/features/tenants/hooks/useTenantActivity';
 import type { ActivityFilters } from '@/features/tenants/hooks/useTenantActivity';
-import AdminLayout from '@/layouts/AdminLayout';
 import { useDebounce } from '@/hooks/useDebounce';
-import Pagination from '@/molecules/Pagination';
+import AdminLayout from '@/layouts/AdminLayout';
 import { cn } from '@/lib/utils';
+import Pagination from '@/molecules/Pagination';
 
 interface ActivityPageProps {
     title: string;
@@ -76,7 +76,10 @@ function ExternalIcon({ className }: { className?: string }) {
 }
 
 function formatDate(dateStr: string | null) {
-    if (!dateStr) return '-';
+    if (!dateStr) {
+return '-';
+}
+
     return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
@@ -89,6 +92,7 @@ function getAvatarColor(name: string | null) {
         'bg-danger-light text-danger',
     ];
     const idx = (name ?? '').length % colors.length;
+
     return colors[idx];
 }
 
@@ -296,7 +300,9 @@ export default function Activity({ title }: ActivityPageProps) {
                         </div>
                         {(filters.search || filters.status) && (
                             <button
-                                onClick={() => { setSearchInput(''); setFilters({ page: 1, per_page: 15 }); }}
+                                onClick={() => {
+ setSearchInput(''); setFilters({ page: 1, per_page: 15 }); 
+}}
                                 className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-dark"
                             >
                                 Reset Filter
@@ -323,6 +329,7 @@ export default function Activity({ title }: ActivityPageProps) {
                                     <tbody className="divide-y divide-border">
                                         {tenants.map((t, idx) => {
                                             const status = statusConfig[t.subscription?.status ?? 'inactive'];
+
                                             return (
                                                 <tr
                                                     key={t.id}
@@ -419,6 +426,7 @@ export default function Activity({ title }: ActivityPageProps) {
                         <motion.div variants={itemAnim} className="sm:hidden space-y-3">
                             {tenants.map((t) => {
                                 const status = statusConfig[t.subscription?.status ?? 'inactive'];
+
                                 return (
                                     <div key={t.id} className="rounded-xl border border-border bg-white p-4 shadow-sm">
                                         <div className="flex items-start justify-between">

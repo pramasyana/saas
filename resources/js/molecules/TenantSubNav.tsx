@@ -27,14 +27,19 @@ const avatarColors = [
 
 function getAvatarColor(name: string): string {
     let hash = 0;
+
     for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
+
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
 function getInitials(name: string | null | undefined): string {
-    if (!name) return 'T';
+    if (!name) {
+return 'T';
+}
+
     return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 }
 
@@ -42,7 +47,10 @@ export default function TenantSubNav({ tenantId, tenantName, tenantEmail }: Tena
     const { url = '' } = usePage();
 
     function isActive(tabHref: string) {
-        if (!tabHref) return url === `/admin/tenants/${tenantId}` || url === `/admin/tenants/${tenantId}/edit`;
+        if (!tabHref) {
+return url === `/admin/tenants/${tenantId}` || url === `/admin/tenants/${tenantId}/edit`;
+}
+
         return url === `/admin/tenants/${tenantId}${tabHref}`;
     }
 
@@ -68,6 +76,7 @@ export default function TenantSubNav({ tenantId, tenantName, tenantEmail }: Tena
             <div className="flex gap-0.5 overflow-x-auto border-t border-neutral-100 px-4">
                 {tabs.map((tab) => {
                     const active = isActive(tab.href);
+
                     return (
                         <Link
                             key={tab.label}

@@ -174,7 +174,9 @@ export default function SidebarSectionList({
     );
 
     function handleDragEnd(event: DragEndEvent) {
-        if (!onAdd || !onReorder) return;
+        if (!onAdd || !onReorder) {
+return;
+}
 
         const { active, over } = event;
 

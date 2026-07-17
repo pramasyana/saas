@@ -3,8 +3,8 @@ import { useState } from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import AdminLayout from '@/layouts/AdminLayout';
-import TenantSubNav from '@/molecules/TenantSubNav';
 import { cn } from '@/lib/utils';
+import TenantSubNav from '@/molecules/TenantSubNav';
 import { useToastStore } from '@/stores/toast';
 
 interface Holiday {
@@ -79,7 +79,10 @@ export default function CompanyHolidays({ tenant_id, tenant_name, tenant_email, 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const payload = { ...data };
-        if (!payload.description) delete payload.description;
+
+        if (!payload.description) {
+delete payload.description;
+}
 
         if (isEditing && editingHoliday) {
             put(`/admin/tenants/${tenant_id}/company/holidays/${editingHoliday.id}`, {
@@ -99,7 +102,9 @@ export default function CompanyHolidays({ tenant_id, tenant_name, tenant_email, 
     }
 
     function confirmDelete() {
-        if (!deletingHoliday) return;
+        if (!deletingHoliday) {
+return;
+}
 
         router.delete(`/admin/tenants/${tenant_id}/company/holidays/${deletingHoliday.id}`, {
             onSuccess: () => {
@@ -115,6 +120,7 @@ export default function CompanyHolidays({ tenant_id, tenant_name, tenant_email, 
 
     function inputClass(field: string) {
         const hasError = errors[field];
+
         return [
             'block w-full rounded-lg border px-3.5 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2',
             hasError
@@ -125,6 +131,7 @@ export default function CompanyHolidays({ tenant_id, tenant_name, tenant_email, 
 
     function formatDate(dateStr: string) {
         const date = new Date(dateStr);
+
         return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
@@ -133,8 +140,14 @@ export default function CompanyHolidays({ tenant_id, tenant_name, tenant_email, 
         const start = new Date(holiday.date_start);
         const end = new Date(holiday.date_end);
 
-        if (now > end) return { label: 'Selesai', className: 'bg-neutral-100 text-neutral-500' };
-        if (now >= start && now <= end) return { label: 'Berlangsung', className: 'bg-warning/10 text-warning' };
+        if (now > end) {
+return { label: 'Selesai', className: 'bg-neutral-100 text-neutral-500' };
+}
+
+        if (now >= start && now <= end) {
+return { label: 'Berlangsung', className: 'bg-warning/10 text-warning' };
+}
+
         return { label: 'Mendatang', className: 'bg-primary-50 text-primary' };
     }
 
@@ -197,6 +210,7 @@ export default function CompanyHolidays({ tenant_id, tenant_name, tenant_email, 
                                     <tbody className="divide-y divide-neutral-50">
                                         {holidays.data.map((holiday) => {
                                             const status = getStatus(holiday);
+
                                             return (
                                                 <tr key={holiday.id} className="transition-colors hover:bg-neutral-50">
                                                     <td className="whitespace-nowrap px-6 py-4">

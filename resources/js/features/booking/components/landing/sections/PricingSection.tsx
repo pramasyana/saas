@@ -74,7 +74,7 @@ function PricingCard({ item, colors, index }: { item: PricingItem; colors: NonNu
             </ul>
             <div className="mt-8">
                 <Link
-                    href={item.cta_link || '/booking'}
+                    href={item.cta_link || '/book'}
                     className={cn(
                         'flex items-center justify-center rounded-xl px-6 py-3.5 text-sm font-semibold transition-all hover:shadow-lg',
                         item.highlighted
@@ -122,7 +122,7 @@ continue;
                     description: s.description ?? '',
                     features: [`Durasi ${s.duration} menit`],
                     cta_text: 'Booking Sekarang',
-                    cta_link: '/booking',
+                    cta_link: '/book',
                     highlighted: false,
                     highlight_label: undefined,
                 })),
@@ -142,7 +142,7 @@ continue;
                     description: s.description ?? '',
                     features: [`Durasi ${s.duration} menit`],
                     cta_text: 'Booking Sekarang',
-                    cta_link: '/booking',
+                    cta_link: '/book',
                     highlighted: false,
                     highlight_label: undefined,
                 })),

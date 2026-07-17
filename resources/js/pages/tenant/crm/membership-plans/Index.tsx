@@ -1,10 +1,9 @@
 import { Head, Link, router } from '@inertiajs/react';
 import axios from 'axios';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import Badge from '@/atoms/Badge';
 import Select from '@/atoms/Select';
-import Pagination from '@/molecules/Pagination';
 import MembershipPlanDeleteDialog from '@/features/crm/components/MembershipPlanDeleteDialog';
 import {
     useDeleteMembershipPlan,
@@ -13,8 +12,9 @@ import {
 } from '@/features/crm/hooks/useMembershipPlans';
 import type { CustomerMembershipPlan } from '@/features/crm/types';
 import TenantLayout from '@/layouts/TenantLayout';
-import { useToastStore } from '@/stores/toast';
 import { cn } from '@/lib/utils';
+import Pagination from '@/molecules/Pagination';
+import { useToastStore } from '@/stores/toast';
 
 function extractErrors(error: unknown): Record<string, string[]> {
     if (axios.isAxiosError(error) && error.response?.data) {
@@ -121,9 +121,11 @@ function formatPrice(price: number): string {
     if (price >= 1000000) {
         return `Rp ${(price / 1000000).toFixed(price % 1000000 === 0 ? 0 : 1).replace('.', ',')}jt`;
     }
+
     if (price >= 1000) {
         return `Rp ${(price / 1000).toFixed(price % 1000 === 0 ? 0 : 0).replace('.', ',')}rb`;
     }
+
     return `Rp ${price.toLocaleString('id-ID')}`;
 }
 
@@ -215,7 +217,9 @@ export default function MembershipPlansIndexPage() {
     const stats = statsData?.data;
 
     function handleDelete() {
-        if (!planToDelete) return;
+        if (!planToDelete) {
+return;
+}
 
         deleteMutation.mutate(planToDelete.id, {
             onSuccess: () => {
@@ -228,7 +232,9 @@ export default function MembershipPlansIndexPage() {
     const deleteError = (() => {
         const err = deleteMutation.error;
 
-        if (!err) return undefined;
+        if (!err) {
+return undefined;
+}
 
         if (err instanceof Error && 'response' in err) {
             const axiosErr = err as { response?: { data?: { message?: string } } };
@@ -345,7 +351,9 @@ export default function MembershipPlansIndexPage() {
                         <input
                             type="text"
                             value={search}
-                            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                            onChange={(e) => {
+ setSearch(e.target.value); setPage(1); 
+}}
                             placeholder="Cari paket..."
                             className="w-full rounded-xl border border-neutral-300 py-2.5 pl-9 pr-4 text-sm shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                         />
@@ -353,7 +361,9 @@ export default function MembershipPlansIndexPage() {
                     <div className="flex flex-wrap items-center gap-3">
                         <Select
                             value={billingInterval}
-                            onChange={(v) => { setBillingInterval(v); setPage(1); }}
+                            onChange={(v) => {
+ setBillingInterval(v); setPage(1); 
+}}
                             options={[
                                 { value: '', label: 'Semua Interval' },
                                 { value: 'monthly', label: 'Bulanan' },
@@ -364,7 +374,9 @@ export default function MembershipPlansIndexPage() {
                         />
                         <Select
                             value={statusFilter}
-                            onChange={(v) => { setStatusFilter(v); setPage(1); }}
+                            onChange={(v) => {
+ setStatusFilter(v); setPage(1); 
+}}
                             options={[
                                 { value: '', label: 'Semua Status' },
                                 { value: 'true', label: 'Aktif' },
@@ -375,7 +387,9 @@ export default function MembershipPlansIndexPage() {
                         />
                         <Select
                             value={String(perPage)}
-                            onChange={(v) => { setPerPage(Number(v)); setPage(1); }}
+                            onChange={(v) => {
+ setPerPage(Number(v)); setPage(1); 
+}}
                             options={[
                                 { value: '10', label: '10' },
                                 { value: '15', label: '15' },
@@ -624,7 +638,9 @@ export default function MembershipPlansIndexPage() {
                     plan={planToDelete}
                     deleting={deleteMutation.isPending}
                     error={deleteError}
-                    onClose={() => { setPlanToDelete(null); deleteMutation.reset(); }}
+                    onClose={() => {
+ setPlanToDelete(null); deleteMutation.reset(); 
+}}
                     onConfirm={handleDelete}
                 />
             )}

@@ -30,6 +30,7 @@ export default function HowItWorksSection() {
             <div className="relative mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
                 {steps.map((step, i) => {
                     const Icon = step.icon;
+
                     return (
                         <motion.div
                             key={step.title}

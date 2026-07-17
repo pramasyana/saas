@@ -71,10 +71,8 @@ export default function TenantForgotPassword({ flash }: Props) {
                             transition={{ duration: 0.8, ease: 'easeOut' }}
                             className="mb-12 flex items-center gap-3"
                         >
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white">
-                                <span className="text-2xl font-bold text-[#6b38d4]">B</span>
-                            </div>
-                            <span className="text-3xl font-bold tracking-tighter text-white">BookCRM</span>
+                            <img src="/images/logo-nusentra-n-pw.png" alt="Nusentra" className="h-10 w-auto object-contain" />
+                            <span className="text-3xl font-bold tracking-tighter text-white">Nusentra</span>
                         </motion.div>
 
                         <motion.h1
@@ -153,7 +151,7 @@ export default function TenantForgotPassword({ flash }: Props) {
                             transition={{ delay: 1.2, duration: 0.6 }}
                             className="absolute bottom-16 left-16 text-sm text-white/40"
                         >
-                            &copy; {new Date().getFullYear()} BookCRM. Crafted for Visionaries.
+                            &copy; {new Date().getFullYear()} Nusentra. Hak cipta dilindungi.
                         </motion.p>
                     </div>
                 </div>
@@ -167,10 +165,8 @@ export default function TenantForgotPassword({ flash }: Props) {
                         className="w-full max-w-md"
                     >
                         <motion.div variants={itemVariants} className="mb-12 flex items-center gap-2 lg:hidden">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#6b38d4]">
-                                <span className="text-xl font-bold text-white">B</span>
-                            </div>
-                            <span className="text-2xl font-bold tracking-tighter text-[#131b2e]">BookCRM</span>
+                            <img src="/images/logo-nusentra-n-pw.png" alt="Nusentra" className="h-8 w-auto object-contain" />
+                            <span className="text-2xl font-bold tracking-tighter text-[#131b2e]">Nusentra</span>
                         </motion.div>
 
                         <motion.div variants={itemVariants} className="mb-10">

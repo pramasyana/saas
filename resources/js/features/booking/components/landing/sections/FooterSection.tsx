@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function FooterSection({ data, colors, tenantName }: Props) {
-    const text = data.copyright_text ?? `© ${new Date().getFullYear()} ${tenantName ?? 'BookCRM'}. All rights reserved.`;
+    const text = data.copyright_text ?? `© ${new Date().getFullYear()} ${tenantName ?? 'Nusentra'}. All rights reserved.`;
 
     return (
         <footer className="border-t bg-white py-6" style={{ borderColor: colors.primary + '10' }}>

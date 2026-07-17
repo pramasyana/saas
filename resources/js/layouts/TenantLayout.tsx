@@ -1,9 +1,10 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
+import { useEffect, useRef } from 'react';
 import ToastContainer from '@/atoms/Toast';
+import { cn } from '@/lib/utils';
 import TenantNotificationBell from '@/molecules/TenantNotificationBell';
 import UserDropdown from '@/molecules/UserDropdown';
-import { cn } from '@/lib/utils';
 import { useSidebarStore } from '@/stores/sidebar';
 
 interface TenantLayoutProps {
@@ -372,18 +373,30 @@ const financingNavItems = [
 export default function TenantLayout({ children }: TenantLayoutProps) {
     const { mobileOpen, setMobileOpen } = useSidebarStore();
     const { url = '' } = usePage();
+    const sidebarRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const el = sidebarRef.current?.querySelector('[data-active="true"]');
+        if (el) {
+            el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }, [url]);
 
     function handleLogout() {
         router.post('/logout');
     }
 
     function isActive(href: string) {
-        if (href === '/dashboard') return url === href;
-        return url === href || url.startsWith(href + '/');
+        if (href === '/dashboard') {
+            return url === href;
+        }
+
+        return url === href;
     }
 
-    const { impersonating } = usePage().props as {
+    const { impersonating, tenant_name } = usePage().props as {
         impersonating?: boolean;
+        tenant_name?: string;
     };
 
     return (
@@ -393,15 +406,14 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                 mobileOpen ? 'translate-x-0' : '-translate-x-full',
             )}>
                 <div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-border px-6">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-light text-sm font-bold text-white shadow-sm">
-                        B
+                    <img src="/images/logo-nusentra-n-pw.png" alt="Nusentra" className="h-8 w-auto object-contain" />
+                    <div className="flex flex-col">
+                        <span className="text-base font-bold tracking-tight text-neutral-900 leading-none">Nusentra</span>
+                        <span className="text-xs font-medium text-neutral-400 leading-none mt-0.5">Tenant Panel</span>
                     </div>
-                    <span className="text-base font-bold tracking-tight text-neutral-900">
-                        BookCRM
-                    </span>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-3 py-4">
+                <div ref={sidebarRef} className="flex-1 overflow-y-auto px-3 py-4">
                     <p className="mb-2 px-3 text-xs font-semibold tracking-wider text-neutral-400">
                         Menu Utama
                     </p>
@@ -413,6 +425,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    data-active={active}
                                     className={cn(
                                         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
                                         active
@@ -441,6 +454,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    data-active={active}
                                     className={cn(
                                         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
                                         active
@@ -469,6 +483,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    data-active={active}
                                     className={cn(
                                         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
                                         active
@@ -497,6 +512,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    data-active={active}
                                     className={cn(
                                         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
                                         active
@@ -525,6 +541,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    data-active={active}
                                     className={cn(
                                         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
                                         active
@@ -553,6 +570,7 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    data-active={active}
                                     className={cn(
                                         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
                                         active
@@ -622,6 +640,9 @@ export default function TenantLayout({ children }: TenantLayoutProps) {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     </button>
+                    {tenant_name && (
+                        <span className="text-base font-bold tracking-tight text-neutral-900">{tenant_name}</span>
+                    )}
                     <div className="flex-1" />
                     <div className="flex items-center gap-3">
                         <TenantNotificationBell />

@@ -69,11 +69,17 @@ const categoryLabels: Record<string, string> = {
 
 function groupFeatures(features: PlanFeatureItem[]) {
     const grouped: Record<string, PlanFeatureItem[]> = {};
+
     for (const f of features) {
         const cat = f.definition.category || 'features';
-        if (!grouped[cat]) grouped[cat] = [];
+
+        if (!grouped[cat]) {
+grouped[cat] = [];
+}
+
         grouped[cat].push(f);
     }
+
     return grouped;
 }
 
@@ -106,7 +112,9 @@ export default function TenantSubscription({ title, tenant_id, tenant_name, tena
     }
 
     function handleSave() {
-        if (!selectedPlanId || !subscription) return;
+        if (!selectedPlanId || !subscription) {
+return;
+}
 
         changePlanMutation.mutate(
             { id: subscription.id, plan_id: selectedPlanId, billing_interval: billingInterval },
@@ -127,6 +135,7 @@ export default function TenantSubscription({ title, tenant_id, tenant_name, tena
 
     const getPlanPriceDisplay = (plan: PlanItem) => {
         const price = getPlanPrice(plan);
+
         return formatPrice(price);
     };
 

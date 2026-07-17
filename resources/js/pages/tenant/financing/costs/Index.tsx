@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import TenantLayout from '@/layouts/TenantLayout';
-import { formatPrice } from '@/lib/utils';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
 import {
     useCosts,
     useCreateCost,
@@ -14,6 +11,9 @@ import {
     useFinancingStats,
 } from '@/features/financing/hooks/useFinancing';
 import type { Cost, CostFormData } from '@/features/financing/types';
+import TenantLayout from '@/layouts/TenantLayout';
+import { formatPrice } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 const container = {
     hidden: { opacity: 0 },
@@ -85,11 +85,15 @@ export default function CostsIndex() {
 
         if (editingCost) {
             updateCost.mutate({ id: editingCost.id, data }, {
-                onSuccess: () => { setShowModal(false); setEditingCost(null); },
+                onSuccess: () => {
+ setShowModal(false); setEditingCost(null); 
+},
             });
         } else {
             createCost.mutate(data, {
-                onSuccess: () => { setShowModal(false); },
+                onSuccess: () => {
+ setShowModal(false); 
+},
             });
         }
     }
@@ -97,7 +101,9 @@ export default function CostsIndex() {
     function handleImport(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         importCosts.mutate(csvText, {
-            onSuccess: () => { setShowImport(false); setCsvText(''); },
+            onSuccess: () => {
+ setShowImport(false); setCsvText(''); 
+},
         });
     }
 
@@ -132,7 +138,9 @@ export default function CostsIndex() {
                             Import CSV
                         </button>
                         <button
-                            onClick={() => { setEditingCost(null); setShowModal(true); }}
+                            onClick={() => {
+ setEditingCost(null); setShowModal(true); 
+}}
                             className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-600"
                         >
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -179,7 +187,9 @@ export default function CostsIndex() {
                     </div>
                     <select
                         value={categoryId}
-                        onChange={(e) => { setCategoryId(e.target.value); setPage(1); }}
+                        onChange={(e) => {
+ setCategoryId(e.target.value); setPage(1); 
+}}
                         className="rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm text-neutral-700 focus:border-primary focus:outline-none"
                     >
                         <option value="">Semua Kategori</option>
@@ -190,18 +200,24 @@ export default function CostsIndex() {
                     <input
                         type="date"
                         value={dateFrom}
-                        onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
+                        onChange={(e) => {
+ setDateFrom(e.target.value); setPage(1); 
+}}
                         className="rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm text-neutral-700 focus:border-primary focus:outline-none"
                     />
                     <input
                         type="date"
                         value={dateTo}
-                        onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
+                        onChange={(e) => {
+ setDateTo(e.target.value); setPage(1); 
+}}
                         className="rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm text-neutral-700 focus:border-primary focus:outline-none"
                     />
                     <select
                         value={perPage}
-                        onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
+                        onChange={(e) => {
+ setPerPage(Number(e.target.value)); setPage(1); 
+}}
                         className="rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm text-neutral-700 focus:border-primary focus:outline-none"
                     >
                         {PER_PAGE_OPTIONS.map((n) => (
@@ -325,7 +341,11 @@ export default function CostsIndex() {
                                         {Array.from({ length: Math.min(meta.last_page, 5) }, (_, i) => {
                                             const start = Math.max(1, Math.min(meta.current_page - 2, meta.last_page - 4));
                                             const p = start + i;
-                                            if (p > meta.last_page) return null;
+
+                                            if (p > meta.last_page) {
+return null;
+}
+
                                             return (
                                                 <button
                                                     key={p}
@@ -394,7 +414,9 @@ export default function CostsIndex() {
                                 <textarea name="notes" rows={3} defaultValue={editingCost?.notes ?? ''} className="mt-1 w-full rounded-lg border border-neutral-200 px-3 py-2.5 text-sm focus:border-primary focus:outline-none" />
                             </div>
                             <div className="flex justify-end gap-2 pt-2">
-                                <button type="button" onClick={() => { setShowModal(false); setEditingCost(null); }} className="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-50">Batal</button>
+                                <button type="button" onClick={() => {
+ setShowModal(false); setEditingCost(null); 
+}} className="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-50">Batal</button>
                                 <button type="submit" disabled={createCost.isPending || updateCost.isPending} className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50">
                                     {createCost.isPending || updateCost.isPending ? 'Menyimpan...' : 'Simpan'}
                                 </button>
@@ -424,7 +446,9 @@ export default function CostsIndex() {
                                 required
                             />
                             <div className="flex justify-end gap-2">
-                                <button type="button" onClick={() => { setShowImport(false); setCsvText(''); }} className="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-50">Batal</button>
+                                <button type="button" onClick={() => {
+ setShowImport(false); setCsvText(''); 
+}} className="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-50">Batal</button>
                                 <button type="submit" disabled={importCosts.isPending} className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50">
                                     {importCosts.isPending ? 'Mengimport...' : 'Import'}
                                 </button>

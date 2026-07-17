@@ -1,142 +1,96 @@
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { Check, Calendar, ArrowRight, Sparkles } from 'lucide-react';
+import { Rocket, Eye } from 'lucide-react';
 import Button from '@/atoms/Button';
 import DashboardMockup from '@/organisms/DashboardMockup';
 
 export default function HeroSection() {
     return (
-        <section className="relative overflow-hidden bg-white">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] to-transparent" />
-            <div className="absolute top-0 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-primary/[0.02] blur-3xl" />
+        <section className="relative px-6 pt-32 pb-16 md:pt-40 md:pb-24 max-w-7xl mx-auto overflow-visible">
+            <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
+                <div className="text-left">
+                    <motion.span
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 text-primary font-semibold text-xs uppercase tracking-wider mb-6"
+                    >
+                        Solusi Bisnis All-in-One Terbaik
+                    </motion.span>
 
-            <div className="relative mx-auto max-w-7xl px-5 pt-28 pb-16 md:px-8 md:pt-36 md:pb-24">
-                <div className="flex flex-col items-center gap-16 lg:flex-row lg:gap-32">
-                    <div className="flex-1 text-center lg:text-left">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1.5 text-xs font-medium text-primary">
-                                <Sparkles className="h-3.5 w-3.5" />
-                                Platform Booking & CRM All-in-One
-                            </span>
-                        </motion.div>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                        className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-neutral-900 tracking-tight mb-6 leading-tight"
+                    >
+                        Jalankan Bisnis Anda dalam{' '}
+                        <span className="text-primary">Satu Tempat</span>
+                    </motion.h1>
 
-                        <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                            className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight text-neutral-900 md:text-5xl lg:text-7xl"
-                        >
-                            <span className="bg-gradient-to-r from-primary via-primary-dark to-primary-light bg-clip-text text-transparent">
-                                Booking Lebih Pintar.
-                            </span>
-                            <br />
-                            <span className="text-neutral-900">
-                                Bisnis Lebih Berkembang.
-                            </span>
-                        </motion.h1>
-
-                        <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.15 }}
-                            className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-neutral-500 lg:mx-0 lg:text-lg"
-                        >
-                            Booking online, manajemen pelanggan, dan analitik
-                            — semua dalam satu platform. Berhenti berganti-ganti
-                            alat dan mulailah mengembangkan bisnis Anda.
-                        </motion.p>
-
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                            className="mt-10 flex flex-col items-center gap-4 sm:flex-row lg:justify-start"
-                        >
-                            <Link href="/register" className="w-full sm:w-auto">
-                                <Button className="w-full gap-2 shadow-xl shadow-primary/25">
-                                    Mulai Uji Coba Gratis
-                                    <ArrowRight className="h-4 w-4" />
-                                </Button>
-                            </Link>
-                            <Button
-                                variant="secondary"
-                                className="w-full gap-2 sm:w-auto"
-                            >
-                                <Calendar className="h-4 w-4" />
-                                Jadwalkan Demo
-                            </Button>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.25 }}
-                            className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3 lg:justify-start"
-                        >
-                            <span className="inline-flex items-center gap-2 text-xs text-neutral-400">
-                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-success/10">
-                                    <Check className="h-3 w-3 text-success" />
-                                </span>
-                                Tanpa kartu kredit
-                            </span>
-                            <span className="inline-flex items-center gap-2 text-xs text-neutral-400">
-                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-success/10">
-                                    <Check className="h-3 w-3 text-success" />
-                                </span>
-                                Uji coba 14 hari
-                            </span>
-                            <span className="inline-flex items-center gap-2 text-xs text-neutral-400">
-                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-success/10">
-                                    <Check className="h-3 w-3 text-success" />
-                                </span>
-                                Batalkan kapan saja
-                            </span>
-                        </motion.div>
-                    </div>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.15 }}
+                        className="text-lg md:text-xl text-neutral-500 max-w-xl mb-8 leading-relaxed"
+                    >
+                        Kelola booking, pelanggan, keuangan, dan operasional
+                        dalam satu ekosistem yang terhubung. Scale bisnis Anda
+                        dengan solusi software terintegrasi dari Nusentra.
+                    </motion.p>
 
                     <motion.div
-                        initial={{ opacity: 0, x: 40 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.7, delay: 0.2 }}
-                        className="flex-1"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="flex flex-wrap gap-4"
                     >
-                        <DashboardMockup />
+                        <Link href="/register">
+                            <Button className="gap-2 shadow-lg shadow-primary/25">
+                                <Rocket className="h-4 w-4" />
+                                Mulai Gratis Sekarang
+                            </Button>
+                        </Link>
+                        <Button variant="secondary" className="gap-2">
+                            <Eye className="h-4 w-4" />
+                            Lihat Demo Produk
+                        </Button>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        className="mt-8 flex items-center gap-4"
+                    >
+                        <div className="flex -space-x-3">
+                            {[0, 1, 2].map((i) => (
+                                <div
+                                    key={i}
+                                    className="w-10 h-10 rounded-full border-2 border-white bg-primary/10 flex items-center justify-center"
+                                >
+                                    <span className="text-primary text-sm font-semibold">
+                                        {['A', 'B', 'C'][i]}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="text-sm text-neutral-500">
+                            <span className="text-neutral-900 font-bold">10,000+</span> Bisnis telah bergabung
+                        </div>
                     </motion.div>
                 </div>
 
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.5 }}
-                    className="mt-24 grid grid-cols-3 divide-x divide-border/50"
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.7, delay: 0.2 }}
+                    className="relative group"
                 >
-                    <div className="px-4 text-center md:px-8">
-                        <p className="text-3xl font-bold text-neutral-900 md:text-4xl">
-                            10K+
-                        </p>
-                        <p className="mt-1.5 text-sm text-neutral-400">
-                            Bisnis Aktif
-                        </p>
-                    </div>
-                    <div className="px-4 text-center md:px-8">
-                        <p className="text-3xl font-bold text-neutral-900 md:text-4xl">
-                            50K+
-                        </p>
-                        <p className="mt-1.5 text-sm text-neutral-400">
-                            Booking Harian
-                        </p>
-                    </div>
-                    <div className="px-4 text-center md:px-8">
-                        <p className="text-3xl font-bold text-neutral-900 md:text-4xl">
-                            98%
-                        </p>
-                        <p className="mt-1.5 text-sm text-neutral-400">
-                            Tingkat Kepuasan
-                        </p>
+                    <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -z-10 animate-pulse" />
+                    <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-primary/10 rounded-full blur-[60px] -z-10" />
+                    <div className="relative rounded-2xl p-2 bg-gradient-to-br from-white/40 to-white/10 backdrop-blur-sm border border-white/30 shadow-2xl overflow-hidden group-hover:scale-[1.02] transition-transform duration-500">
+                        <DashboardMockup />
                     </div>
                 </motion.div>
             </div>

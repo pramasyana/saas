@@ -1,9 +1,9 @@
 import { Head } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 import { useSystemHealth, useToggleMaintenance } from '@/features/admin/hooks/useSystemHealth';
 import AdminLayout from '@/layouts/AdminLayout';
+import { cn } from '@/lib/utils';
 
 interface Props {
     title: string;
@@ -111,10 +111,21 @@ function formatDate(dateStr: string) {
 function getRelativeTime(dateStr: string) {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'baru saja';
-    if (mins < 60) return `${mins} menit lalu`;
+
+    if (mins < 1) {
+return 'baru saja';
+}
+
+    if (mins < 60) {
+return `${mins} menit lalu`;
+}
+
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} jam lalu`;
+
+    if (hours < 24) {
+return `${hours} jam lalu`;
+}
+
     return formatDate(dateStr);
 }
 
@@ -452,6 +463,7 @@ export default function SystemHealth({ title }: Props) {
                                                     const pct = batch.total_jobs > 0 ? Math.round((completed / batch.total_jobs) * 100) : 0;
                                                     const finished = !!batch.finished_at;
                                                     const hasFailed = batch.failed_jobs > 0;
+
                                                     return (
                                                         <tr key={batch.id} className="transition-colors hover:bg-neutral-50/50">
                                                             <td className="px-6 py-4 text-sm font-medium text-neutral-900">{batch.name}</td>
@@ -504,6 +516,7 @@ export default function SystemHealth({ title }: Props) {
                                             const pct = batch.total_jobs > 0 ? Math.round((completed / batch.total_jobs) * 100) : 0;
                                             const finished = !!batch.finished_at;
                                             const hasFailed = batch.failed_jobs > 0;
+
                                             return (
                                                 <div key={batch.id} className="px-6 py-4">
                                                     <div className="flex items-center justify-between">

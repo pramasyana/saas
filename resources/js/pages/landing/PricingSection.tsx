@@ -8,9 +8,8 @@ export default function PricingSection() {
     return (
         <Section
             id="pricing"
-            heading="Harga sederhana dan transparan."
-            subheading="Mulai gratis. Upgrade saat berkembang. Tanpa kejutan."
-            className="bg-neutral-50/50"
+            heading="Paket Harga yang Sesuai untuk Anda"
+            subheading="Pilih paket yang paling sesuai dengan skala bisnis Anda saat ini."
         >
             <div className="mx-auto max-w-6xl">
                 <PlanCardGroup mode="link" plans={plans} />

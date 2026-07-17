@@ -7,39 +7,39 @@ import {
     Mail,
     CreditCard,
     Shield,
-    Palette,
-    Link,
     FileText,
     Clock,
     Smartphone,
+    Globe,
+    Link,
 } from 'lucide-react';
 import Section from '@/molecules/Section';
 
 const features = [
-    { icon: Calendar, title: 'Booking Online', desc: 'Terima booking 24/7 dengan ketersediaan real-time' },
-    { icon: Users, title: 'CRM Pelanggan', desc: 'Profil lengkap dengan riwayat dan preferensi' },
-    { icon: BarChart3, title: 'Dashboard Analitik', desc: 'Pendapatan, booking, dan tren dalam satu layar' },
-    { icon: Bell, title: 'Pengingat WhatsApp', desc: 'Pengingat otomatis yang mengurangi no-show 80%' },
-    { icon: Mail, title: 'Notifikasi Email', desc: 'Email profesional untuk setiap event booking' },
-    { icon: CreditCard, title: 'Integrasi Pembayaran', desc: 'Terima deposit dan pembayaran online' },
-    { icon: Clock, title: 'Manajemen Staf', desc: 'Jadwal, izin akses, dan performa staf' },
-    { icon: Shield, title: 'Keamanan Data', desc: 'Enkripsi AES-256 dan TLS 1.3 untuk data Anda' },
-    { icon: FileText, title: 'Form Booking Kustom', desc: 'Kumpulkan data yang Anda butuhkan' },
-    { icon: Smartphone, title: 'Akses Mobile', desc: 'Kelola bisnis dari mana saja, kapan saja' },
-    { icon: Palette, title: 'Branding White-Label', desc: 'Logo, warna, dan domain Anda sendiri' },
-    { icon: Link, title: 'API & Webhooks', desc: 'Integrasi dengan tools favorit Anda' },
+    { icon: Calendar, title: 'Online Booking', desc: 'Accept bookings 24/7 with real-time availability and instant confirmation' },
+    { icon: Users, title: 'Customer CRM', desc: 'Complete profiles with history, preferences, and automated follow-ups' },
+    { icon: BarChart3, title: 'Analytics Dashboard', desc: 'Revenue, bookings, and growth trends at a glance' },
+    { icon: Bell, title: 'Smart Reminders', desc: 'Automated WhatsApp & email reminders that reduce no-shows by 80%' },
+    { icon: Mail, title: 'Email Notifications', desc: 'Professional emails for every booking event and update' },
+    { icon: CreditCard, title: 'Payment Integration', desc: 'Accept deposits and online payments with built-in invoicing' },
+    { icon: Clock, title: 'Staff Management', desc: 'Schedules, shift assignments, permissions, and performance tracking' },
+    { icon: Shield, title: 'Data Security', desc: 'AES-256 encryption and TLS 1.3 for all your business data' },
+    { icon: FileText, title: 'Custom Booking Forms', desc: 'Collect the information you need from customers at booking time' },
+    { icon: Smartphone, title: 'Mobile Access', desc: 'Manage your business from anywhere, on any device' },
+    { icon: Globe, title: 'Business Landing Pages', desc: 'Professional web presence for your business, built-in and customizable' },
+    { icon: Link, title: 'API & Webhooks', desc: 'Connect with your favorite tools and build custom integrations' },
 ];
 
 export default function FeaturesSection() {
     return (
         <Section
-            id="features"
-            heading="Semua yang Anda butuhkan untuk menjalankan bisnis."
-            subheading="Toolkit lengkap yang dirancang untuk bisnis jasa."
+            heading="Built for how you actually work."
+            subheading="Every tool your business needs, connected and working together."
         >
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {features.map((f, i) => {
                     const Icon = f.icon;
+
                     return (
                         <motion.div
                             key={f.title}

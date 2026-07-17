@@ -72,7 +72,7 @@
                     </tr>
                     <tr>
                         <td style="background-color:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;">
-                            <p style="color:#9ca3af;font-size:12px;margin:0;">&copy; {{ date('Y') }} BookCRM. All rights reserved.</p>
+                            <p style="color:#9ca3af;font-size:12px;margin:0;">&copy; {{ date('Y') }} Nusentra. All rights reserved.</p>
                         </td>
                     </tr>
                 </table>

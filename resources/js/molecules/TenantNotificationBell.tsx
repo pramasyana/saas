@@ -17,6 +17,7 @@ export default function TenantNotificationBell() {
     const notifications = data?.data ?? [];
     const unreadCount = notifications.filter((n) => {
         const readBy = n.read_by ?? [];
+
         return readBy.length === 0;
     }).length;
 
@@ -27,6 +28,7 @@ export default function TenantNotificationBell() {
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 

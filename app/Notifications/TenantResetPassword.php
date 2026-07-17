@@ -33,7 +33,7 @@ class TenantResetPassword extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Reset Password - BookCRM')
+            ->subject('Reset Password - Nusentra')
             ->view('emails.reset-password', [
                 'name' => $notifiable->name,
                 'email' => $notifiable->email,

@@ -56,7 +56,7 @@ export default function CTASection({ data, colors }: Props) {
                     transition={{ duration: 0.6, delay: 0.3 }}
                 >
                     <Link
-                        href={data.button_link || '/booking'}
+                        href={data.button_link || '/book'}
                         className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-white px-10 py-5 text-lg font-semibold shadow-2xl transition-all hover:shadow-3xl hover:scale-105"
                         style={{ color: colors.primary }}
                     >

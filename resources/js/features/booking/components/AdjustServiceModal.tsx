@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import Button from '@/atoms/Button';
 import { useAdjustServices } from '@/features/booking/hooks/useBookings';
-import { useAllStaff } from '@/features/staff/hooks/useStaff';
-import { useAllServices } from '@/features/service/hooks/useServices';
 import type { AdjustmentPayload, Booking, BookingServiceItem } from '@/features/booking/types';
+import { useAllServices } from '@/features/service/hooks/useServices';
 import type { ServiceItem } from '@/features/service/types';
+import { useAllStaff } from '@/features/staff/hooks/useStaff';
 import { formatPrice } from '@/lib/utils';
 import Modal from '@/molecules/Modal';
 import { useToastStore } from '@/stores/toast';
@@ -42,7 +42,10 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
     }
 
     function handleQuantityChange(serviceId: string, qty: number) {
-        if (qty < 1) return;
+        if (qty < 1) {
+return;
+}
+
         setLocalServices((prev) => prev.map((s) => s.id === serviceId ? { ...s, quantity: qty } : s));
     }
 
@@ -52,7 +55,10 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
 
     function handleAddService(serviceId: string) {
         const svc = services.find((s) => s.id === serviceId);
-        if (!svc) return;
+
+        if (!svc) {
+return;
+}
 
         const alreadyExist = localServices.find((s) => s.service_id === svc.id && !s.id.startsWith('temp_'));
 
@@ -85,7 +91,9 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
     }
 
     async function handleSubmit() {
-        if (!hasChanges) return;
+        if (!hasChanges) {
+return;
+}
 
         try {
             await adjustMut.mutateAsync({
@@ -293,7 +301,9 @@ export default function AdjustServiceModal({ booking, open, onClose }: AdjustSer
                     <select
                         value=""
                         onChange={(e) => {
-                            if (e.target.value) handleAddService(e.target.value);
+                            if (e.target.value) {
+handleAddService(e.target.value);
+}
                         }}
                         className="w-full rounded-xl border bg-white px-4 py-2.5 text-sm text-neutral-700 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
                         style={{ borderColor: 'rgba(0,0,0,0.1)' }}
@@ -401,9 +411,15 @@ function buildAdjustments(original: BookingServiceItem[], current: BookingServic
     }
 
     for (const cur of current) {
-        if (cur.id.startsWith('temp_')) continue;
+        if (cur.id.startsWith('temp_')) {
+continue;
+}
+
         const orig = original.find((s) => s.id === cur.id);
-        if (!orig) continue;
+
+        if (!orig) {
+continue;
+}
 
         if (orig.quantity !== cur.quantity) {
             adjustments.push({ action: 'update_quantity', booking_service_id: cur.id, quantity: cur.quantity });

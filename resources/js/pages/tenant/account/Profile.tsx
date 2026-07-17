@@ -1,12 +1,12 @@
 import { Head, router } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useMemo } from 'react';
+import Button from '@/atoms/Button';
+import Input from '@/atoms/Input';
 import { useTenantProfile, useUpdateTenantProfile } from '@/features/tenant/hooks/useTenantProfile';
 import TenantLayout from '@/layouts/TenantLayout';
-import Card from '@/molecules/Card';
-import Input from '@/atoms/Input';
-import Button from '@/atoms/Button';
 import { cn } from '@/lib/utils';
+import Card from '@/molecules/Card';
 
 const container = {
     hidden: { opacity: 0 },
@@ -25,16 +25,37 @@ const labelClass = 'mb-1.5 block text-sm font-medium text-neutral-700';
 function PasswordStrength({ password }: { password: string }) {
     const strength = useMemo(() => {
         let score = 0;
-        if (password.length >= 8) score++;
-        if (password.length >= 12) score++;
-        if (/[A-Z]/.test(password)) score++;
-        if (/[a-z]/.test(password)) score++;
-        if (/[0-9]/.test(password)) score++;
-        if (/[^A-Za-z0-9]/.test(password)) score++;
+
+        if (password.length >= 8) {
+score++;
+}
+
+        if (password.length >= 12) {
+score++;
+}
+
+        if (/[A-Z]/.test(password)) {
+score++;
+}
+
+        if (/[a-z]/.test(password)) {
+score++;
+}
+
+        if (/[0-9]/.test(password)) {
+score++;
+}
+
+        if (/[^A-Za-z0-9]/.test(password)) {
+score++;
+}
+
         return score;
     }, [password]);
 
-    if (!password) return null;
+    if (!password) {
+return null;
+}
 
     const labels = ['Weak', 'Fair', 'Good', 'Strong'];
     const barColors = ['bg-danger', 'bg-warning', 'bg-warning', 'bg-success', 'bg-success'];
@@ -64,7 +85,9 @@ function PasswordRules({ password }: { password: string }) {
         { label: '1 special character', check: /[^A-Za-z0-9]/.test(password) },
     ], [password]);
 
-    if (!password) return null;
+    if (!password) {
+return null;
+}
 
     return (
         <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="mt-2 space-y-1">
@@ -205,6 +228,7 @@ export default function TenantAccountProfile() {
     useEffect(() => {
         if (saved) {
             const t = setTimeout(() => setSaved(false), 3000);
+
             return () => clearTimeout(t);
         }
     }, [saved]);
@@ -234,9 +258,11 @@ export default function TenantAccountProfile() {
                 onError: (err: any) => {
                     if (err?.response?.data?.errors) {
                         const validationErrors: Record<string, string> = {};
+
                         for (const [key, msgs] of Object.entries(err.response.data.errors)) {
                             validationErrors[key] = (msgs as string[])[0];
                         }
+
                         setErrors(validationErrors);
                     }
                 },

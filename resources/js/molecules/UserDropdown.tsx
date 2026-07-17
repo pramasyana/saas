@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
+import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 interface User {
@@ -28,6 +28,7 @@ export default function UserDropdown({ profileHref, logoutAction = '/logout' }: 
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 

@@ -2,9 +2,9 @@ import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 import Badge from '@/atoms/Badge';
+import { useAdminNotifications } from '@/features/admin/hooks/useAdminNotifications';
 import AdminLayout from '@/layouts/AdminLayout';
 import { cn, formatPrice, formatNumber } from '@/lib/utils';
-import { useAdminNotifications } from '@/features/admin/hooks/useAdminNotifications';
 
 interface Stat {
     label: string;
@@ -198,9 +198,19 @@ const itemAnim = {
 function GreetingSection() {
     const greeting = (() => {
         const h = new Date().getHours();
-        if (h < 12) return 'Selamat Pagi';
-        if (h < 15) return 'Selamat Siang';
-        if (h < 18) return 'Selamat Sore';
+
+        if (h < 12) {
+return 'Selamat Pagi';
+}
+
+        if (h < 15) {
+return 'Selamat Siang';
+}
+
+        if (h < 18) {
+return 'Selamat Sore';
+}
+
         return 'Selamat Malam';
     })();
 
@@ -211,7 +221,7 @@ function GreetingSection() {
                     {greeting}, Admin
                 </h1>
                 <p className="mt-1 text-sm text-neutral-500">
-                    Berikut ringkasan aktivitas BookCRM hari ini.
+                    Berikut ringkasan aktivitas Nusentra hari ini.
                 </p>
             </div>
             <div className="mt-4 flex items-center gap-4 sm:mt-0">
@@ -241,7 +251,9 @@ function NotificationBanners() {
     const { data: notifData } = useAdminNotifications();
     const activeNotifications = (notifData?.data ?? []).filter((n) => n.is_active);
 
-    if (activeNotifications.length === 0) return null;
+    if (activeNotifications.length === 0) {
+return null;
+}
 
     const borderMap: Record<string, string> = {
         info: 'border-blue-200 bg-blue-50',
@@ -444,6 +456,7 @@ function WeeklySignupsChart({ weekly_signups, stats }: { weekly_signups: WeeklyS
                         <div className="flex items-end gap-3">
                             {weekly_signups.map((w) => {
                                 const barHeight = Math.max((w.count / maxVal) * barMaxHeight, 4);
+
                                 return (
                                     <div key={w.day} className="flex flex-1 flex-col items-center gap-1.5">
                                         <span className="text-xs font-semibold text-neutral-600">{w.count}</span>
@@ -477,6 +490,7 @@ function RevenueChart({ monthly_revenue, revenue_overview }: { monthly_revenue: 
 
     const shortLabels = monthly_revenue.labels.map((l) => {
         const parts = l.split(' ');
+
         return parts[0].slice(0, 3);
     });
 
@@ -564,6 +578,7 @@ function RevenueChart({ monthly_revenue, revenue_overview }: { monthly_revenue: 
                                 {monthly_revenue.labels.map((label, i) => {
                                     const paid = monthly_revenue.paid[i];
                                     const pending = monthly_revenue.pending[i];
+
                                     return (
                                         <tr key={label} className="transition-colors hover:bg-neutral-50">
                                             <td className="px-6 py-2.5 font-medium text-neutral-900">{label}</td>

@@ -4,9 +4,9 @@ import Badge from '@/atoms/Badge';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import Select from '@/atoms/Select';
+import { useAllBranches } from '@/features/company/hooks/useBranches';
 import { useShiftCalendar, useBulkAssignShift, useDeleteShifts } from '@/features/staff/hooks/useShiftAssignment';
 import { useAllStaff } from '@/features/staff/hooks/useStaff';
-import { useAllBranches } from '@/features/company/hooks/useBranches';
 import TenantLayout from '@/layouts/TenantLayout';
 import { cn } from '@/lib/utils';
 import { useToastStore } from '@/stores/toast';
@@ -14,9 +14,11 @@ import { useToastStore } from '@/stores/toast';
 function getWeekDates(date: Date): Date[] {
     const start = new Date(date);
     start.setDate(start.getDate() - start.getDay() + 1);
+
     return Array.from({ length: 7 }, (_, i) => {
         const d = new Date(start);
         d.setDate(d.getDate() + i);
+
         return d;
     });
 }
@@ -34,13 +36,24 @@ function formatFullDate(d: Date): string {
 }
 
 function extractMessage(error: unknown): string | undefined {
-    if (!error) return undefined;
+    if (!error) {
+return undefined;
+}
+
     if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
+
         return axiosError.response?.data?.message ?? error.message;
     }
-    if (error instanceof Error) return error.message;
-    if (typeof error === 'string') return error;
+
+    if (error instanceof Error) {
+return error.message;
+}
+
+    if (typeof error === 'string') {
+return error;
+}
+
     return 'Terjadi kesalahan.';
 }
 
@@ -110,10 +123,12 @@ export default function ShiftIndex() {
     async function handleBulkAssign() {
         if (selectedStaff.length === 0) {
             addToast('error', 'Pilih staff terlebih dahulu.');
+
             return;
         }
 
         const payload = [];
+
         for (const staffId of selectedStaff) {
             for (const date of weekDates) {
                 payload.push({
@@ -139,7 +154,10 @@ export default function ShiftIndex() {
     }
 
     async function handleDeleteShift() {
-        if (!deleteTarget) return;
+        if (!deleteTarget) {
+return;
+}
+
         try {
             await deleteMut.mutateAsync([{ staff_id: deleteTarget.staffId, date: deleteTarget.date }]);
             addToast('success', `Shift ${deleteTarget.staffName} dihapus.`);
@@ -154,10 +172,14 @@ export default function ShiftIndex() {
     }
 
     async function handleDeleteAll() {
-        if (!deleteAllTarget) return;
+        if (!deleteAllTarget) {
+return;
+}
+
         const items = assignments
             .find((a) => a.staff_id === deleteAllTarget.staffId)
             ?.shifts.map((s) => ({ staff_id: deleteAllTarget.staffId, date: s.date })) ?? [];
+
         try {
             await deleteMut.mutateAsync(items);
             addToast('success', `Semua shift ${deleteAllTarget.staffName} dihapus.`);
@@ -276,6 +298,7 @@ export default function ShiftIndex() {
                 {weekDates.map((d, i) => {
                     const shift = getShiftForDate(a, formatDate(d));
                     const isToday = formatDate(d) === formatDate(new Date());
+
                     return (
                         <td key={i} className="px-2 py-3 text-center">
                             {shift ? (
@@ -449,6 +472,7 @@ export default function ShiftIndex() {
                         </button>
                         {staffList.map((s) => {
                             const hasShift = assignments.some((a) => a.staff_id === s.id);
+
                             return (
                                 <button
                                     key={s.id}
@@ -557,6 +581,7 @@ export default function ShiftIndex() {
                                             <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Staff</th>
                                             {weekDates.map((d, i) => {
                                                 const isToday = formatDate(d) === formatDate(new Date());
+
                                                 return (
                                                     <th key={i} className={cn(
                                                         'px-3 py-3.5 text-center text-xs font-semibold uppercase tracking-wider min-w-[110px]',

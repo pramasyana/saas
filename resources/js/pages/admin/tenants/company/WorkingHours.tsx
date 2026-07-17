@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import Button from '@/atoms/Button';
 import FadeIn from '@/atoms/FadeIn';
 import AdminLayout from '@/layouts/AdminLayout';
-import TenantSubNav from '@/molecules/TenantSubNav';
 import { cn } from '@/lib/utils';
+import TenantSubNav from '@/molecules/TenantSubNav';
 import { useToastStore } from '@/stores/toast';
 
 interface WorkingHour {
@@ -55,7 +55,10 @@ export default function CompanyWorkingHours({ tenant_id, tenant_name, tenant_ema
 
     function toggleDay(index: number) {
         setData('hours', data.hours.map((item, i) => {
-            if (i !== index) return item;
+            if (i !== index) {
+return item;
+}
+
             return {
                 ...item,
                 is_open: !item.is_open,
@@ -67,7 +70,10 @@ export default function CompanyWorkingHours({ tenant_id, tenant_name, tenant_ema
 
     function updateTime(index: number, field: 'open_time' | 'close_time' | 'break_start' | 'break_end', value: string) {
         setData('hours', data.hours.map((item, i) => {
-            if (i !== index) return item;
+            if (i !== index) {
+return item;
+}
+
             return { ...item, [field]: value || null };
         }));
     }

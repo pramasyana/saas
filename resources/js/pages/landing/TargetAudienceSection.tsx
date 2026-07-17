@@ -3,24 +3,25 @@ import { Scissors, Sparkles, Dumbbell, Stethoscope, GraduationCap } from 'lucide
 import Section from '@/molecules/Section';
 
 const businesses = [
-    { icon: Scissors, title: 'Salon & Barbershop', desc: 'Rambut, kuku, rias, dan pangkas rambut' },
-    { icon: Sparkles, title: 'Spa & Wellness', desc: 'Pijat, facial, dan perawatan holistik' },
-    { icon: Stethoscope, title: 'Klinik', desc: 'Kunjungan medis, gigi, dan spesialis' },
-    { icon: Dumbbell, title: 'Studio Fitness', desc: 'Kelas, sesi PT, dan keanggotaan gym' },
-    { icon: GraduationCap, title: 'Bimbingan Belajar', desc: 'Les akademik dan pengembangan skill' },
+    { icon: Scissors, title: 'Salon & Barbershop', desc: 'Hair, nails, beauty, and grooming services' },
+    { icon: Sparkles, title: 'Spa & Wellness', desc: 'Massage, facials, and holistic treatments' },
+    { icon: Stethoscope, title: 'Clinics', desc: 'Medical, dental, and specialist visits' },
+    { icon: Dumbbell, title: 'Fitness Studios', desc: 'Classes, personal training, and memberships' },
+    { icon: GraduationCap, title: 'Education', desc: 'Tutoring, coaching, and skill development' },
 ];
 
 export default function TargetAudienceSection() {
     return (
         <Section
             id="audience"
-            heading="Dibuat untuk setiap bisnis jasa."
-            subheading="Dari pebisnis solo hingga bisnis multi-cabang."
+            heading="Built for every service business."
+            subheading="From solo operators to multi-location enterprises."
             className="bg-neutral-50/50"
         >
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 {businesses.map((b, i) => {
                     const Icon = b.icon;
+
                     return (
                         <motion.div
                             key={b.title}

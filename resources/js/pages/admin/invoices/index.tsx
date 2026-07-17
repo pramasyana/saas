@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import Select from '@/atoms/Select';
 import { useInvoices } from '@/features/subscriptions/hooks/useSubscriptions';
 import type { InvoiceFilters } from '@/features/subscriptions/types';
@@ -82,12 +82,18 @@ function DownloadIcon({ className }: { className?: string }) {
 }
 
 function formatDate(dateStr: string | null) {
-    if (!dateStr) return '-';
+    if (!dateStr) {
+return '-';
+}
+
     return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function isOverdue(dueDate: string | null, status: string) {
-    if (!dueDate || status !== 'pending') return false;
+    if (!dueDate || status !== 'pending') {
+return false;
+}
+
     return new Date(dueDate) < new Date();
 }
 
@@ -103,6 +109,7 @@ function getAvatarColor(name: string) {
         'bg-warning-light text-warning',
         'bg-danger-light text-danger',
     ];
+
     return colors[name.length % colors.length];
 }
 
@@ -350,6 +357,7 @@ export default function Invoices({ title }: InvoicesPageProps) {
                                             const sub = inv.subscription;
                                             const status = statusConfig[inv.status] ?? statusConfig.pending;
                                             const overdue = isOverdue(inv.due_date, inv.status);
+
                                             return (
                                                 <tr key={inv.id} className="transition-colors hover:bg-neutral-50/50">
                                                     <td className="px-5 py-4">
@@ -431,6 +439,7 @@ export default function Invoices({ title }: InvoicesPageProps) {
                                 const sub = inv.subscription;
                                 const status = statusConfig[inv.status] ?? statusConfig.pending;
                                 const overdue = isOverdue(inv.due_date, inv.status);
+
                                 return (
                                     <div key={inv.id} className="rounded-xl border border-border bg-white p-4 shadow-sm">
                                         <div className="flex items-start justify-between gap-2">

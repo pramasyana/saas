@@ -152,31 +152,31 @@ export interface CreateBookingPayload {
 }
 
 function getBranches(): Promise<{ data: Branch[] }> {
-    return api.get('/api/v1/booking/branches').then((r) => r.data);
+    return api.get('/api/v1/book/branches').then((r) => r.data);
 }
 
 function getAddons(params: { branch_id?: string }): Promise<{ data: AddonItem[] }> {
-    return api.get('/api/v1/booking/addons', { params }).then((r) => r.data);
+    return api.get('/api/v1/book/addons', { params }).then((r) => r.data);
 }
 
 function getPackages(params: { branch_id?: string }): Promise<{ data: PackageItem[] }> {
-    return api.get('/api/v1/booking/packages', { params }).then((r) => r.data);
+    return api.get('/api/v1/book/packages', { params }).then((r) => r.data);
 }
 
 function getServices(params: { branch_id?: string }): Promise<{ data: ServiceItem[] }> {
-    return api.get('/api/v1/booking/services', { params }).then((r) => r.data);
+    return api.get('/api/v1/book/services', { params }).then((r) => r.data);
 }
 
 function getStaff(params: { branch_id?: string; date?: string; service_id?: string }): Promise<{ data: StaffMember[] }> {
-    return api.get('/api/v1/booking/staff', { params }).then((r) => r.data);
+    return api.get('/api/v1/book/staff', { params }).then((r) => r.data);
 }
 
 function getRooms(params: { branch_id?: string }): Promise<{ data: RoomItem[] }> {
-    return api.get('/api/v1/booking/rooms', { params }).then((r) => r.data);
+    return api.get('/api/v1/book/rooms', { params }).then((r) => r.data);
 }
 
 function getAvailableRooms(params: { date: string; start_time: string; end_time: string; branch_id?: string }): Promise<{ data: RoomItem[] }> {
-    return api.get('/api/v1/booking/rooms/available', { params }).then((r) => r.data);
+    return api.get('/api/v1/book/rooms/available', { params }).then((r) => r.data);
 }
 
 function getAvailability(params: {
@@ -186,15 +186,15 @@ function getAvailability(params: {
     branch_id?: string;
     staff_id?: string;
 }): Promise<{ data: AvailabilityResult }> {
-    return api.get('/api/v1/booking/availability', { params }).then((r) => r.data);
+    return api.get('/api/v1/book/availability', { params }).then((r) => r.data);
 }
 
 function createBooking(data: CreateBookingPayload): Promise<{ data: BookingResult }> {
-    return api.post('/api/v1/booking/bookings', data).then((r) => r.data);
+    return api.post('/api/v1/book/bookings', data).then((r) => r.data);
 }
 
 function getBookingByCode(code: string): Promise<{ data: BookingDetail }> {
-    return api.get(`/api/v1/booking/bookings/${code}`).then((r) => r.data);
+    return api.get(`/api/v1/book/bookings/${code}`).then((r) => r.data);
 }
 
 export function usePublicBranches() {
