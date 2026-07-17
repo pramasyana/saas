@@ -19,7 +19,7 @@ if ! $COMPOSE ps app --format json 2>/dev/null | grep -q '"State":"running"'; th
     sleep 15
 fi
 
-# Pull latest code
+# Pull latest code.
 echo "Pulling latest code..."
 git pull origin main
 
