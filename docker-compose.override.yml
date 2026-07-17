@@ -7,7 +7,6 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - .:/var/www
       - storage_app:/var/www/storage/app
-      - public_images:/var/www/public/images
 
   app:
     build:
@@ -18,7 +17,6 @@ services:
       - storage_app:/var/www/storage/app
       - storage_logs:/var/www/storage/logs
       - storage_framework:/var/www/storage/framework
-      - public_images:/var/www/public/images
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
@@ -42,4 +40,3 @@ services:
 
 volumes:
   storage_app:
-  public_images:

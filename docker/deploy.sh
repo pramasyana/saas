@@ -5,12 +5,6 @@ COMPOSE="docker compose -f docker-compose.yml -f docker-compose.prod.yml"
 
 echo "=== Saas Zero-Downtime Deploy ==="
 
-# Remove orphaned public_images volume (replaced by bind mount)
-if docker volume inspect saas_public_images >/dev/null 2>&1; then
-    echo "Removing orphaned public_images volume..."
-    docker volume rm saas_public_images 2>/dev/null || true
-fi
-
 # Ensure app container is running before proceeding
 if ! $COMPOSE ps app --format json 2>/dev/null | grep -q '"State":"running"'; then
     echo "App container not running, starting it..."
@@ -51,6 +45,12 @@ $COMPOSE build --no-cache app
 # Recreate app container with new image
 echo "Starting new container..."
 $COMPOSE up -d --force-recreate --no-deps app
+
+# Remove orphaned public_images volume (replaced by bind mount)
+if docker volume inspect saas_public_images >/dev/null 2>&1; then
+    echo "Removing orphaned public_images volume..."
+    docker volume rm -f saas_public_images 2>/dev/null || true
+fi
 
 # Fix storage & cache permissions (Docker volumes may be root-owned)
 echo "Fixing permissions..."
