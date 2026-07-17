@@ -23,10 +23,10 @@ interface Props {
     availableSections: string[];
     sectionLabels: Record<string, string>;
     selectedSection: string | null;
-    onSelect: (key: string) => void;
-    onRemove: (key: string) => void;
-    onAdd: (key: string, insertAt?: number) => void;
-    onReorder: (newOrder: string[]) => void;
+    onSelect?: (key: string) => void;
+    onRemove?: (key: string) => void;
+    onAdd?: (key: string, insertAt?: number) => void;
+    onReorder?: (newOrder: string[]) => void;
 }
 
 const pinned = ['hero', 'footer'];
@@ -38,7 +38,7 @@ function PinnedItem({
 }: {
     label: string;
     isSelected: boolean;
-    onSelect: () => void;
+    onSelect?: () => void;
 }) {
     return (
         <div
@@ -52,7 +52,7 @@ function PinnedItem({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                 </svg>
             </span>
-            <button type="button" onClick={onSelect} className="flex-1 truncate text-left">
+            <button type="button" onClick={onSelect} className="flex-1 truncate text-left" disabled={!onSelect}>
                 {label}
             </button>
         </div>
@@ -70,8 +70,8 @@ function SortableActiveItem({
     sectionKey: string;
     label: string;
     isSelected: boolean;
-    onSelect: () => void;
-    onRemove: () => void;
+    onSelect?: () => void;
+    onRemove?: () => void;
     canRemove: boolean;
 }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: sectionKey });
@@ -107,7 +107,7 @@ function SortableActiveItem({
                     type="button"
                     onClick={(e) => {
                         e.stopPropagation();
-                        onRemove();
+                        onRemove?.();
                     }}
 
                     className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-neutral-400 hover:bg-danger hover:text-white"
@@ -174,6 +174,8 @@ export default function SidebarSectionList({
     );
 
     function handleDragEnd(event: DragEndEvent) {
+        if (!onAdd || !onReorder) return;
+
         const { active, over } = event;
 
         if (!over || active.id === over.id) {
@@ -232,7 +234,7 @@ export default function SidebarSectionList({
                         <PinnedItem
                             label={sectionLabels.hero || 'Hero'}
                             isSelected={selectedSection === 'hero'}
-                            onSelect={() => onSelect('hero')}
+                            onSelect={onSelect ? () => onSelect('hero') : undefined}
                         />
                     )}
 
@@ -250,9 +252,9 @@ export default function SidebarSectionList({
                                         sectionKey={key}
                                         label={sectionLabels[key] || key}
                                         isSelected={selectedSection === key}
-                                        onSelect={() => onSelect(key)}
-                                        onRemove={() => onRemove(key)}
-                                        canRemove={true}
+                                        onSelect={onSelect ? () => onSelect(key) : undefined}
+                                        onRemove={onRemove ? () => onRemove(key) : undefined}
+                                        canRemove={!!onRemove}
                                     />
                                 ))}
                             </div>
@@ -264,7 +266,7 @@ export default function SidebarSectionList({
                         <PinnedItem
                             label={sectionLabels.footer || 'Footer'}
                             isSelected={selectedSection === 'footer'}
-                            onSelect={() => onSelect('footer')}
+                            onSelect={onSelect ? () => onSelect('footer') : undefined}
                         />
                     )}
                 </div>

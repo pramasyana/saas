@@ -85,6 +85,8 @@ export default function LandingSettings({ title, publicUrl, services, categories
     const [showSettings, setShowSettings] = useState(false);
     const initialized = useRef(false);
 
+    const hasTemplate = !!config.template;
+
     useEffect(() => {
         if (!initialized.current && serverConfig && Object.keys(serverConfig).length > 0) {
             setConfig({
@@ -92,6 +94,10 @@ export default function LandingSettings({ title, publicUrl, services, categories
                 section_order: normalizeOrder(serverConfig.section_order ?? allSectionKeys as string[]),
             });
             initialized.current = true;
+
+            if (!serverConfig.template) {
+                setShowTemplateModal(true);
+            }
         }
     }, [serverConfig]);
 
@@ -333,6 +339,26 @@ setSelectedSection(null);
                 <span className="font-medium text-neutral-900">Landing Page</span>
             </nav>
 
+            {/* No template warning */}
+            {!hasTemplate && (
+                <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-100">
+                            <svg className="h-4 w-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                            </svg>
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-sm font-medium text-amber-800">Pilih template terlebih dahulu</p>
+                            <p className="text-xs text-amber-600">Anda harus memilih template sebelum bisa mengedit landing page.</p>
+                        </div>
+                        <Button variant="secondary" size="sm" onClick={() => setShowTemplateModal(true)}>
+                            Pilih Template
+                        </Button>
+                    </div>
+                </div>
+            )}
+
             {/* Main layout: sidebar + preview + edit panel */}
             <div className="flex gap-6" style={{ height: 'calc(100vh - 10rem)' }}>
                 {/* Left Sidebar */}
@@ -344,10 +370,10 @@ setSelectedSection(null);
                         availableSections={availableSections}
                         sectionLabels={sectionLabels}
                         selectedSection={selectedSection}
-                        onSelect={(key) => setSelectedSection(selectedSection === key ? null : key)}
-                        onRemove={removeSection}
-                        onAdd={addSection}
-                        onReorder={handleOrderChange}
+                        onSelect={hasTemplate ? (key) => setSelectedSection(selectedSection === key ? null : key) : undefined}
+                        onRemove={hasTemplate ? removeSection : undefined}
+                        onAdd={hasTemplate ? addSection : undefined}
+                        onReorder={hasTemplate ? handleOrderChange : undefined}
                     />
 
                     {/* General Settings */}
@@ -476,9 +502,9 @@ setSelectedSection(null);
                                 categories={categories}
                                 branches={branches}
                                 tenantName={config.hero?.title ? undefined : 'Your Business'}
-                                selectedSection={selectedSection}
-                                onSectionClick={setSelectedSection}
-                                onRemoveSection={removeSection}
+                                selectedSection={hasTemplate ? selectedSection : null}
+                                onSectionClick={hasTemplate ? setSelectedSection : () => {}}
+                                onRemoveSection={hasTemplate ? removeSection : () => {}}
                             />
                         </FadeIn>
                     </div>
@@ -502,9 +528,10 @@ setSelectedSection(null);
             {/* Template Modal */}
             <TemplateModal
                 open={showTemplateModal}
-                onClose={() => setShowTemplateModal(false)}
+                onClose={hasTemplate ? () => setShowTemplateModal(false) : undefined}
                 onApply={applyTemplate}
                 currentTemplate={config.template}
+                forceSelection={!hasTemplate}
             />
         </TenantLayout>
     );

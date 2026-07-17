@@ -21,9 +21,10 @@ interface TemplateCard {
 
 interface TemplateModalProps {
     open: boolean;
-    onClose: () => void;
+    onClose?: () => void;
     onApply: (template: LandingConfig) => void;
     currentTemplate?: string;
+    forceSelection?: boolean;
 }
 
 const templates: TemplateCard[] = [
@@ -131,7 +132,7 @@ const templates: TemplateCard[] = [
     },
 ];
 
-export default function TemplateModal({ open, onClose, onApply, currentTemplate }: TemplateModalProps) {
+export default function TemplateModal({ open, onClose, onApply, currentTemplate, forceSelection }: TemplateModalProps) {
     const [confirmKey, setConfirmKey] = useState<string | null>(null);
 
     function handleApply(tpl: TemplateCard) {
@@ -141,27 +142,33 @@ export default function TemplateModal({ open, onClose, onApply, currentTemplate 
 
     function handleClose() {
         setConfirmKey(null);
-        onClose();
+        onClose?.();
     }
 
     return (
-        <Modal open={open} onClose={handleClose} size="xl">
+        <Modal open={open} onClose={forceSelection ? () => {} : handleClose} size="xl">
             <div className="flex items-center justify-between border-b border-neutral-200 px-8 py-5">
                 <div>
-                    <h2 className="text-xl font-semibold text-neutral-900">Pilih Template</h2>
+                    <h2 className="text-xl font-semibold text-neutral-900">
+                        {forceSelection ? 'Pilih Template untuk Memulai' : 'Pilih Template'}
+                    </h2>
                     <p className="mt-0.5 text-sm text-neutral-500">
-                        Pilih template sebagai dasar landing page Anda. Semua bagian bisa diedit setelah dipilih.
+                        {forceSelection
+                            ? 'Anda harus memilih template terlebih dahulu sebelum bisa mengedit landing page.'
+                            : 'Pilih template sebagai dasar landing page Anda. Semua bagian bisa diedit setelah dipilih.'}
                     </p>
                 </div>
-                <button
-                    type="button"
-                    onClick={handleClose}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600"
-                >
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                {!forceSelection && (
+                    <button
+                        type="button"
+                        onClick={handleClose}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600"
+                    >
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                )}
             </div>
 
             <div className="space-y-4 overflow-y-auto px-8 py-6" style={{ maxHeight: 'calc(100vh - 24rem)' }}>
@@ -293,11 +300,15 @@ export default function TemplateModal({ open, onClose, onApply, currentTemplate 
 
             <div className="flex items-center justify-between border-t border-neutral-200 px-8 py-4">
                 <p className="text-xs text-neutral-400">
-                    Template hanya mengatur tata letak awal. Semua konten bisa disesuaikan setelahnya.
+                    {forceSelection
+                        ? 'Template hanya mengatur tata letak awal. Semua konten bisa disesuaikan setelahnya.'
+                        : 'Template hanya mengatur tata letak awal. Semua konten bisa disesuaikan setelahnya.'}
                 </p>
-                <Button variant="secondary" size="sm" onClick={handleClose}>
-                    Tutup
-                </Button>
+                {!forceSelection && (
+                    <Button variant="secondary" size="sm" onClick={handleClose}>
+                        Tutup
+                    </Button>
+                )}
             </div>
         </Modal>
     );
