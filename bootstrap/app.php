@@ -19,8 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
             $centralDomains = config('tenancy.central_domains', []);
             $isCentral = in_array(request()->getHost(), $centralDomains);
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
+            // Central-only routes (marketing landing, etc.)
+            if ($isCentral) {
+                Route::middleware('web')
+                    ->group(base_path('routes/web.php'));
+            }
 
             Route::middleware('web')
                 ->group(base_path('routes/web/admin.php'));
